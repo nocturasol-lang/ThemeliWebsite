@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__figma__get_metadata",
-      "mcp__figma__get_screenshot"
-    ]
-  }
-}
