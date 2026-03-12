@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THEMELI — Έργο</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <nav class="nav-overlay" id="navOverlay">
+    <ul>
+      <li><span class="nav-num">01</span><a href="index.html">Αρχική</a></li>
+      <li><span class="nav-num">02</span><a href="timeline.html">Χρονολόγιο</a></li>
+      <li><span class="nav-num">03</span><a href="subsidiaries.html">Θυγατρικές</a></li>
+      <li><span class="nav-num">04</span><a href="projects.html">Έργα</a></li>
+      <li><span class="nav-num">05</span><a href="about.html">Σχετικά</a></li>
+      <li><span class="nav-num">06</span><a href="contact.html">Επικοινωνία</a></li>
+    </ul>
+  </nav>
+
+  <header class="menu">
+    <a href="index.html" class="menu-logo">
+      <img src="../assets/themeli-icon.svg" alt="Themeli">
+    </a>
+    <div class="menu-right">
+      <a class="lang-switch" data-lang-switch>EN</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="pdet" id="projectDetail">
+    <!-- Back link -->
+    <a href="projects.html" class="pdet-back" id="pdetBack">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="12 4 6 10 12 16"/></svg>
+      <span>Όλα τα Έργα</span>
+    </a>
+
+    <!-- Hero image -->
+    <div class="pdet-hero" id="pdetHero">
+      <div class="pdet-hero-img" id="pdetHeroImg"></div>
+      <div class="pdet-hero-overlay"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="pdet-content">
+      <!-- Typology pill -->
+      <span class="pdet-tag" id="pdetTag"></span>
+
+      <!-- Title -->
+      <h1 class="pdet-title" id="pdetTitle"></h1>
+
+      <!-- Meta row -->
+      <div class="pdet-meta">
+        <div class="pdet-meta-item">
+          <span class="pdet-meta-label">Έτος</span>
+          <span class="pdet-meta-value" id="pdetYear"></span>
+        </div>
+        <div class="pdet-meta-divider"></div>
+        <div class="pdet-meta-item">
+          <span class="pdet-meta-label">Τοποθεσία</span>
+          <span class="pdet-meta-value" id="pdetLocation"></span>
+        </div>
+        <div class="pdet-meta-divider"></div>
+        <div class="pdet-meta-item">
+          <span class="pdet-meta-label">Τυπολογία</span>
+          <span class="pdet-meta-value" id="pdetTypology"></span>
+        </div>
+      </div>
+
+      <!-- Horizontal rule -->
+      <div class="pdet-rule"></div>
+
+      <!-- Description -->
+      <div class="pdet-desc" id="pdetDesc"></div>
+
+      <!-- Info board (lobsintl-style vertical list) -->
+      <div class="pdet-info-board" id="pdetInfoBoard">
+        <div class="pdet-info-row" id="pdetInfoArchitect">
+          <span class="pdet-info-label">Αρχιτέκτονας</span>
+          <span class="pdet-info-value" id="pdetArchitect"></span>
+        </div>
+        <div class="pdet-info-row" id="pdetInfoSize">
+          <span class="pdet-info-label">Μέγεθος</span>
+          <span class="pdet-info-value" id="pdetSize"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Κατάσταση</span>
+          <span class="pdet-info-value" id="pdetStatus"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Ημερομηνία Ολοκλήρωσης</span>
+          <span class="pdet-info-value" id="pdetDateCompleted"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Τοποθεσία</span>
+          <span class="pdet-info-value" id="pdetInfoLocation"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Τυπολογία</span>
+          <span class="pdet-info-value" id="pdetInfoTypology"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="pdet-related" id="pdetRelated">
+      <h2 class="pdet-related-title">Σχετικά Έργα</h2>
+      <div class="pdet-related-grid" id="pdetRelatedGrid">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Adjacent project navigation -->
+    <div class="pdet-nav" id="pdetNav">
+      <a class="pdet-nav-link pdet-nav-prev" id="pdetPrev" href="#">
+        <span class="pdet-nav-dir">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="10 3 5 8 10 13"/></svg>
+          Προηγούμενο
+        </span>
+        <span class="pdet-nav-name" id="pdetPrevName"></span>
+      </a>
+      <a class="pdet-nav-link pdet-nav-next" id="pdetNext" href="#">
+        <span class="pdet-nav-dir">
+          Επόμενο
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 3 11 8 6 13"/></svg>
+        </span>
+        <span class="pdet-nav-name" id="pdetNextName"></span>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-gradient"></div>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href="index.html"><img src="../assets/themeli-footer-logo.svg" alt="Themeli"></a>
+      </div>
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4>Διεύθυνση</h4>
+          <a href="https://www.google.com/maps/place/?q=place_id:ChIJwzRhQ4WYoRQRw5J5-fnxG94" target="_blank" rel="noopener">ΑΘΗΝΑ<br>Καποδιστρίου 104,<br>142 35 Νέα Ιωνία</a>
+        </div>
+        <div class="footer-col">
+          <h4>Γενικές Πληροφορίες</h4>
+          <div class="email-wrapper">
+            <a href="#" class="email-trigger" data-email="INFO@THEMELI.GR">INFO@THEMELI.GR</a>
+            <div class="email-popup">
+              <a href="mailto:INFO@THEMELI.GR" class="email-popup-option">Αποστολή Email</a>
+              <button class="email-popup-option email-copy" data-email="INFO@THEMELI.GR">Αντιγραφή Διεύθυνσης</button>
+            </div>
+          </div>
+          <div class="phone-wrapper">
+            <a href="#" class="phone-trigger">T: +30 2102717720</a>
+            <div class="email-popup">
+              <a href="tel:+302102717720" class="email-popup-option">Κλήση</a>
+              <button class="email-popup-option phone-copy" data-phone="+30 2102717720">Αντιγραφή Αριθμού</button>
+            </div>
+          </div>
+          <p>F: +30 2102717723</p>
+        </div>
+        <div class="footer-col">
+          <h4>Κοινωνικά</h4>
+          <a href="#">Linkedin</a>
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 THEMELI Α.Ε. Με επιφύλαξη παντός δικαιώματος.</p>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Back to top">
+    <svg viewBox="0 0 16 16"><polyline points="3 10 8 5 13 10"/></svg>
+  </button>
+
+  <script src="../projects-data.js"></script>
+  <script src="../script.js"></script>
+</body>
+</html>
