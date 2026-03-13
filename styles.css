@@ -45,6 +45,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Lock non-timeline pages so layout doesn't break on zoom-out */
+body.page-locked {
+  min-width: 1024px;
+}
+
 /* Grain overlay */
 body::after {
   content: '';
@@ -822,19 +827,74 @@ img {
   padding: 60px var(--pad-x) 120px;
 }
 
-/* Opening statement */
+/* Opening statement — big hero paragraph */
 .timeline-opener {
-  max-width: 700px;
-  font-size: 17px;
-  font-weight: 300;
-  line-height: 1.8;
-  color: rgba(240, 238, 235, 0.65);
+  max-width: 900px;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.8vw, 36px);
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgba(240, 238, 235, 0.85);
   margin-bottom: 100px;
+}
+
+.timeline-opener-tagline {
+  display: block;
+  margin-top: 24px;
+  font-size: 1.5em;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+/* Typewriter effect */
+.timeline-opener.typewriter {
+  visibility: hidden;
+}
+.timeline-opener.typewriter.typing {
+  visibility: visible;
+}
+.timeline-opener.typewriter .tw-char {
+  opacity: 0;
+}
+.timeline-opener.typewriter.typing .tw-char.tw-visible {
+  opacity: 1;
+}
+
+
+/* Era-range section heading */
+.timeline-era-range {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  margin: 80px 0 60px;
+}
+
+/* Vertical side year label */
+.timeline-era-side-year {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(240, 238, 235, 0.1);
+  letter-spacing: 0.05em;
+  position: absolute;
+  left: -10px;
+  top: 0;
 }
 
 /* Interactive year nav */
 .timeline-nav {
-  margin-bottom: 80px;
+  margin-bottom: 100px;
+  padding: 20px 0;
   position: relative;
 }
 
@@ -843,14 +903,16 @@ img {
   top: 50%;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 4px;
   transform: translateY(-50%);
+  border-radius: 2px;
 }
 
 .timeline-nav-line {
   position: absolute;
   inset: 0;
-  background: rgba(240, 238, 235, 0.1);
+  background: rgba(240, 238, 235, 0.15);
+  border-radius: 2px;
 }
 
 .timeline-nav-progress {
@@ -860,6 +922,7 @@ img {
   height: 100%;
   width: 0;
   background: var(--accent);
+  border-radius: 2px;
   transition: width 0.6s var(--ease-out);
 }
 
@@ -883,18 +946,18 @@ img {
 
 .timeline-nav-year::before {
   content: '';
-  width: 8px;
-  height: 8px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--gray-05);
-  border: 1.5px solid rgba(240, 238, 235, 0.2);
+  border: 2px solid rgba(240, 238, 235, 0.25);
   transition: background 0.3s, border-color 0.3s, transform 0.3s var(--ease-out);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .timeline-nav-year span {
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--gray-04);
   letter-spacing: -0.01em;
@@ -913,7 +976,7 @@ img {
 .timeline-nav-year.is-active::before {
   background: var(--accent);
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--gray-01), 0 0 0 4px rgba(200, 184, 154, 0.25);
+  box-shadow: 0 0 0 4px var(--gray-01), 0 0 0 6px rgba(200, 184, 154, 0.25);
 }
 
 .timeline-nav-year.is-active span {
@@ -968,10 +1031,10 @@ img {
 }
 
 .timeline-era-body .era-text {
-  font-size: 17px;
+  font-size: clamp(18px, 2.2vw, 26px);
   font-weight: 300;
-  line-height: 1.8;
-  color: rgba(240, 238, 235, 0.8);
+  line-height: 1.6;
+  color: rgba(240, 238, 235, 0.9);
 }
 
 .timeline-era-body .era-text p + p {
@@ -2772,6 +2835,15 @@ img {
   .timeline-era-images img.img-md,
   .timeline-era-images img.img-lg {
     width: 100%;
+  }
+
+  .timeline-era-range {
+    font-size: clamp(20px, 5vw, 28px);
+    margin: 60px 0 40px;
+  }
+
+  .timeline-era-side-year {
+    display: none;
   }
 
   .timeline-title {
