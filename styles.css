@@ -266,28 +266,6 @@ img {
   gap: 16px;
 }
 
-.nav-overlay .nav-num {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--gray-04);
-  letter-spacing: 0.04em;
-  transform: translateY(110%);
-  transition: transform 0.6s var(--ease-out);
-  display: block;
-  min-width: 24px;
-}
-
-.nav-overlay.is-open .nav-num {
-  transform: translateY(0);
-}
-
-.nav-overlay li:nth-child(1) .nav-num { transition-delay: 0.12s; }
-.nav-overlay li:nth-child(2) .nav-num { transition-delay: 0.17s; }
-.nav-overlay li:nth-child(3) .nav-num { transition-delay: 0.22s; }
-.nav-overlay li:nth-child(4) .nav-num { transition-delay: 0.27s; }
-.nav-overlay li:nth-child(5) .nav-num { transition-delay: 0.32s; }
-.nav-overlay li:nth-child(6) .nav-num { transition-delay: 0.37s; }
 
 /* ========== PAGE HEADER (non-home pages) ========== */
 .page-header {
@@ -306,36 +284,13 @@ img {
 
 .page-header h1 {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 56px);
+  font-size: clamp(48px, 6vw, 72px);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: -0.04em;
-  line-height: 0.9;
-}
-
-.page-header .page-num {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--gray-04);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding-bottom: 8px;
-}
-
-/* Giant watermark number behind title */
-.page-header .watermark {
-  position: absolute;
-  right: var(--pad-x);
-  top: 80px;
-  font-family: var(--font-display);
-  font-size: clamp(100px, 14vw, 180px);
-  font-weight: 800;
+  letter-spacing: -0.02em;
   line-height: 1;
-  color: rgba(240, 238, 235, 0.025);
-  pointer-events: none;
-  user-select: none;
 }
+
 
 /* Legacy page-label (kept for home page compatibility) */
 .page-label {
@@ -593,6 +548,7 @@ img {
 
 .about-equipment-section {
   position: relative;
+  overflow-x: auto;
 }
 
 .about-equipment-section > img {
@@ -606,25 +562,22 @@ img {
   filter: grayscale(0%);
 }
 
-.about-equipment-section .equip-caption {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
+.equip-caption {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--white);
-  background: rgba(64, 64, 65, 0.8);
-  padding: 10px 16px;
-  backdrop-filter: blur(8px);
+  opacity: 0.6;
+  padding-left: 10%;
 }
 
 /* ========== EQUIPMENT GRID (Greek inline infographic) ========== */
 .equip-grid {
-  padding: 40px 48px 48px;
+  padding: 0 48px 48px;
   color: var(--white);
+  width: 100%;
 }
 
 .equip-title {
@@ -633,17 +586,24 @@ img {
   font-size: clamp(36px, 4vw, 52px);
   letter-spacing: -1px;
   margin-bottom: 36px;
+  padding: 40px 24px 0;
+  color: var(--white);
 }
 
 .equip-row {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 24px;
-  margin-bottom: 40px;
+  gap: 28px 24px;
+  margin-bottom: 44px;
 }
 
 .equip-row--bottom {
   margin-bottom: 0;
+}
+
+.equip-row--caption {
+  margin-bottom: 0;
+  margin-top: 36px;
 }
 
 .equip-spacer {
@@ -653,14 +613,15 @@ img {
 .equip-cat {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
+  padding-left: 10%;
 }
 
 .equip-cat-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
 
 .equip-num-lg {
@@ -671,8 +632,12 @@ img {
 }
 
 .equip-icon {
-  height: 48px;
+  height: 68px;
   width: auto;
+}
+
+.equip-row--icons .equip-cat {
+  align-items: stretch;
 }
 
 .equip-cat-name {
@@ -681,14 +646,17 @@ img {
   font-size: 14px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .equip-row-header {
   display: flex;
   gap: 10px;
   align-items: baseline;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .equip-num {
@@ -730,11 +698,15 @@ img {
   }
   .equip-row--mid .equip-spacer:first-child,
   .equip-row--mid .equip-spacer:last-child,
-  .equip-row--bottom .equip-spacer {
+  .equip-row--bottom .equip-spacer,
+  .equip-row--caption .equip-spacer {
     display: none;
   }
+  .equip-row--caption {
+    margin-top: 24px;
+  }
   .equip-icon {
-    height: 40px;
+    height: 56px;
   }
 }
 
@@ -755,8 +727,14 @@ img {
   .equip-spacer {
     display: none;
   }
+  .equip-cat {
+    padding-left: 5%;
+  }
+  .equip-row--caption {
+    margin-top: 20px;
+  }
   .equip-icon {
-    height: 32px;
+    height: 44px;
   }
   .equip-num-lg {
     font-size: 28px;
@@ -1231,11 +1209,19 @@ img {
   height: 100%;
   object-fit: contain;
   filter: brightness(0) invert(1) opacity(0.8);
+}
+
+.subs-grid .sub-logo[data-sub="tetrapolis"] img {
+  filter: opacity(0.8);
   transition: filter 0.4s;
 }
 
 .subs-grid .sub-logo:hover img {
   filter: brightness(0) invert(1) opacity(1);
+}
+
+.subs-grid .sub-logo[data-sub="tetrapolis"]:hover img {
+  filter: opacity(1);
 }
 
 /* Subsidiary detail view */
@@ -1346,6 +1332,10 @@ img {
   height: 100%;
   object-fit: contain;
   filter: brightness(0) invert(1) opacity(0.85);
+}
+
+.sub-detail-logo[data-sub="tetrapolis"] img {
+  filter: opacity(0.85);
 }
 
 /* Hide grid when detail is shown */
@@ -2691,9 +2681,6 @@ img {
     padding: 120px 32px 0;
   }
 
-  .page-header .watermark {
-    right: 32px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -2721,11 +2708,7 @@ img {
   }
 
   .page-header h1 {
-    font-size: clamp(40px, 10vw, 60px);
-  }
-
-  .page-header .watermark {
-    display: none;
+    font-size: clamp(40px, 10vw, 64px);
   }
 
   .hero-scroll {

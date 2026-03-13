@@ -426,6 +426,7 @@ if (subsGrid && subDetail) {
       subName.textContent = data.name;
       subSubtitle.textContent = data.subtitle;
       subDesc.textContent = data.desc;
+      subLogo.setAttribute('data-sub', key);
       subLogo.innerHTML = `<img src="${data.logo}" alt="${data.name}">`;
 
       // Transition: hide grid, show detail
