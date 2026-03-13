@@ -595,14 +595,14 @@ img {
   position: relative;
 }
 
-.about-equipment-section img {
+.about-equipment-section > img {
   width: 100%;
   height: auto;
   filter: grayscale(20%);
   transition: filter 0.8s var(--ease-out);
 }
 
-.about-equipment-section:hover img {
+.about-equipment-section:hover > img {
   filter: grayscale(0%);
 }
 
@@ -619,6 +619,152 @@ img {
   background: rgba(64, 64, 65, 0.8);
   padding: 10px 16px;
   backdrop-filter: blur(8px);
+}
+
+/* ========== EQUIPMENT GRID (Greek inline infographic) ========== */
+.equip-grid {
+  padding: 40px 48px 48px;
+  color: var(--white);
+}
+
+.equip-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(36px, 4vw, 52px);
+  letter-spacing: -1px;
+  margin-bottom: 36px;
+}
+
+.equip-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.equip-row--bottom {
+  margin-bottom: 0;
+}
+
+.equip-spacer {
+  display: block;
+}
+
+.equip-cat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.equip-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.equip-num-lg {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 2.5vw, 36px);
+  line-height: 1;
+}
+
+.equip-icon {
+  height: 48px;
+  width: auto;
+}
+
+.equip-cat-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.equip-row-header {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.equip-num {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.equip-name {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.equip-sub {
+  display: flex;
+  gap: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--white);
+}
+
+.equip-sub-num {
+  min-width: 20px;
+  text-align: left;
+  font-weight: 400;
+}
+
+@media (max-width: 1024px) {
+  .equip-grid {
+    padding: 32px 24px 36px;
+  }
+  .equip-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .equip-row--mid .equip-spacer:first-child,
+  .equip-row--mid .equip-spacer:last-child,
+  .equip-row--bottom .equip-spacer {
+    display: none;
+  }
+  .equip-icon {
+    height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .equip-grid {
+    padding: 24px 16px 28px;
+  }
+  .equip-row,
+  .equip-row--icons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 16px;
+    margin-bottom: 28px;
+  }
+  .equip-row--mid,
+  .equip-row--bottom {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .equip-spacer {
+    display: none;
+  }
+  .equip-icon {
+    height: 32px;
+  }
+  .equip-num-lg {
+    font-size: 28px;
+  }
+  .equip-title {
+    font-size: 32px;
+    margin-bottom: 24px;
+  }
 }
 
 /* Legacy about classes (backwards compat with old HTML if needed) */
