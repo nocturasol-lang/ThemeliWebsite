@@ -48,6 +48,7 @@ if (hamburger && navOverlay) {
     const isOpening = !navOverlay.classList.contains('is-open');
     hamburger.classList.toggle('is-active');
     navOverlay.classList.toggle('is-open');
+    hamburger.setAttribute('aria-expanded', isOpening);
     document.body.style.overflow = isOpening ? 'hidden' : '';
   });
 
@@ -528,6 +529,11 @@ if (pdetDetail) {
   const params = new URLSearchParams(window.location.search);
   const projectId = parseInt(params.get('id'), 10);
 
+  // Sanitise a string for use inside a CSS url()
+  function cssUrl(str) {
+    return str ? str.replace(/['"\\()]/g, '\\$&') : '';
+  }
+
   // Load data
   function loadPdetData() {
     const saved = localStorage.getItem('themeli_projects');
@@ -548,7 +554,7 @@ if (pdetDetail) {
     // Hero image
     const heroImg = document.getElementById('pdetHeroImg');
     if (project.image) {
-      heroImg.style.backgroundImage = `url('${project.image}')`;
+      heroImg.style.backgroundImage = `url('${cssUrl(project.image)}')`;
       heroImg.classList.add('has-image');
     }
 
@@ -589,9 +595,9 @@ if (pdetDetail) {
 
     if (related.length > 0 && relatedGrid) {
       related.forEach(p => {
-        const imgStyle = p.image ? `background-image:url('${p.image}')` : '';
+        const imgStyle = p.image ? `background-image:url('${cssUrl(p.image)}')` : '';
         relatedGrid.insertAdjacentHTML('beforeend',
-          `<a class="pdet-related-card" href="project.html?id=${p.id}">
+          `<a class="pdet-related-card" href="project.html?id=${encodeURIComponent(p.id)}">
             <div class="pdet-related-card-img" style="${imgStyle}"></div>
             <div class="pdet-related-card-body">
               <span class="pdet-related-card-name">${p.name}</span>

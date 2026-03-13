@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://themeli.gr/en/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/index.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/index.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/el/index.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/index.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/index.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/en/timeline.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/timeline.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/timeline.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/el/timeline.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/timeline.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/timeline.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/en/subsidiaries.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/subsidiaries.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/subsidiaries.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/el/subsidiaries.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/subsidiaries.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/subsidiaries.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/en/projects.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/projects.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/projects.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/el/projects.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/projects.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/projects.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/en/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/about.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/el/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/about.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/about.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/en/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/contact.html"/>
+  </url>
+  <url>
+    <loc>https://themeli.gr/el/contact.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://themeli.gr/en/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="el" href="https://themeli.gr/el/contact.html"/>
+  </url>
+</urlset>

@@ -323,10 +323,16 @@ importFile.addEventListener('change', (e) => {
   const reader = new FileReader();
   reader.onload = (evt) => {
     try {
-      // Execute the JS to extract the PROJECTS array
-      const code = evt.target.result;
-      const fn = new Function(code + '\nreturn PROJECTS;');
-      const imported = fn();
+      // Parse as JSON for safety (no arbitrary code execution)
+      const code = evt.target.result.trim();
+      let imported;
+      // Support both raw JSON arrays and "const PROJECTS = [...];" format
+      const jsonMatch = code.match(/(?:const|var|let)\s+PROJECTS\s*=\s*(\[[\s\S]*\])\s*;?\s*$/);
+      if (jsonMatch) {
+        imported = JSON.parse(jsonMatch[1]);
+      } else {
+        imported = JSON.parse(code);
+      }
 
       if (!Array.isArray(imported) || imported.length === 0) {
         alert('No valid PROJECTS array found in this file.');

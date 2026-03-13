@@ -45,9 +45,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Lock non-timeline pages so layout doesn't break on zoom-out */
-body.page-locked {
-  min-width: 1024px;
+/* Lock non-timeline pages so layout doesn't break on zoom-out (desktop only) */
+@media (min-width: 1025px) {
+  body.page-locked {
+    min-width: 1024px;
+  }
 }
 
 /* Grain overlay */
@@ -207,7 +209,7 @@ img {
 .nav-overlay {
   position: fixed;
   inset: 0;
-  z-index: 99;
+  z-index: 100;
   background: var(--gray-05);
   display: flex;
   align-items: center;
@@ -849,6 +851,12 @@ img {
   line-height: 1.15;
   white-space: nowrap;
 }
+@media (max-width: 768px) {
+  .timeline-opener-tagline {
+    white-space: normal;
+    font-size: 1.2em;
+  }
+}
 
 /* Typewriter effect */
 .timeline-opener.typewriter {
@@ -873,7 +881,7 @@ img {
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: #fff;
+  color: var(--white);
   margin: 80px 0 60px;
 }
 
@@ -2671,6 +2679,10 @@ img {
     padding-left: 60px;
   }
 
+  .timeline-era-side-year {
+    display: none;
+  }
+
   .timeline-era::before {
     left: 24px;
   }
@@ -3043,5 +3055,25 @@ img {
   .lang-switch {
     font-size: 11px;
     padding: 5px 11px;
+  }
+}
+
+/* ========== FOCUS VISIBLE ========== */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ========== REDUCED MOTION ========== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
