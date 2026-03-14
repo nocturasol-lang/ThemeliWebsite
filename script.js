@@ -11,7 +11,6 @@ const I18N = {
     projects: 'Projects', project: 'Project',
     copied: 'Copied!', copyAddress: 'Copy Address', copyNumber: 'Copy Number',
     subsData: {
-      kalami: { name: 'kalami', subtitle: 'real estate', logo: BASE + 'assets/kalami.svg', desc: 'Kalami has a 3rd class certification for Public Works since 2006, sufficient for participation in tenders for public or private works in all categories. Recently completed projects: [1] Construction of sewage pipe (microtunnel) for the Water Supply and Sewage Company of Athens (EYDAP) in the areas of Geraka and Amarousio. [2] Construction of a Sanitary Landfill Area in Chios island — in joint venture. Kalami owns a 2,25 hectares seaside land in Samos island.' },
       themos: { name: 'themos', subtitle: 'concrete prefabrication', logo: BASE + 'assets/themos.svg', desc: 'Themos is a Greek company founded in 2005 by Themeli S.A. to cover the needs of miscellaneous railway type sleepers. The construction was commissioned to the Italian company Plan Srl. aided by the expertise of German company Leonhard Moll Betonwerke GmbH & Co KG. Themos has produced 120.000 sleepers, TBS 1000 type, for metric line (Gauge 1000 mm), which are already placed in the railway net of Peloponnese and 100.000 sleepers, B-70 type, for normal line (1435 mm gauge) for the railway in the rest of the country.' },
       thermis: { name: 'thermis', subtitle: 'wind farms', logo: BASE + 'assets/thermis.svg', desc: 'Thermis was founded for the development of wind farms and aims to make a dynamic entry into the field of renewable power resources. The main effort is directed towards the development of 7,6 MW Bauza wind farm, at the municipality of Erineo, Achaia. At the same time, the daughter companies of Xirovouni Platanou SA and Perganti-Akarnaniko SA are managing the homonymous parks.' },
       tetrapolis: { name: 'tetrapolis', subtitle: 'residence complex', logo: BASE + 'assets/tetrapolis.svg', desc: 'Tetrapolis Keos a summer residence complex in Ioulida, Kea. Built in 2016 and fully equipped with all necessary facilities, the complex consists of six independent residences, ranging from 82sq to 137sq, which share a swimming pool with a view over the harbor.' }
@@ -21,7 +20,6 @@ const I18N = {
     projects: 'Έργα', project: 'Έργο',
     copied: 'Αντιγράφηκε!', copyAddress: 'Αντιγραφή Διεύθυνσης', copyNumber: 'Αντιγραφή Αριθμού',
     subsData: {
-      kalami: { name: 'kalami', subtitle: 'ακίνητα', logo: BASE + 'assets/kalami.svg', desc: 'Η Kalami διαθέτει πιστοποίηση 3ης τάξης για Δημόσια Έργα από το 2006, επαρκή για συμμετοχή σε διαγωνισμούς δημοσίων ή ιδιωτικών έργων σε όλες τις κατηγορίες. Πρόσφατα ολοκληρωμένα έργα: [1] Κατασκευή αγωγού αποχέτευσης (microtunnel) για την ΕΥΔΑΠ στις περιοχές Γέρακα και Αμαρουσίου. [2] Κατασκευή ΧΥΤΑ στη Χίο — σε κοινοπραξία. Η Kalami κατέχει παραθαλάσσιο οικόπεδο 2,25 εκταρίων στη Σάμο.' },
       themos: { name: 'themos', subtitle: 'προκατασκευές σκυροδέματος', logo: BASE + 'assets/themos.svg', desc: 'Η Themos είναι ελληνική εταιρεία που ιδρύθηκε το 2005 από τη Θεμέλη Α.Ε. για την κάλυψη αναγκών σε σιδηροδρομικούς στρωτήρες. Η κατασκευή ανατέθηκε στην ιταλική Plan Srl. με την τεχνογνωσία της γερμανικής Leonhard Moll Betonwerke GmbH & Co KG. Η Themos έχει παράγει 120.000 στρωτήρες τύπου TBS 1000 για μετρική γραμμή (1000 mm) και 100.000 στρωτήρες τύπου B-70 για κανονική γραμμή (1435 mm).' },
       thermis: { name: 'thermis', subtitle: 'αιολικά πάρκα', logo: BASE + 'assets/thermis.svg', desc: 'Η Thermis ιδρύθηκε για την ανάπτυξη αιολικών πάρκων και στοχεύει σε δυναμική είσοδο στον τομέα των ανανεώσιμων πηγών ενέργειας. Η κύρια προσπάθεια κατευθύνεται στην ανάπτυξη του αιολικού πάρκου 7,6 MW Bauza, στον δήμο Ερινεού, Αχαΐα. Παράλληλα, οι θυγατρικές Ξηροβούνι Πλατάνου Α.Ε. και Περγαντί-Ακαρνανικό Α.Ε. διαχειρίζονται τα ομώνυμα πάρκα.' },
       tetrapolis: { name: 'tetrapolis', subtitle: 'συγκρότημα κατοικιών', logo: BASE + 'assets/tetrapolis.svg', desc: 'Η Tetrapolis Keos είναι ένα θερινό συγκρότημα κατοικιών στην Ιουλίδα, Κέα. Κατασκευασμένο το 2016 και πλήρως εξοπλισμένο, το συγκρότημα αποτελείται από έξι ανεξάρτητες κατοικίες, από 82τμ έως 137τμ, που μοιράζονται πισίνα με θέα στο λιμάνι.' }
@@ -67,6 +65,21 @@ if (hamburger && navOverlay) {
       document.body.style.overflow = '';
     }
   });
+}
+
+// ========== PAGE HEADER SCROLL FADE ==========
+const pageHeader = document.querySelector('.page-header');
+if (pageHeader) {
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y > 80) {
+      pageHeader.classList.add('is-hidden');
+    } else {
+      pageHeader.classList.remove('is-hidden');
+    }
+    lastScroll = y;
+  }, { passive: true });
 }
 
 // ========== SCROLL REVEAL ==========
