@@ -1,0 +1,78 @@
+<!--
+title: THEMELI — Projects
+description: THEMELI S.A. Projects — Browse our portfolio of major infrastructure, transportation, energy, and building construction projects across Greece.
+mainClass: projects-page
+mainId:
+scripts: ../projects-data.js
+-->
+    <!-- Toolbar: filter + view toggles + count -->
+    <div class="proj-toolbar reveal">
+      <div class="proj-toolbar-left">
+        <button class="proj-filter-toggle" id="projFilterToggle" aria-label="Toggle filters">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="4" x2="17" y2="4"/><line x1="1" y1="9" x2="17" y2="9"/><line x1="1" y1="14" x2="17" y2="14"/><circle cx="5" cy="4" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="8" cy="14" r="1.5" fill="currentColor"/></svg>
+          <span>Filters</span>
+        </button>
+        <span class="proj-count" id="projCount">26 Projects</span>
+      </div>
+      <div class="proj-view-toggles" id="projViewToggles">
+        <button class="proj-view-btn is-active" data-view="grid" aria-label="Grid view">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="0" width="8" height="8" rx="1"/><rect x="10" y="0" width="8" height="8" rx="1"/><rect x="0" y="10" width="8" height="8" rx="1"/><rect x="10" y="10" width="8" height="8" rx="1"/></svg>
+        </button>
+        <button class="proj-view-btn" data-view="list" aria-label="List view">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="1" width="18" height="2" rx="1"/><rect x="0" y="5.5" width="18" height="2" rx="1"/><rect x="0" y="10" width="18" height="2" rx="1"/><rect x="0" y="14.5" width="18" height="2" rx="1"/></svg>
+        </button>
+        <button class="proj-view-btn" data-view="map" aria-label="Map view">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 16s-6-5.7-6-9.2A6 6 0 0 1 15 6.8C15 10.3 9 16 9 16z"/><circle cx="9" cy="7" r="2" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter panel -->
+    <div class="proj-filters" id="projFilters">
+      <div class="proj-filters-inner">
+        <span class="proj-filters-label">Typology</span>
+        <div class="proj-filters-grid">
+          <button class="proj-filter-btn is-active" data-filter="all">All</button>
+          <button class="proj-filter-btn" data-filter="Buildings">Buildings</button>
+          <button class="proj-filter-btn" data-filter="Utility Networks">Utility Networks</button>
+          <button class="proj-filter-btn" data-filter="Industrial &amp; Energy">Industrial &amp; Energy</button>
+          <button class="proj-filter-btn" data-filter="Roadworks">Roadworks</button>
+          <button class="proj-filter-btn" data-filter="Urban Redevelopment">Urban Redevelopment</button>
+          <button class="proj-filter-btn" data-filter="Ports &amp; Marine">Ports &amp; Marine</button>
+          <button class="proj-filter-btn" data-filter="Railways">Railways</button>
+          <button class="proj-filter-btn" data-filter="Dams">Dams</button>
+          <button class="proj-filter-btn" data-filter="Tunnels">Tunnels</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== GRID VIEW (rendered by JS from projects-data.js) ===== -->
+    <div class="proj-grid reveal" id="projGridView"></div>
+
+    <!-- ===== LIST VIEW ===== -->
+    <div class="proj-table" id="projListView" style="display:none">
+      <div class="proj-row proj-row-header">
+        <span class="proj-col proj-col-name">Project</span>
+        <span class="proj-col proj-col-type">Typology</span>
+        <span class="proj-col proj-col-loc">Location</span>
+        <span class="proj-col proj-col-year">Year</span>
+      </div>
+    </div>
+
+    <!-- ===== MAP VIEW ===== -->
+    <div class="proj-map" id="projMapView" style="display:none">
+      <div class="proj-map-controls">
+        <button class="proj-map-zoom" id="mapZoomIn" aria-label="Zoom in">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+        </button>
+        <button class="proj-map-zoom" id="mapZoomOut" aria-label="Zoom out">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+        </button>
+      </div>
+      <div class="proj-map-viewport" id="mapViewport">
+        <div class="proj-map-inner" id="mapInner">
+          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img">
+          <!-- dots rendered by JS -->
+        </div>
+      </div>
+    </div>

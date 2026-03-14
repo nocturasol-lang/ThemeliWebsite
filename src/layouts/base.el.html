@@ -3,24 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ΘΕΜΕΛΙ Α.Ε. — Κορυφαία ελληνική κατασκευαστική εταιρεία από το 1923. Μεγάλα έργα υποδομών, γέφυρες, σήραγγες, σιδηρόδρομοι και ενεργειακά έργα.">
+  <meta name="description" content="{{description}}">
   <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
-  <link rel="alternate" hreflang="en" href="https://themeli.gr/en/index.html">
-  <link rel="alternate" hreflang="el" href="https://themeli.gr/el/index.html">
-  <title>THEMELI Α.Ε. — Since 1923</title>
+  <link rel="alternate" hreflang="en" href="https://themeli.gr/en/{{pageName}}">
+  <link rel="alternate" hreflang="el" href="https://themeli.gr/el/{{pageName}}">
+  <title>{{title}}</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="page-locked">
-  <nav class="nav-overlay" id="navOverlay">
-    <ul>
-      <li><a href="index.html" class="active">Αρχική</a></li>
-      <li><a href="timeline.html">Χρονολόγιο</a></li>
-      <li><a href="subsidiaries.html">Θυγατρικές</a></li>
-      <li><a href="projects.html">Έργα</a></li>
-      <li><a href="about.html">Σχετικά</a></li>
-      <li><a href="contact.html">Επικοινωνία</a></li>
-    </ul>
-  </nav>
+{{nav}}
 
   <header class="menu">
     <a href="index.html" class="menu-logo">
@@ -36,25 +27,8 @@
     </div>
   </header>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero">
-      <video autoplay muted loop playsinline>
-        <source src="../assets/landing.mp4" type="video/mp4">
-      </video>
-    </section>
-
-    <div class="section-divider"></div>
-
-    <!-- About section -->
-    <section class="about-section">
-      <div class="label reveal">Σχετικά</div>
-      <div class="content">
-        <p class="reveal">Η Θεμέλη είναι η παλαιότερη κατασκευαστική εταιρεία στην Ελλάδα και εκτελεί μεγάλα τεχνικά έργα (αυτοκινητόδρομους, σήραγγες, γέφυρες, σιδηροδρομικά έργα, δίκτυα αποχέτευσης, κτίρια κ.λπ.), δημόσια ή ιδιωτικά, αυτόνομα ή σε κοινοπραξία με άλλες ευρωπαϊκές εταιρείες. Σήμερα, με άριστο μηχανολογικό εξοπλισμό, υψηλής ποιότητας υποδομές, σύγχρονη οργάνωση και στελέχη με εμπειρία και αφοσίωση, η Θεμέλη συνεχίζει την πορεία της σε κάθε είδος δημόσιου ή ιδιωτικού έργου.</p>
-        <p class="reveal reveal-delay-1">Η Θεμέλη επιτυγχάνει κατασκευαστικά έργα υψηλής ποιότητας, σύμφωνα με τις απαιτήσεις της σύγχρονης τεχνολογίας και σχεδιασμού, και την έγκαιρη ολοκλήρωση και παράδοσή τους.</p>
-        <a href="about.html" class="learn-more reveal reveal-delay-2">Μάθετε Περισσότερα</a>
-      </div>
-    </section>
+  <main{{mainAttrs}}>
+{{content}}
   </main>
 
   <footer class="footer">
@@ -103,6 +77,6 @@
     <svg viewBox="0 0 16 16"><polyline points="3 10 8 5 13 10"/></svg>
   </button>
 
-  <script src="../script.js"></script>
+{{scripts}}  <script src="../script.js"></script>
 </body>
 </html>

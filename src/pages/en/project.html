@@ -1,0 +1,105 @@
+<!--
+title: THEMELI — Project
+description: THEMELI S.A. — Detailed project information including scope, location, and construction highlights.
+mainClass: pdet
+mainId: projectDetail
+scripts: ../projects-data.js
+-->
+    <!-- Back link -->
+    <a href="projects.html" class="pdet-back" id="pdetBack">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="12 4 6 10 12 16"/></svg>
+      <span>All Projects</span>
+    </a>
+
+    <!-- Hero image -->
+    <div class="pdet-hero" id="pdetHero">
+      <div class="pdet-hero-img" id="pdetHeroImg"></div>
+      <div class="pdet-hero-overlay"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="pdet-content">
+      <!-- Typology pill -->
+      <span class="pdet-tag" id="pdetTag"></span>
+
+      <!-- Title -->
+      <h1 class="pdet-title" id="pdetTitle"></h1>
+
+      <!-- Meta row -->
+      <div class="pdet-meta">
+        <div class="pdet-meta-item">
+          <span class="pdet-meta-label">Year</span>
+          <span class="pdet-meta-value" id="pdetYear"></span>
+        </div>
+        <div class="pdet-meta-divider"></div>
+        <div class="pdet-meta-item">
+          <span class="pdet-meta-label">Location</span>
+          <span class="pdet-meta-value" id="pdetLocation"></span>
+        </div>
+        <div class="pdet-meta-divider"></div>
+        <div class="pdet-meta-item">
+          <span class="pdet-meta-label">Typology</span>
+          <span class="pdet-meta-value" id="pdetTypology"></span>
+        </div>
+      </div>
+
+      <!-- Horizontal rule -->
+      <div class="pdet-rule"></div>
+
+      <!-- Description -->
+      <div class="pdet-desc" id="pdetDesc"></div>
+
+      <!-- Info board (lobsintl-style vertical list) -->
+      <div class="pdet-info-board" id="pdetInfoBoard">
+        <div class="pdet-info-row" id="pdetInfoArchitect">
+          <span class="pdet-info-label">Architect</span>
+          <span class="pdet-info-value" id="pdetArchitect"></span>
+        </div>
+        <div class="pdet-info-row" id="pdetInfoSize">
+          <span class="pdet-info-label">Size</span>
+          <span class="pdet-info-value" id="pdetSize"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Status</span>
+          <span class="pdet-info-value" id="pdetStatus"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Date Completed</span>
+          <span class="pdet-info-value" id="pdetDateCompleted"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Location</span>
+          <span class="pdet-info-value" id="pdetInfoLocation"></span>
+        </div>
+        <div class="pdet-info-row">
+          <span class="pdet-info-label">Typology</span>
+          <span class="pdet-info-value" id="pdetInfoTypology"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="pdet-related" id="pdetRelated">
+      <h2 class="pdet-related-title">Related Projects</h2>
+      <div class="pdet-related-grid" id="pdetRelatedGrid">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Adjacent project navigation -->
+    <div class="pdet-nav" id="pdetNav">
+      <a class="pdet-nav-link pdet-nav-prev" id="pdetPrev" href="#">
+        <span class="pdet-nav-dir">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="10 3 5 8 10 13"/></svg>
+          Previous
+        </span>
+        <span class="pdet-nav-name" id="pdetPrevName"></span>
+      </a>
+      <a class="pdet-nav-link pdet-nav-next" id="pdetNext" href="#">
+        <span class="pdet-nav-dir">
+          Next
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="6 3 11 8 6 13"/></svg>
+        </span>
+        <span class="pdet-nav-name" id="pdetNextName"></span>
+      </a>
+    </div>

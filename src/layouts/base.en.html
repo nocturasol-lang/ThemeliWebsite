@@ -3,24 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="THEMELI S.A. — A leading Greek construction company since 1923. Major infrastructure, bridges, tunnels, railways, and energy projects across Greece.">
+  <meta name="description" content="{{description}}">
   <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
-  <link rel="alternate" hreflang="en" href="https://themeli.gr/en/index.html">
-  <link rel="alternate" hreflang="el" href="https://themeli.gr/el/index.html">
-  <title>THEMELI S.A. — Since 1923</title>
+  <link rel="alternate" hreflang="en" href="https://themeli.gr/en/{{pageName}}">
+  <link rel="alternate" hreflang="el" href="https://themeli.gr/el/{{pageName}}">
+  <title>{{title}}</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="page-locked">
-  <nav class="nav-overlay" id="navOverlay">
-    <ul>
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="timeline.html">Timeline</a></li>
-      <li><a href="subsidiaries.html">Subsidiaries</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+{{nav}}
 
   <header class="menu">
     <a href="index.html" class="menu-logo">
@@ -36,25 +27,8 @@
     </div>
   </header>
 
-  <main>
-    <!-- Hero -->
-    <section class="hero">
-      <video autoplay muted loop playsinline>
-        <source src="../assets/landing.mp4" type="video/mp4">
-      </video>
-    </section>
-
-    <div class="section-divider"></div>
-
-    <!-- About section -->
-    <section class="about-section">
-      <div class="label reveal">About</div>
-      <div class="content">
-        <p class="reveal">Themeli is the oldest construction company in Greece and executes major technical works (motorways, tunnels, bridges, railroad projects, drainage networks, buildings e.t.c.), public or private, individually or in joint-venture with other European companies. Nowadays, with excellent mechanical equipment, high quality infrastructure, modern organization and key personnel with experience and commitment, themeli, continues its course in any kind of public or private projects.</p>
-        <p class="reveal reveal-delay-1">Themeli achieves high quality construction projects, according to the requirements of modern technology and design, and their timely completion and delivery.</p>
-        <a href="about.html" class="learn-more reveal reveal-delay-2">Learn More</a>
-      </div>
-    </section>
+  <main{{mainAttrs}}>
+{{content}}
   </main>
 
   <footer class="footer">
@@ -103,6 +77,6 @@
     <svg viewBox="0 0 16 16"><polyline points="3 10 8 5 13 10"/></svg>
   </button>
 
-  <script src="../script.js"></script>
+{{scripts}}  <script src="../script.js"></script>
 </body>
 </html>
