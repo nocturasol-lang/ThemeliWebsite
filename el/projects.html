@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ΘΕΜΕΛΙ Α.Ε. Έργα — Περιηγηθείτε στο χαρτοφυλάκιο μεγάλων έργων υποδομών, μεταφορών, ενέργειας και κτιριακών κατασκευών σε όλη την Ελλάδα.">
+  <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
+  <link rel="alternate" hreflang="en" href="https://themeli.gr/en/projects.html">
+  <link rel="alternate" hreflang="el" href="https://themeli.gr/el/projects.html">
+  <title>THEMELI — Έργα</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <nav class="nav-overlay" id="navOverlay">
+    <ul>
+      <li><a href="index.html">Αρχική</a></li>
+      <li><a href="timeline.html">Χρονολόγιο</a></li>
+      <li><a href="subsidiaries.html">Θυγατρικές</a></li>
+      <li><a href="projects.html" class="active">Έργα</a></li>
+      <li><a href="about.html">Σχετικά</a></li>
+      <li><a href="contact.html">Επικοινωνία</a></li>
+    </ul>
+  </nav>
+
+  <header class="menu">
+    <a href="" class="menu-logo">
+      <img src="../assets/themeli-icon.svg" alt="Themeli">
+    </a>
+    <div class="menu-right">
+      <a class="lang-switch" data-lang-switch>EN</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="projects-page">
+    <!-- Toolbar: filter + view toggles + count -->
+    <div class="proj-toolbar reveal">
+      <div class="proj-toolbar-left">
+        <button class="proj-filter-toggle" id="projFilterToggle" aria-label="Toggle filters">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="4" x2="17" y2="4"/><line x1="1" y1="9" x2="17" y2="9"/><line x1="1" y1="14" x2="17" y2="14"/><circle cx="5" cy="4" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="8" cy="14" r="1.5" fill="currentColor"/></svg>
+          <span>Φίλτρα</span>
+        </button>
+        <span class="proj-count" id="projCount">26 Έργα</span>
+      </div>
+      <div class="proj-view-toggles" id="projViewToggles">
+        <button class="proj-view-btn is-active" data-view="grid" aria-label="Grid view">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="0" width="8" height="8" rx="1"/><rect x="10" y="0" width="8" height="8" rx="1"/><rect x="0" y="10" width="8" height="8" rx="1"/><rect x="10" y="10" width="8" height="8" rx="1"/></svg>
+        </button>
+        <button class="proj-view-btn" data-view="list" aria-label="List view">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="1" width="18" height="2" rx="1"/><rect x="0" y="5.5" width="18" height="2" rx="1"/><rect x="0" y="10" width="18" height="2" rx="1"/><rect x="0" y="14.5" width="18" height="2" rx="1"/></svg>
+        </button>
+        <button class="proj-view-btn" data-view="map" aria-label="Map view">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 16s-6-5.7-6-9.2A6 6 0 0 1 15 6.8C15 10.3 9 16 9 16z"/><circle cx="9" cy="7" r="2" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter panel -->
+    <div class="proj-filters" id="projFilters">
+      <div class="proj-filters-inner">
+        <span class="proj-filters-label">Τυπολογία</span>
+        <div class="proj-filters-grid">
+          <button class="proj-filter-btn is-active" data-filter="all">Όλα</button>
+          <button class="proj-filter-btn" data-filter="Buildings">Κτίρια</button>
+          <button class="proj-filter-btn" data-filter="Utility Networks">Δίκτυα Κοινής Ωφέλειας</button>
+          <button class="proj-filter-btn" data-filter="Industrial &amp; Energy">Βιομηχανικά &amp; Ενέργεια</button>
+          <button class="proj-filter-btn" data-filter="Roadworks">Οδοποιία</button>
+          <button class="proj-filter-btn" data-filter="Urban Redevelopment">Αστική Ανάπλαση</button>
+          <button class="proj-filter-btn" data-filter="Ports &amp; Marine">Λιμάνια &amp; Θαλάσσια</button>
+          <button class="proj-filter-btn" data-filter="Railways">Σιδηρόδρομοι</button>
+          <button class="proj-filter-btn" data-filter="Dams">Φράγματα</button>
+          <button class="proj-filter-btn" data-filter="Tunnels">Σήραγγες</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== GRID VIEW (rendered by JS from projects-data.js) ===== -->
+    <div class="proj-grid reveal" id="projGridView"></div>
+
+    <!-- ===== LIST VIEW ===== -->
+    <div class="proj-table" id="projListView" style="display:none">
+      <div class="proj-row proj-row-header">
+        <span class="proj-col proj-col-name">Έργο</span>
+        <span class="proj-col proj-col-type">Τυπολογία</span>
+        <span class="proj-col proj-col-loc">Τοποθεσία</span>
+        <span class="proj-col proj-col-year">Έτος</span>
+      </div>
+    </div>
+
+    <!-- ===== MAP VIEW ===== -->
+    <div class="proj-map" id="projMapView" style="display:none">
+      <div class="proj-map-controls">
+        <button class="proj-map-zoom" id="mapZoomIn" aria-label="Zoom in">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+        </button>
+        <button class="proj-map-zoom" id="mapZoomOut" aria-label="Zoom out">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+        </button>
+      </div>
+      <div class="proj-map-viewport" id="mapViewport">
+        <div class="proj-map-inner" id="mapInner">
+          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img">
+          <!-- dots rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-gradient"></div>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <a href=""><img src="../assets/themeli-footer-logo.svg" alt="Themeli"></a>
+      </div>
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h4>Διεύθυνση</h4>
+          <a href="https://www.google.com/maps?q=38.03279391343416,23.774540665648086" target="_blank" rel="noopener">ΑΘΗΝΑ<br>Καποδιστρίου 104,<br>142 35 Νέα Ιωνία</a>
+        </div>
+        <div class="footer-col">
+          <h4>Γενικές Πληροφορίες</h4>
+          <div class="email-wrapper">
+            <a href="#" class="email-trigger" data-email="INFO@THEMELI.GR">INFO@THEMELI.GR</a>
+            <div class="email-popup">
+              <a href="mailto:INFO@THEMELI.GR" class="email-popup-option">Αποστολή Email</a>
+              <button class="email-popup-option email-copy" data-email="INFO@THEMELI.GR">Αντιγραφή Διεύθυνσης</button>
+            </div>
+          </div>
+          <div class="phone-wrapper">
+            <a href="#" class="phone-trigger">T: +30 2102717720</a>
+            <div class="email-popup">
+              <a href="tel:+302102717720" class="email-popup-option">Κλήση</a>
+              <button class="email-popup-option phone-copy" data-phone="+30 2102717720">Αντιγραφή Αριθμού</button>
+            </div>
+          </div>
+          <p>F: +30 2102717723</p>
+        </div>
+        <div class="footer-col">
+          <h4>Κοινωνικά</h4>
+          <a href="#">Linkedin</a>
+          <a href="#">Facebook</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 THEMELI Α.Ε. Με επιφύλαξη παντός δικαιώματος.</p>
+    </div>
+  </footer>
+
+  <button class="scroll-top" id="scrollTop" aria-label="Back to top">
+    <svg viewBox="0 0 16 16"><polyline points="3 10 8 5 13 10"/></svg>
+  </button>
+
+  <script src="../projects-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../supabase-config.js"></script>
+  <script src="../script.js"></script>
+</body>
+</html>
