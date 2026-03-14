@@ -2,7 +2,8 @@
 
 @font-face {
   font-family: 'CF Mod Grotesk';
-  src: url('assets/fonts/CFModGrotesk-RegularExpanded.woff') format('woff');
+  src: url('assets/fonts/CFModGrotesk-RegularExpanded.woff2') format('woff2'),
+       url('assets/fonts/CFModGrotesk-RegularExpanded.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -10,7 +11,8 @@
 
 @font-face {
   font-family: 'CF Mod Grotesk';
-  src: url('assets/fonts/CFModGrotesk-MedExtExp.woff') format('woff');
+  src: url('assets/fonts/CFModGrotesk-MedExtExp.woff2') format('woff2'),
+       url('assets/fonts/CFModGrotesk-MedExtExp.woff') format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -18,7 +20,8 @@
 
 @font-face {
   font-family: 'CF Mod Grotesk';
-  src: url('assets/fonts/CFModGrotesk-BoldExtExpanded.woff') format('woff');
+  src: url('assets/fonts/CFModGrotesk-BoldExtExpanded.woff2') format('woff2'),
+       url('assets/fonts/CFModGrotesk-BoldExtExpanded.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -86,17 +89,9 @@ body::before {
   pointer-events: none;
 }
 
-/* FooterBoarder */
+/* FooterBoarder — hidden to reduce visual weight */
 html::after {
-  content: '';
-  position: fixed;
-  bottom: 240px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  z-index: 50;
-  pointer-events: none;
+  display: none;
 }
 
 /* LeftBoarder + RightBoarder */
@@ -107,7 +102,7 @@ main::after {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
   z-index: 50;
   pointer-events: none;
 }
@@ -127,9 +122,9 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 10;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px;
@@ -153,8 +148,8 @@ img {
 /* ========== SCROLL ANIMATIONS ========== */
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  transform: translateY(20px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
 }
 
 .reveal.is-visible {
@@ -163,30 +158,30 @@ img {
 }
 
 .reveal-delay-1 {
-  transition-delay: 0.1s;
+  transition-delay: 0.05s;
 }
 
 .reveal-delay-2 {
-  transition-delay: 0.2s;
+  transition-delay: 0.1s;
 }
 
 .reveal-delay-3 {
-  transition-delay: 0.3s;
+  transition-delay: 0.15s;
 }
 
 .reveal-delay-4 {
-  transition-delay: 0.4s;
+  transition-delay: 0.15s;
 }
 
 .reveal-delay-5 {
-  transition-delay: 0.5s;
+  transition-delay: 0.15s;
 }
 
 /* Slide-in from left */
 .reveal-left {
   opacity: 0;
-  transform: translateX(-60px);
-  transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+  transform: translateX(-30px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
 }
 
 .reveal-left.is-visible {
@@ -197,8 +192,8 @@ img {
 /* Slide-in from right */
 .reveal-right {
   opacity: 0;
-  transform: translateX(60px);
-  transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+  transform: translateX(30px);
+  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
 }
 
 .reveal-right.is-visible {
@@ -209,8 +204,8 @@ img {
 /* Scale reveal */
 .reveal-scale {
   opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 1.1s var(--ease-out), transform 1.1s var(--ease-out);
+  transform: scale(0.96);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
 
 .reveal-scale.is-visible {
@@ -303,7 +298,7 @@ img {
   align-items: center;
   justify-content: center;
   clip-path: circle(0% at calc(100% - 78px) 50px);
-  transition: clip-path 0.7s var(--ease-in-out);
+  transition: clip-path 0.45s var(--ease-in-out);
 }
 
 .nav-overlay.is-open {
@@ -340,27 +335,27 @@ img {
 }
 
 .nav-overlay li:nth-child(1) a {
-  transition-delay: 0.15s;
+  transition-delay: 0.05s;
 }
 
 .nav-overlay li:nth-child(2) a {
-  transition-delay: 0.2s;
+  transition-delay: 0.08s;
 }
 
 .nav-overlay li:nth-child(3) a {
-  transition-delay: 0.25s;
+  transition-delay: 0.11s;
 }
 
 .nav-overlay li:nth-child(4) a {
-  transition-delay: 0.3s;
+  transition-delay: 0.14s;
 }
 
 .nav-overlay li:nth-child(5) a {
-  transition-delay: 0.35s;
+  transition-delay: 0.17s;
 }
 
 .nav-overlay li:nth-child(6) a {
-  transition-delay: 0.4s;
+  transition-delay: 0.2s;
 }
 
 .nav-overlay a:hover {
@@ -443,10 +438,7 @@ img {
 .hero-placeholder {
   width: 100%;
   height: 100%;
-  background:
-    radial-gradient(ellipse at 30% 50%, rgba(80, 78, 75, 0.5) 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 30%, rgba(90, 88, 85, 0.3) 0%, transparent 50%),
-    linear-gradient(175deg, #525150 0%, #2e2d2c 40%, #1f1e1e 100%);
+  background: linear-gradient(175deg, #525150 0%, #2e2d2c 40%, #1f1e1e 100%);
   position: relative;
 }
 
@@ -685,7 +677,7 @@ img {
   width: 100%;
   height: auto;
   filter: grayscale(20%);
-  transition: filter 0.8s var(--ease-out);
+  transition: filter 0.35s var(--ease-out);
 }
 
 .about-equipment-section:hover>img {
@@ -944,7 +936,7 @@ img {
   width: 100%;
   height: auto;
   filter: grayscale(20%);
-  transition: filter 0.6s;
+  transition: filter 0.3s;
 }
 
 .about-equipment:hover img {
@@ -1130,7 +1122,7 @@ img {
 .timeline-nav-year.is-active::before {
   background: var(--accent);
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--gray-01), 0 0 0 6px rgba(255, 115, 30, 0.25);
+  box-shadow: 0 0 0 4px var(--gray-01);
 }
 
 .timeline-nav-year.is-active span {
@@ -1175,7 +1167,7 @@ img {
   background: var(--accent);
   border-radius: 50%;
   transform: translateY(-50%);
-  box-shadow: 0 0 0 4px var(--gray-01), 0 0 0 5px rgba(255, 115, 30, 0.3);
+  box-shadow: 0 0 0 4px var(--gray-01);
 }
 
 .timeline-era-body {
@@ -1217,7 +1209,7 @@ img {
   height: auto;
   object-fit: cover;
   filter: grayscale(30%) contrast(1.05);
-  transition: filter 0.5s;
+  transition: filter 0.3s;
 }
 
 .timeline-era-images img:hover {
@@ -1361,7 +1353,7 @@ img {
   height: auto;
   object-fit: cover;
   filter: grayscale(30%) contrast(1.05);
-  transition: filter 0.5s;
+  transition: filter 0.3s;
 }
 
 .timeline-images img:hover {
@@ -1841,7 +1833,7 @@ img {
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);
-  transition: filter 0.5s var(--ease-out);
+  transition: filter 0.3s var(--ease-out);
 }
 
 .proj-card:hover .proj-card-img {
@@ -2224,9 +2216,7 @@ img {
   height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50%;
-  background: rgba(46, 46, 47, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(46, 46, 47, 0.85);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2245,7 +2235,7 @@ img {
 
 .scroll-top:hover {
   border-color: var(--accent);
-  background: rgba(46, 46, 47, 0.85);
+  background: rgba(46, 46, 47, 0.95);
 }
 
 .scroll-top svg {
@@ -2271,7 +2261,7 @@ img {
 .footer-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, #8a8a8a 0%, #5a5959 30%, var(--gray-02) 100%);
+  background: linear-gradient(to top, #6a6a6a 0%, #4f4f4f 30%, var(--gray-02) 100%);
   z-index: 0;
 }
 
@@ -2473,7 +2463,7 @@ img {
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);
-  transition: filter 1.2s var(--ease-out);
+  transition: filter 0.3s var(--ease-out);
 }
 
 .pdet-hero-img.has-image {
@@ -2509,7 +2499,7 @@ img {
   margin-bottom: 24px;
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.6s var(--ease-out) 0.1s, transform 0.6s var(--ease-out) 0.1s;
+  transition: opacity 0.4s var(--ease-out) 0.05s, transform 0.4s var(--ease-out) 0.05s;
 }
 
 .pdet.is-loaded .pdet-tag {
@@ -2527,8 +2517,8 @@ img {
   color: var(--white);
   margin-bottom: 32px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.7s var(--ease-out) 0.15s, transform 0.7s var(--ease-out) 0.15s;
+  transform: translateY(12px);
+  transition: opacity 0.5s var(--ease-out) 0.08s, transform 0.5s var(--ease-out) 0.08s;
 }
 
 .pdet.is-loaded .pdet-title {
@@ -2544,7 +2534,7 @@ img {
   margin-bottom: 32px;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.7s var(--ease-out) 0.25s, transform 0.7s var(--ease-out) 0.25s;
+  transition: opacity 0.5s var(--ease-out) 0.1s, transform 0.5s var(--ease-out) 0.1s;
 }
 
 .pdet.is-loaded .pdet-meta {
@@ -2589,7 +2579,7 @@ img {
   background: rgba(255, 255, 255, 0.08);
   margin-bottom: 36px;
   opacity: 0;
-  transition: opacity 0.7s var(--ease-out) 0.3s;
+  transition: opacity 0.5s var(--ease-out) 0.12s;
 }
 
 .pdet.is-loaded .pdet-rule {
@@ -2607,7 +2597,7 @@ img {
   padding-bottom: 60px;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.8s var(--ease-out) 0.35s, transform 0.8s var(--ease-out) 0.35s;
+  transition: opacity 0.5s var(--ease-out) 0.14s, transform 0.5s var(--ease-out) 0.14s;
 }
 
 .pdet.is-loaded .pdet-desc {
@@ -2622,7 +2612,7 @@ img {
   padding-bottom: 20px;
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.8s var(--ease-out) 0.4s, transform 0.8s var(--ease-out) 0.4s;
+  transition: opacity 0.5s var(--ease-out) 0.16s, transform 0.5s var(--ease-out) 0.16s;
 }
 
 .pdet.is-loaded .pdet-info-board {
@@ -2661,7 +2651,7 @@ img {
 .pdet-related {
   padding: 60px var(--pad-x) 40px;
   opacity: 0;
-  transition: opacity 0.8s var(--ease-out) 0.45s;
+  transition: opacity 0.5s var(--ease-out) 0.18s;
 }
 
 .pdet.is-loaded .pdet-related {
@@ -2705,7 +2695,7 @@ img {
   background-size: cover;
   background-position: center;
   filter: grayscale(100%);
-  transition: filter 0.5s var(--ease-out);
+  transition: filter 0.3s var(--ease-out);
 }
 
 .pdet-related-card:hover .pdet-related-card-img {
@@ -2747,7 +2737,7 @@ img {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   margin: 0 var(--pad-x);
   opacity: 0;
-  transition: opacity 0.7s var(--ease-out) 0.4s;
+  transition: opacity 0.5s var(--ease-out) 0.2s;
 }
 
 .pdet.is-loaded .pdet-nav {

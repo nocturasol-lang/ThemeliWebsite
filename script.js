@@ -70,15 +70,19 @@ if (hamburger && navOverlay) {
 // ========== PAGE HEADER SCROLL FADE ==========
 const pageHeader = document.querySelector('.page-header');
 if (pageHeader) {
-  let lastScroll = 0;
+  let phTicking = false;
   window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (y > 80) {
-      pageHeader.classList.add('is-hidden');
-    } else {
-      pageHeader.classList.remove('is-hidden');
+    if (!phTicking) {
+      requestAnimationFrame(() => {
+        if (window.scrollY > 80) {
+          pageHeader.classList.add('is-hidden');
+        } else {
+          pageHeader.classList.remove('is-hidden');
+        }
+        phTicking = false;
+      });
+      phTicking = true;
     }
-    lastScroll = y;
   }, { passive: true });
 }
 
@@ -139,12 +143,14 @@ document.querySelectorAll('.timeline-opener').forEach(el => {
         twObserver.unobserve(el);
         el.classList.add('typing');
         let i = 0;
-        const speed = 22; // ms per character
+        const speed = 14; // ms per batch
+        const batchSize = 2; // reveal 2 chars per tick
         const tick = () => {
           if (i < chars.length) {
-            chars[i].classList.add('tw-visible');
-            i++;
-            setTimeout(tick, speed);
+            for (let b = 0; b < batchSize && i < chars.length; b++, i++) {
+              chars[i].classList.add('tw-visible');
+            }
+            requestAnimationFrame(() => setTimeout(tick, speed));
           }
         };
         tick();
