@@ -1098,9 +1098,6 @@ img {
   letter-spacing: -0.02em;
   line-height: 1.15;
   white-space: nowrap;
-  text-align: center;
-  width: calc(100vw - 2 * var(--pad-x));
-  margin-left: calc(-1 * (100vw - 2 * var(--pad-x) - 100%) / 2);
 }
 
 
