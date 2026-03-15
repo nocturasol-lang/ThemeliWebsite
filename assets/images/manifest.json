@@ -1,0 +1,1262 @@
+{
+  "equipment": {
+    "sizes": [
+      {
+        "width": 1600,
+        "height": 1131,
+        "format": "webp",
+        "file": "equipment-1600.webp"
+      },
+      {
+        "width": 1600,
+        "height": 1131,
+        "format": "jpg",
+        "file": "equipment-1600.jpg"
+      }
+    ],
+    "originalWidth": 3508,
+    "originalHeight": 2480
+  },
+  "greece-map": {
+    "sizes": [
+      {
+        "width": 900,
+        "height": 900,
+        "format": "webp",
+        "file": "greece-map-900.webp"
+      },
+      {
+        "width": 900,
+        "height": 900,
+        "format": "jpg",
+        "file": "greece-map-900.jpg"
+      }
+    ],
+    "originalWidth": 2000,
+    "originalHeight": 2000
+  },
+  "landing-poster": {
+    "sizes": [
+      {
+        "width": 1280,
+        "height": 614,
+        "format": "webp",
+        "file": "landing-poster-1920.webp"
+      },
+      {
+        "width": 1280,
+        "height": 614,
+        "format": "jpg",
+        "file": "landing-poster-1920.jpg"
+      },
+      {
+        "width": 960,
+        "height": 461,
+        "format": "webp",
+        "file": "landing-poster-960.webp"
+      }
+    ],
+    "originalWidth": 1280,
+    "originalHeight": 614
+  },
+  "tetrapolis/Eris_Retreat-118": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 534,
+        "format": "webp",
+        "file": "tetrapolis/Eris_Retreat-118-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 534,
+        "format": "jpg",
+        "file": "tetrapolis/Eris_Retreat-118-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 267,
+        "format": "webp",
+        "file": "tetrapolis/Eris_Retreat-118-400.webp"
+      }
+    ],
+    "originalWidth": 3300,
+    "originalHeight": 2203
+  },
+  "tetrapolis/Eris_Retreat_in_Kea-47": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 1198,
+        "format": "webp",
+        "file": "tetrapolis/Eris_Retreat_in_Kea-47-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 1198,
+        "format": "jpg",
+        "file": "tetrapolis/Eris_Retreat_in_Kea-47-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 600,
+        "format": "webp",
+        "file": "tetrapolis/Eris_Retreat_in_Kea-47-400.webp"
+      }
+    ],
+    "originalWidth": 2203,
+    "originalHeight": 3300
+  },
+  "tetrapolis/Eris_Retreat_in_Kea-72": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 534,
+        "format": "webp",
+        "file": "tetrapolis/Eris_Retreat_in_Kea-72-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 534,
+        "format": "jpg",
+        "file": "tetrapolis/Eris_Retreat_in_Kea-72-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 267,
+        "format": "webp",
+        "file": "tetrapolis/Eris_Retreat_in_Kea-72-400.webp"
+      }
+    ],
+    "originalWidth": 3300,
+    "originalHeight": 2203
+  },
+  "tetrapolis/IMG_4909": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 801,
+        "format": "webp",
+        "file": "tetrapolis/IMG_4909-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 801,
+        "format": "jpg",
+        "file": "tetrapolis/IMG_4909-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 401,
+        "format": "webp",
+        "file": "tetrapolis/IMG_4909-400.webp"
+      }
+    ],
+    "originalWidth": 2323,
+    "originalHeight": 2325
+  },
+  "tetrapolis/Screenshot_2021-10-11_at_12.48.32_PM": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 375,
+        "format": "webp",
+        "file": "tetrapolis/Screenshot_2021-10-11_at_12.48.32_PM-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 375,
+        "format": "jpg",
+        "file": "tetrapolis/Screenshot_2021-10-11_at_12.48.32_PM-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 188,
+        "format": "webp",
+        "file": "tetrapolis/Screenshot_2021-10-11_at_12.48.32_PM-400.webp"
+      }
+    ],
+    "originalWidth": 2446,
+    "originalHeight": 1148
+  },
+  "themos/aer01": {
+    "sizes": [
+      {
+        "width": 640,
+        "height": 480,
+        "format": "webp",
+        "file": "themos/aer01-800.webp"
+      },
+      {
+        "width": 640,
+        "height": 480,
+        "format": "jpg",
+        "file": "themos/aer01-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "themos/aer01-400.webp"
+      }
+    ],
+    "originalWidth": 640,
+    "originalHeight": 480
+  },
+  "themos/img_0478": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "themos/img_0478-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "themos/img_0478-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "themos/img_0478-400.webp"
+      }
+    ],
+    "originalWidth": 800,
+    "originalHeight": 600
+  },
+  "themos/IMG_2030.JPG": {
+    "sizes": [
+      {
+        "width": 640,
+        "height": 480,
+        "format": "webp",
+        "file": "themos/IMG_2030.JPG-800.webp"
+      },
+      {
+        "width": 640,
+        "height": 480,
+        "format": "jpg",
+        "file": "themos/IMG_2030.JPG-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "themos/IMG_2030.JPG-400.webp"
+      }
+    ],
+    "originalWidth": 640,
+    "originalHeight": 480
+  },
+  "themos/phins7": {
+    "sizes": [
+      {
+        "width": 640,
+        "height": 480,
+        "format": "webp",
+        "file": "themos/phins7-800.webp"
+      },
+      {
+        "width": 640,
+        "height": 480,
+        "format": "jpg",
+        "file": "themos/phins7-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "themos/phins7-400.webp"
+      }
+    ],
+    "originalWidth": 640,
+    "originalHeight": 480
+  },
+  "thermis-perganti/20181106_135323": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 450,
+        "format": "webp",
+        "file": "thermis-perganti/20181106_135323-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 450,
+        "format": "jpg",
+        "file": "thermis-perganti/20181106_135323-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 225,
+        "format": "webp",
+        "file": "thermis-perganti/20181106_135323-400.webp"
+      }
+    ],
+    "originalWidth": 3264,
+    "originalHeight": 1836
+  },
+  "thermis-perganti/20181109_125446": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 450,
+        "format": "webp",
+        "file": "thermis-perganti/20181109_125446-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 450,
+        "format": "jpg",
+        "file": "thermis-perganti/20181109_125446-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 225,
+        "format": "webp",
+        "file": "thermis-perganti/20181109_125446-400.webp"
+      }
+    ],
+    "originalWidth": 3264,
+    "originalHeight": 1836
+  },
+  "thermis-perganti/20190121_120435": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 450,
+        "format": "webp",
+        "file": "thermis-perganti/20190121_120435-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 450,
+        "format": "jpg",
+        "file": "thermis-perganti/20190121_120435-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 225,
+        "format": "webp",
+        "file": "thermis-perganti/20190121_120435-400.webp"
+      }
+    ],
+    "originalWidth": 3264,
+    "originalHeight": 1836
+  },
+  "thermis-perganti/20200625_151739": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 450,
+        "format": "webp",
+        "file": "thermis-perganti/20200625_151739-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 450,
+        "format": "jpg",
+        "file": "thermis-perganti/20200625_151739-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 225,
+        "format": "webp",
+        "file": "thermis-perganti/20200625_151739-400.webp"
+      }
+    ],
+    "originalWidth": 4032,
+    "originalHeight": 2268
+  },
+  "thermis-perganti/DSC_0002": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 533,
+        "format": "webp",
+        "file": "thermis-perganti/DSC_0002-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 533,
+        "format": "jpg",
+        "file": "thermis-perganti/DSC_0002-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 267,
+        "format": "webp",
+        "file": "thermis-perganti/DSC_0002-400.webp"
+      }
+    ],
+    "originalWidth": 1620,
+    "originalHeight": 1080
+  },
+  "thermis-perganti/DSC_0011": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 533,
+        "format": "webp",
+        "file": "thermis-perganti/DSC_0011-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 533,
+        "format": "jpg",
+        "file": "thermis-perganti/DSC_0011-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 267,
+        "format": "webp",
+        "file": "thermis-perganti/DSC_0011-400.webp"
+      }
+    ],
+    "originalWidth": 1620,
+    "originalHeight": 1080
+  },
+  "thermis-perganti/DSC_0020": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 533,
+        "format": "webp",
+        "file": "thermis-perganti/DSC_0020-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 533,
+        "format": "jpg",
+        "file": "thermis-perganti/DSC_0020-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 267,
+        "format": "webp",
+        "file": "thermis-perganti/DSC_0020-400.webp"
+      }
+    ],
+    "originalWidth": 1620,
+    "originalHeight": 1080
+  },
+  "thermis-perganti/IMG_0488": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_0488-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-perganti/IMG_0488-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_0488-400.webp"
+      }
+    ],
+    "originalWidth": 4032,
+    "originalHeight": 3024
+  },
+  "thermis-perganti/IMG_20180821_192307936": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20180821_192307936-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-perganti/IMG_20180821_192307936-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20180821_192307936-400.webp"
+      }
+    ],
+    "originalWidth": 4160,
+    "originalHeight": 3120
+  },
+  "thermis-perganti/IMG_20180901_141626488": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20180901_141626488-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-perganti/IMG_20180901_141626488-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20180901_141626488-400.webp"
+      }
+    ],
+    "originalWidth": 4160,
+    "originalHeight": 3120
+  },
+  "thermis-perganti/IMG_20181116_083825": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20181116_083825-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-perganti/IMG_20181116_083825-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20181116_083825-400.webp"
+      }
+    ],
+    "originalWidth": 4032,
+    "originalHeight": 3024
+  },
+  "thermis-perganti/IMG_20181211_084738": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20181211_084738-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-perganti/IMG_20181211_084738-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_20181211_084738-400.webp"
+      }
+    ],
+    "originalWidth": 4032,
+    "originalHeight": 3024
+  },
+  "thermis-perganti/IMG_3843_mod": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 196,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_3843_mod-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 196,
+        "format": "jpg",
+        "file": "thermis-perganti/IMG_3843_mod-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 98,
+        "format": "webp",
+        "file": "thermis-perganti/IMG_3843_mod-400.webp"
+      }
+    ],
+    "originalWidth": 2782,
+    "originalHeight": 682
+  },
+  "thermis-xirovouni/100_6623": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/100_6623-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/100_6623-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/100_6623-400.webp"
+      }
+    ],
+    "originalWidth": 2048,
+    "originalHeight": 1536
+  },
+  "thermis-xirovouni/2012-07-26_20-47-42_HDR": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 444,
+        "format": "webp",
+        "file": "thermis-xirovouni/2012-07-26_20-47-42_HDR-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 444,
+        "format": "jpg",
+        "file": "thermis-xirovouni/2012-07-26_20-47-42_HDR-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 221,
+        "format": "webp",
+        "file": "thermis-xirovouni/2012-07-26_20-47-42_HDR-400.webp"
+      }
+    ],
+    "originalWidth": 2500,
+    "originalHeight": 1386
+  },
+  "thermis-xirovouni/DSC01841": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/DSC01841-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/DSC01841-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/DSC01841-400.webp"
+      }
+    ],
+    "originalWidth": 3648,
+    "originalHeight": 2736
+  },
+  "thermis-xirovouni/DSC01847": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/DSC01847-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/DSC01847-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/DSC01847-400.webp"
+      }
+    ],
+    "originalWidth": 3648,
+    "originalHeight": 2736
+  },
+  "thermis-xirovouni/IMG_1719": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_1719-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_1719-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_1719-400.webp"
+      }
+    ],
+    "originalWidth": 1200,
+    "originalHeight": 900
+  },
+  "thermis-xirovouni/IMG_2764": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_2764-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_2764-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_2764-400.webp"
+      }
+    ],
+    "originalWidth": 1200,
+    "originalHeight": 900
+  },
+  "thermis-xirovouni/IMG_3759": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3759-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_3759-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3759-400.webp"
+      }
+    ],
+    "originalWidth": 3648,
+    "originalHeight": 2736
+  },
+  "thermis-xirovouni/IMG_3831 1": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3831 1-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_3831 1-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3831 1-400.webp"
+      }
+    ],
+    "originalWidth": 3648,
+    "originalHeight": 2736
+  },
+  "thermis-xirovouni/IMG_3831": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3831-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_3831-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3831-400.webp"
+      }
+    ],
+    "originalWidth": 3648,
+    "originalHeight": 2736
+  },
+  "thermis-xirovouni/IMG_3873": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3873-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_3873-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3873-400.webp"
+      }
+    ],
+    "originalWidth": 1600,
+    "originalHeight": 1200
+  },
+  "thermis-xirovouni/IMG_3875": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3875-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/IMG_3875-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/IMG_3875-400.webp"
+      }
+    ],
+    "originalWidth": 1600,
+    "originalHeight": 1200
+  },
+  "thermis-xirovouni/P2117238": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 1067,
+        "format": "webp",
+        "file": "thermis-xirovouni/P2117238-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 1067,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P2117238-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 533,
+        "format": "webp",
+        "file": "thermis-xirovouni/P2117238-400.webp"
+      }
+    ],
+    "originalWidth": 2112,
+    "originalHeight": 2816
+  },
+  "thermis-xirovouni/P2157262": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P2157262-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P2157262-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P2157262-400.webp"
+      }
+    ],
+    "originalWidth": 1690,
+    "originalHeight": 1267
+  },
+  "thermis-xirovouni/P3117320": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P3117320-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P3117320-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P3117320-400.webp"
+      }
+    ],
+    "originalWidth": 2816,
+    "originalHeight": 2112
+  },
+  "thermis-xirovouni/P3167328": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 1067,
+        "format": "webp",
+        "file": "thermis-xirovouni/P3167328-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 1067,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P3167328-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 534,
+        "format": "webp",
+        "file": "thermis-xirovouni/P3167328-400.webp"
+      }
+    ],
+    "originalWidth": 1267,
+    "originalHeight": 1690
+  },
+  "thermis-xirovouni/P6136343": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 1067,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6136343-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 1067,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P6136343-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 534,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6136343-400.webp"
+      }
+    ],
+    "originalWidth": 1267,
+    "originalHeight": 1690
+  },
+  "thermis-xirovouni/P6146373": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6146373-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P6146373-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6146373-400.webp"
+      }
+    ],
+    "originalWidth": 1690,
+    "originalHeight": 1267
+  },
+  "thermis-xirovouni/P6146375": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6146375-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P6146375-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6146375-400.webp"
+      }
+    ],
+    "originalWidth": 1690,
+    "originalHeight": 1267
+  },
+  "thermis-xirovouni/P6187637": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6187637-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P6187637-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P6187637-400.webp"
+      }
+    ],
+    "originalWidth": 1600,
+    "originalHeight": 1200
+  },
+  "thermis-xirovouni/P7046577": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P7046577-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P7046577-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P7046577-400.webp"
+      }
+    ],
+    "originalWidth": 1690,
+    "originalHeight": 1267
+  },
+  "thermis-xirovouni/P8136746": {
+    "sizes": [
+      {
+        "width": 800,
+        "height": 600,
+        "format": "webp",
+        "file": "thermis-xirovouni/P8136746-800.webp"
+      },
+      {
+        "width": 800,
+        "height": 600,
+        "format": "jpg",
+        "file": "thermis-xirovouni/P8136746-800.jpg"
+      },
+      {
+        "width": 400,
+        "height": 300,
+        "format": "webp",
+        "file": "thermis-xirovouni/P8136746-400.webp"
+      }
+    ],
+    "originalWidth": 1690,
+    "originalHeight": 1267
+  },
+  "timeline/timeline-04": {
+    "sizes": [
+      {
+        "width": 854,
+        "height": 1140,
+        "format": "webp",
+        "file": "timeline/timeline-04-1200.webp"
+      },
+      {
+        "width": 854,
+        "height": 1140,
+        "format": "jpg",
+        "file": "timeline/timeline-04-1200.jpg"
+      },
+      {
+        "width": 600,
+        "height": 801,
+        "format": "webp",
+        "file": "timeline/timeline-04-600.webp"
+      }
+    ],
+    "originalWidth": 854,
+    "originalHeight": 1140
+  },
+  "timeline/timeline-05": {
+    "sizes": [
+      {
+        "width": 964,
+        "height": 1042,
+        "format": "webp",
+        "file": "timeline/timeline-05-1200.webp"
+      },
+      {
+        "width": 964,
+        "height": 1042,
+        "format": "jpg",
+        "file": "timeline/timeline-05-1200.jpg"
+      },
+      {
+        "width": 600,
+        "height": 649,
+        "format": "webp",
+        "file": "timeline/timeline-05-600.webp"
+      }
+    ],
+    "originalWidth": 964,
+    "originalHeight": 1042
+  },
+  "timeline/timeline-07-factory": {
+    "sizes": [
+      {
+        "width": 1043,
+        "height": 716,
+        "format": "webp",
+        "file": "timeline/timeline-07-factory-1200.webp"
+      },
+      {
+        "width": 1043,
+        "height": 716,
+        "format": "jpg",
+        "file": "timeline/timeline-07-factory-1200.jpg"
+      },
+      {
+        "width": 600,
+        "height": 412,
+        "format": "webp",
+        "file": "timeline/timeline-07-factory-600.webp"
+      }
+    ],
+    "originalWidth": 1043,
+    "originalHeight": 716
+  },
+  "timeline/timeline-07-hospital": {
+    "sizes": [
+      {
+        "width": 646,
+        "height": 856,
+        "format": "webp",
+        "file": "timeline/timeline-07-hospital-1200.webp"
+      },
+      {
+        "width": 646,
+        "height": 856,
+        "format": "jpg",
+        "file": "timeline/timeline-07-hospital-1200.jpg"
+      },
+      {
+        "width": 600,
+        "height": 795,
+        "format": "webp",
+        "file": "timeline/timeline-07-hospital-600.webp"
+      }
+    ],
+    "originalWidth": 646,
+    "originalHeight": 856
+  },
+  "timeline/timeline-07-inauguration": {
+    "sizes": [
+      {
+        "width": 538,
+        "height": 353,
+        "format": "webp",
+        "file": "timeline/timeline-07-inauguration-1200.webp"
+      },
+      {
+        "width": 538,
+        "height": 353,
+        "format": "jpg",
+        "file": "timeline/timeline-07-inauguration-1200.jpg"
+      },
+      {
+        "width": 538,
+        "height": 353,
+        "format": "webp",
+        "file": "timeline/timeline-07-inauguration-600.webp"
+      }
+    ],
+    "originalWidth": 538,
+    "originalHeight": 353
+  },
+  "timeline/timeline-09-highway": {
+    "sizes": [
+      {
+        "width": 826,
+        "height": 995,
+        "format": "webp",
+        "file": "timeline/timeline-09-highway-1200.webp"
+      },
+      {
+        "width": 826,
+        "height": 995,
+        "format": "jpg",
+        "file": "timeline/timeline-09-highway-1200.jpg"
+      },
+      {
+        "width": 600,
+        "height": 723,
+        "format": "webp",
+        "file": "timeline/timeline-09-highway-600.webp"
+      }
+    ],
+    "originalWidth": 826,
+    "originalHeight": 995
+  },
+  "wind-park": {
+    "sizes": [
+      {
+        "width": 2000,
+        "height": 1333,
+        "format": "webp",
+        "file": "wind-park-2000.webp"
+      },
+      {
+        "width": 2000,
+        "height": 1333,
+        "format": "jpg",
+        "file": "wind-park-2000.jpg"
+      },
+      {
+        "width": 1000,
+        "height": 667,
+        "format": "webp",
+        "file": "wind-park-1000.webp"
+      }
+    ],
+    "originalWidth": 4096,
+    "originalHeight": 2731
+  }
+}
