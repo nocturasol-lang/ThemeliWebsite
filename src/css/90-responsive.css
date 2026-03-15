@@ -292,7 +292,7 @@
   }
 
   .about-page {
-    padding: 40px var(--pad-x) 80px;
+    padding: 100px var(--pad-x) 80px;
   }
 
   .about-lead {
@@ -309,7 +309,7 @@
   }
 
   .timeline-page {
-    padding: 30px var(--pad-x) 60px;
+    padding: 100px var(--pad-x) 60px;
   }
 
   .timeline-era {
@@ -412,6 +412,10 @@
     width: 100%;
   }
 
+  .subsidiaries-page {
+    padding: 140px var(--pad-x) 60px;
+  }
+
   .subs-grid {
     flex-direction: column;
     align-items: center;
@@ -507,7 +511,7 @@
   }
 
   .contact-page {
-    padding: 40px var(--pad-x) 60px;
+    padding: 100px var(--pad-x) 60px;
     align-items: flex-start;
   }
 
@@ -677,6 +681,22 @@
 
   .hero-est {
     right: 16px;
+  }
+
+  .timeline-page {
+    padding: 84px var(--pad-x) 60px;
+  }
+
+  .about-page {
+    padding: 84px var(--pad-x) 60px;
+  }
+
+  .contact-page {
+    padding: 84px var(--pad-x) 60px;
+  }
+
+  .subsidiaries-page {
+    padding: 100px var(--pad-x) 40px;
   }
 
   /* About section (home) */
