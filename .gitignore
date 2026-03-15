@@ -8,3 +8,5 @@ desktop.ini
 .idea/
 .claude/
 dist/
+node_modules/
+public/assets/src-images/

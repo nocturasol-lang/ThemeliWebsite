@@ -1,0 +1,28 @@
+/* THEMELI — Font Faces */
+
+@font-face {
+  font-family: 'CF Mod Grotesk';
+  src: url('assets/fonts/CFModGrotesk-RegularExpanded.woff2') format('woff2'),
+       url('assets/fonts/CFModGrotesk-RegularExpanded.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CF Mod Grotesk';
+  src: url('assets/fonts/CFModGrotesk-MedExtExp.woff2') format('woff2'),
+       url('assets/fonts/CFModGrotesk-MedExtExp.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CF Mod Grotesk';
+  src: url('assets/fonts/CFModGrotesk-BoldExtExpanded.woff2') format('woff2'),
+       url('assets/fonts/CFModGrotesk-BoldExtExpanded.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

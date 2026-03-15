@@ -1,0 +1,119 @@
+/* THEMELI — Contact Page */
+
+/* ========== CONTACT PAGE ========== */
+.contact-title {
+  text-transform: lowercase !important;
+}
+
+.contact-page {
+  padding: var(--menu-height) calc(var(--pad-x) + 20px) 80px;
+  min-height: calc(100vh - var(--menu-height));
+  display: flex;
+  align-items: center;
+}
+
+.contact-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2.4fr;
+  gap: 60px;
+  align-items: start;
+  width: 100%;
+}
+
+.contact-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-col--info .info-group {
+  margin-bottom: 48px;
+}
+
+.contact-col--info .info-group:last-child {
+  margin-bottom: 0;
+}
+
+.contact-col--info .info-group h3,
+.contact-socials h3 {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.contact-col--info .info-group p {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.contact-socials {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-socials a {
+  display: inline-block;
+  font-size: 17px;
+  font-weight: 400;
+  margin-bottom: 10px;
+  position: relative;
+  padding-bottom: 2px;
+  transition: color 0.3s;
+  width: fit-content;
+}
+
+.contact-socials a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--white);
+  transition: width 0.4s var(--ease-out);
+}
+
+.contact-socials a:hover {
+  color: var(--accent);
+}
+
+.contact-socials a:hover::after {
+  width: 100%;
+  background: var(--accent);
+}
+
+.contact-col--map {
+  display: flex;
+  align-items: stretch;
+  align-self: stretch;
+}
+
+.contact-map {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  background: var(--gray-05);
+  overflow: hidden;
+  position: relative;
+}
+
+.contact-map::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.contact-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: grayscale(100%) invert(92%) contrast(90%);
+}

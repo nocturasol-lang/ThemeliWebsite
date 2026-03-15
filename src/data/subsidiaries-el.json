@@ -1,0 +1,124 @@
+{
+  "themos": {
+    "name": "themos",
+    "subtitle": "προκατασκευές σκυροδέματος",
+    "logo": "assets/themos.svg",
+    "featured": [
+      {
+        "name": "Εγκαταστάσεις Παραγωγής",
+        "img": "assets/images/themos/aer01-800.webp"
+      },
+      {
+        "name": "Σιδηροδρομικοί Στρωτήρες",
+        "img": "assets/images/themos/IMG_2030.JPG-800.webp"
+      },
+      {
+        "name": "Στύλοι Σκυροδέματος",
+        "img": "assets/images/themos/img_0478-800.webp"
+      },
+      {
+        "name": "Ποιοτικός Έλεγχος",
+        "img": "assets/images/themos/phins7-800.webp"
+      }
+    ],
+    "desc": "<p>Η <strong>ΘΕ.ΜΟ.Σ. Α.Ε.</strong> ιδρύθηκε το 2005 ως θυγατρική της <strong>ΘΕΜΕΛΗ Α.Ε.</strong> Η αρχική της δραστηριότητα επικεντρώθηκε στην κατασκευή και λειτουργία μονάδας παραγωγής σιδηροδρομικών στρωτήρων με στόχο την κάλυψη των αναγκών του ελληνικού σιδηροδρομικού δικτύου. Η μονάδα παραγωγής βρίσκεται στρατηγικά σε απόσταση περίπου 150 χιλιομέτρων από την Αθήνα, κοντά στην πόλη του Άργους.</p><p>Μέχρι τον Απρίλιο του 2019, η εταιρεία είχε παράγει σημαντικές ποσότητες σιδηροδρομικών στρωτήρων:</p><ul><li><strong>120.000 στρωτήρες TBS 1000:</strong> Σχεδιασμένοι για μετρική γραμμή (1.000 mm), έχουν ήδη τοποθετηθεί στο σιδηροδρομικό δίκτυο της Πελοποννήσου.</li><li><strong>200.000 στρωτήρες B-70:</strong> Προορισμένοι για κανονική γραμμή (1.435 mm), έχουν τοποθετηθεί στο ευρύτερο ελληνικό σιδηροδρομικό δίκτυο.</li></ul><p>Η παραγωγή πραγματοποιείται με σύγχρονο <strong>σύστημα carousel με τη μέθοδο προέντασης</strong>. Η τρέχουσα παραγωγική δυναμικότητα φτάνει τους <strong>3.000 στρωτήρες την εβδομάδα</strong>, με δυνατότητα επέκτασης στους <strong>5.000 στρωτήρες την εβδομάδα</strong> με την προσθήκη θαλάμων ωρίμανσης και καλουπιών.</p><h3>Επέκταση Δραστηριοτήτων και Νέες Γραμμές Προϊόντων</h3><p>Το 2009, η <strong>ΘΕ.ΜΟ.Σ. Α.Ε.</strong> επέκτεινε τις εγκαταστάσεις της με νέα μονάδα παραγωγής <strong>στρωτήρων αλλαγής τροχιάς</strong> στην ίδια τοποθεσία. Αυτή η <strong>μονάδα παραγωγής μακράς γραμμής</strong> έχει ημερήσια δυναμικότητα <strong>160 μέτρων</strong> και τέθηκε σε λειτουργία με την τεχνογνωσία της <strong>Leonhard Moll Betonwerke GmbH &amp; Co. KG</strong>.</p><p>Μέχρι σήμερα, η μονάδα έχει παράγει <strong>16.000 στρωτήρες ασφαλείας B-93</strong> για κανονική γραμμή (1.435 mm), που χρησιμοποιούνται στη <strong>σιδηροδρομική γραμμή Κιάτο–Αίγιο</strong>.</p><p>Το 2017, η εταιρεία υλοποίησε καινοτόμο τροποποίηση της μονάδας, επιτρέποντας την <strong>παραγωγή φυγοκεντρικών στύλων σκυροδέματος</strong>. Η γραμμή παραγωγής τροφοδοτεί σήμερα τον <strong>ΔΕΔΔΗΕ</strong>. Περίπου <strong>5.000 στύλοι</strong> έχουν ήδη παραδοθεί.</p><h3>Διασφάλιση Ποιότητας και Ιχνηλασιμότητα</h3><p>Η εταιρεία εφαρμόζει αυστηρές διαδικασίες ποιοτικού ελέγχου σε κάθε στάδιο παραγωγής. Το <strong>πιστοποιημένο σύστημα διαχείρισης ποιότητας ISO 9000</strong> καθορίζει επακριβώς την εκτέλεση κάθε δραστηριότητας.</p><p>Επιπλέον, λειτουργεί ολοκληρωμένο <strong>σύστημα ιχνηλασιμότητας</strong>, που επιτρέπει τον εντοπισμό των συνθηκών παραγωγής κάθε στρωτήρα ή στύλου ακόμα και πολλά χρόνια μετά την κατασκευή.</p>"
+  },
+  "thermis": {
+    "name": "thermis",
+    "subtitle": "αιολικά πάρκα",
+    "logo": "assets/thermis.svg",
+    "featuredGroups": [
+      {
+        "title": "Ξηροβούνι Πλατάνου Α.Ε.",
+        "subtitle": "17 MW — Από το 2013",
+        "items": [
+          {
+            "name": "Αιολικό Πάρκο Ξηροβούνι",
+            "img": "assets/images/thermis-xirovouni/100_6623-800.webp"
+          },
+          {
+            "name": "Ανεμογεννήτριες Κορυφογραμμής",
+            "img": "assets/images/thermis-xirovouni/P2117238-800.webp"
+          }
+        ],
+        "gallery": [
+          "assets/images/thermis-xirovouni/100_6623-800.webp",
+          "assets/images/thermis-xirovouni/2012-07-26_20-47-42_HDR-800.webp",
+          "assets/images/thermis-xirovouni/DSC01841-800.webp",
+          "assets/images/thermis-xirovouni/DSC01847-800.webp",
+          "assets/images/thermis-xirovouni/IMG_1719-800.webp",
+          "assets/images/thermis-xirovouni/IMG_2764-800.webp",
+          "assets/images/thermis-xirovouni/IMG_3759-800.webp",
+          "assets/images/thermis-xirovouni/IMG_3831-800.webp",
+          "assets/images/thermis-xirovouni/IMG_3831 1-800.webp",
+          "assets/images/thermis-xirovouni/IMG_3873-800.webp",
+          "assets/images/thermis-xirovouni/IMG_3875-800.webp",
+          "assets/images/thermis-xirovouni/P2117238-800.webp",
+          "assets/images/thermis-xirovouni/P2157262-800.webp",
+          "assets/images/thermis-xirovouni/P3117320-800.webp",
+          "assets/images/thermis-xirovouni/P3167328-800.webp",
+          "assets/images/thermis-xirovouni/100_6623-800.webp",
+          "assets/images/thermis-xirovouni/P6146373-800.webp",
+          "assets/images/thermis-xirovouni/P6146375-800.webp",
+          "assets/images/thermis-xirovouni/P6187637-800.webp",
+          "assets/images/thermis-xirovouni/P7046577-800.webp",
+          "assets/images/thermis-xirovouni/P8136746-800.webp"
+        ]
+      },
+      {
+        "title": "Περγαντί Ακαρνανικών Α.Ε.",
+        "subtitle": "41,8 MW — Από το 2020",
+        "items": [
+          {
+            "name": "Αιολικό Πάρκο Περγαντί",
+            "img": "assets/images/thermis-perganti/IMG_20181116_083825-800.webp"
+          },
+          {
+            "name": "Ανεμογεννήτριες Βουνού",
+            "img": "assets/images/thermis-perganti/20190121_120435-800.webp"
+          }
+        ],
+        "gallery": [
+          "assets/images/thermis-perganti/20181106_135323-800.webp",
+          "assets/images/thermis-perganti/IMG_20181116_083825-800.webp",
+          "assets/images/thermis-perganti/20190121_120435-800.webp",
+          "assets/images/thermis-perganti/20200625_151739-800.webp",
+          "assets/images/thermis-perganti/DSC_0002-800.webp",
+          "assets/images/thermis-perganti/DSC_0011-800.webp",
+          "assets/images/thermis-perganti/DSC_0020-800.webp",
+          "assets/images/thermis-perganti/IMG_0488-800.webp",
+          "assets/images/thermis-perganti/IMG_20180821_192307936-800.webp",
+          "assets/images/thermis-perganti/IMG_20180901_141626488-800.webp",
+          "assets/images/thermis-perganti/IMG_20181116_083825-800.webp",
+          "assets/images/thermis-perganti/IMG_20181211_084738-800.webp",
+          "assets/images/thermis-perganti/IMG_3843_mod-800.webp"
+        ]
+      }
+    ],
+    "desc": "<p>Ο <strong>Όμιλος ΘΕΜΕΛΗ Α.Ε.</strong>, καθοδηγούμενος από τη μακρόχρονη δέσμευσή του στην καινοτομία και την πρωτοποριακή εφαρμογή σύγχρονων τεχνολογιών, έχει επεκταθεί δυναμικά τις τελευταίες δεκαετίες στον τομέα των <strong>Ανανεώσιμων Πηγών Ενέργειας (ΑΠΕ)</strong> και της <strong>πράσινης ανάπτυξης</strong> μέσω της ίδρυσης της <strong>ΘΕΡΜΙΣ Α.Ε.</strong></p><p>Σήμερα, η εταιρεία έχει ολοκληρώσει επιτυχώς την κατασκευή και πλήρη λειτουργία δύο μεγάλων <strong>αιολικών πάρκων</strong> στο <strong>Ξηροβούνι του Δήμου Ναυπακτίας</strong> και στο <strong>Περγαντί του Δήμου Ακτίου–Βόνιτσας</strong>, και τα δύο στην <strong>Αιτωλοακαρνανία</strong>.</p><p>Τα δύο αιολικά πάρκα λειτουργούν υπό την ομπρέλα δύο εταιρειών ειδικού σκοπού:</p><p style=\"text-align:center\"><strong>Ξηροβούνι Πλατάνου Α.Ε.</strong> και <strong>Περγαντί Ακαρνανικών Α.Ε.</strong>, αντίστοιχα.</p><div class=\"sub-desc-columns\"><div class=\"sub-desc-col\"><h3>ΞΗΡΟΒΟΥΝΙ ΠΛΑΤΑΝΟΥ Α.Ε.</h3><p>Το <strong>Αιολικό Πάρκο Ξηροβούνι</strong> έχει συνολική <strong>εγκατεστημένη ισχύ 17 MW</strong>. Βρίσκεται στη θέση «Ξηροβούνι», εντός της <strong>Δημοτικής Ενότητας Πλατάνου του Δήμου Ναυπακτίας</strong>, στην <strong>Αιτωλοακαρνανία</strong>.</p><p>Το αιολικό πάρκο λειτουργεί από το <strong>2013</strong>, διαχειριζόμενο από την <strong>Ξηροβούνι Πλατάνου Α.Ε.</strong> Οι εγκαταστάσεις του εκτείνονται κατά μήκος της κορυφογραμμής του όρους Ξηροβούνι, περιοχή με <strong>υψηλό αιολικό δυναμικό</strong>.</p></div><div class=\"sub-desc-divider\"></div><div class=\"sub-desc-col\"><h3>ΠΕΡΓΑΝΤΙ ΑΚΑΡΝΑΝΙΚΩΝ Α.Ε.</h3><p>Το <strong>2020</strong>, το <strong>Αιολικό Πάρκο Περγαντί</strong>, που λειτουργεί από την <strong>Περγαντί Ακαρνανικών Α.Ε.</strong>, ξεκίνησε τη λειτουργία του με συνολική <strong>εγκατεστημένη ισχύ 41,8 MW</strong>.</p><p>Το αιολικό πάρκο βρίσκεται στην <strong>περιοχή Περγαντί της Βόνιτσας</strong>, στην <strong>Αιτωλοακαρνανία</strong>, και στοχεύει στην αξιοποίηση του <strong>αιολικού δυναμικού των Ακαρνανικών Ορέων</strong> για την παραγωγή ανανεώσιμης ηλεκτρικής ενέργειας.</p></div></div>"
+  },
+  "tetrapolis": {
+    "name": "tetrapolis",
+    "subtitle": "διαχείριση ακινήτων",
+    "logo": "assets/tetrapolis.svg",
+    "featured": [
+      {
+        "name": "Επισκόπηση Ακινήτων",
+        "img": "assets/images/tetrapolis/Screenshot_2021-10-11_at_12.48.32_PM-800.webp"
+      },
+      {
+        "name": "Κατοικία Κέας",
+        "img": "assets/images/tetrapolis/Eris_Retreat_in_Kea-47-800.webp"
+      },
+      {
+        "name": "Θέα Πισίνας",
+        "img": "assets/images/tetrapolis/Eris_Retreat_in_Kea-72-800.webp"
+      },
+      {
+        "name": "Αεροφωτογραφία",
+        "img": "assets/images/tetrapolis/IMG_4909-800.webp"
+      }
+    ],
+    "desc": "<p>Αυτή η σύγχρονη <strong>Ιδιωτική Κεφαλαιουχική Εταιρεία (ΙΚΕ) ειδικευμένη στη διαχείριση ακινήτων</strong> αποτελεί μία από τις <strong>πιο πρόσφατες πρωτοβουλίες του Ομίλου ΘΕΜΕΛΗ Α.Ε.</strong></p><p>Στόχος της είναι η προσφορά <strong>premium ακινήτων</strong> διευρύνοντας παράλληλα την παρουσία του Ομίλου στον <strong>ταχέως αναπτυσσόμενο τομέα των υψηλών βραχυχρόνιων μισθώσεων</strong>.</p><p>Το <strong>χαρτοφυλάκιο ακινήτων</strong> της εταιρείας περιλαμβάνει προσεκτικά επιλεγμένα ακίνητα, από boutique συγκροτήματα κατοικιών στην Κέα έως κοσμοπολίτικα ρετιρέ στην Αθήνα και τη Βούλα, καθώς και παραδοσιακά αρχοντικά στην Πάρο και το Πήλιο:</p><ul><li><strong>Κέα:</strong> Boutique συγκρότημα κατοικιών με πισίνα.</li><li><strong>Πάρος:</strong> Παραθαλάσσια βίλα με θέα στο Αιγαίο.</li><li><strong>Βούλα:</strong> Αστικό ρετιρέ με ιδιωτική πισίνα.</li><li><strong>Αθήνα:</strong> Σύγχρονα διαμερίσματα με θέα στην Ακρόπολη.</li><li><strong>Πήλιο:</strong> Παραθαλάσσιο παραδοσιακό αρχοντικό.</li></ul>"
+  }
+}

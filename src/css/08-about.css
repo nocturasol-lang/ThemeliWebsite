@@ -1,0 +1,324 @@
+/* THEMELI — About Section & Page */
+
+/* ========== ABOUT SECTION (Home) ========== */
+.about-section {
+  padding: 100px var(--pad-x) 120px;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.about-section .label {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  padding-top: 6px;
+}
+
+.about-section .content {
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 860px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.about-section .content p+p {
+  margin-top: 24px;
+}
+
+.learn-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.learn-more::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.4s var(--ease-out);
+}
+
+.learn-more:hover::after {
+  width: 80px;
+}
+
+/* ========== ABOUT PAGE ========== */
+.about-page {
+  padding: 120px var(--pad-x) 240px;
+}
+
+.about-page > p,
+.about-page > div > p {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 28px;
+}
+
+.about-lead {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 80px;
+}
+
+.about-page > ul {
+  margin: 20px 0 80px 24px;
+  list-style: none;
+}
+
+.about-page > ul li {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.about-page > ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.about-page > ul ul {
+  margin: 8px 0 8px 0;
+  list-style: none;
+}
+
+.about-page > ul ul li::before {
+  width: 4px;
+  height: 4px;
+  background: var(--gray-04);
+}
+
+.about-equipment-section {
+  position: relative;
+  overflow-x: auto;
+}
+
+.about-equipment-section>img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(20%);
+  transition: filter 0.35s var(--ease-out);
+}
+
+.about-equipment-section:hover>img {
+  filter: grayscale(0%);
+}
+
+.equip-caption {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0.6;
+  padding-left: 10%;
+}
+
+/* ========== EQUIPMENT GRID (Greek inline infographic) ========== */
+.equip-grid {
+  padding: 0 48px 48px;
+  color: var(--white);
+  width: 100%;
+}
+
+.equip-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(36px, 4vw, 52px);
+  letter-spacing: -1px;
+  margin-bottom: 36px;
+  padding: 40px 24px 0;
+  color: var(--white);
+}
+
+.equip-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 28px 24px;
+  margin-bottom: 44px;
+}
+
+.equip-row--bottom {
+  margin-bottom: 0;
+}
+
+.equip-row--caption {
+  margin-bottom: 0;
+  margin-top: 36px;
+}
+
+.equip-spacer {
+  display: block;
+}
+
+.equip-cat {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-left: 10%;
+}
+
+.equip-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.equip-num-lg {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 2.5vw, 36px);
+  line-height: 1;
+}
+
+.equip-icon {
+  height: 68px;
+  width: auto;
+}
+
+.equip-row--icons .equip-cat {
+  align-items: stretch;
+}
+
+.equip-cat-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.equip-row-header {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.equip-num {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.equip-name {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.equip-sub {
+  display: flex;
+  gap: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--white);
+}
+
+.equip-sub-num {
+  min-width: 20px;
+  text-align: left;
+  font-weight: 400;
+}
+
+
+/* Legacy about classes (backwards compat with old HTML if needed) */
+.about-page-content {
+  padding: 0 56px 80px;
+  max-width: 960px;
+}
+
+.about-page-content p {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 28px;
+}
+
+.about-page-content ul {
+  margin: 20px 0 28px 24px;
+  list-style: none;
+}
+
+.about-page-content li {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.about-page-content li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+}
+
+.about-page-content ul ul {
+  margin: 8px 0 8px 0;
+}
+
+.about-page-content ul ul li::before {
+  width: 4px;
+  height: 4px;
+  background: var(--gray-04);
+}
+
+.about-equipment {
+  padding: 0 56px 100px;
+}
+
+.about-equipment img {
+  width: 100%;
+  height: auto;
+  filter: grayscale(20%);
+  transition: filter 0.3s;
+}
+
+.about-equipment:hover img {
+  filter: grayscale(0%);
+}

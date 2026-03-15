@@ -5,15 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="{{description}}">
   <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
+  <link rel="canonical" href="https://themeli.gr/{{langCode}}/{{pageName}}">
   <link rel="alternate" hreflang="en" href="https://themeli.gr/en/{{pageName}}">
   <link rel="alternate" hreflang="el" href="https://themeli.gr/el/{{pageName}}">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:url" content="https://themeli.gr/{{langCode}}/{{pageName}}">
+  <meta property="og:image" content="https://themeli.gr/assets/landing-poster.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="{{ogLocale}}">
+  <meta property="og:site_name" content="THEMELI S.A.">
+  <meta name="twitter:card" content="summary_large_image">
   <title>{{title}}</title>
+  <link rel="preload" href="../assets/fonts/CFModGrotesk-RegularExpanded.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
 {{nav}}
 
-  <header class="menu">
+  <header class="menu" role="banner">
     <a href="" class="menu-logo">
       <img src="../assets/themeli-icon.svg" alt="Themeli">
     </a>
@@ -27,7 +38,7 @@
     </div>
   </header>
 
-  <main{{mainAttrs}}>
+  <main{{mainAttrs}} id="main-content">
 {{content}}
   </main>
 
@@ -77,8 +88,29 @@
     <svg viewBox="0 0 16 16"><polyline points="3 10 8 5 13 10"/></svg>
   </button>
 
-{{scripts}}  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+{{scripts}}  <script src="../subsidiaries-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js"></script>
   <script src="../script.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "THEMELI S.A.",
+    "alternateName": "ΘΕΜΕΛΗ Α.Ε.",
+    "url": "https://themeli.gr",
+    "logo": "https://themeli.gr/assets/themeli-logo.svg",
+    "foundingDate": "1923",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "104 Kapodistriou str.",
+      "addressLocality": "Nea Ionia, Athens",
+      "postalCode": "142 35",
+      "addressCountry": "GR"
+    },
+    "telephone": "+302102717720",
+    "email": "INFO@THEMELI.GR"
+  }
+  </script>
 </body>
 </html>

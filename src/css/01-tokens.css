@@ -1,0 +1,20 @@
+/* THEMELI — Design Tokens */
+
+:root {
+  --gray-01: #404041;
+  --gray-02: #3f3f3f;
+  --gray-03: #a8a8a8;
+  --gray-04: #9a9a9a;
+  --gray-05: #2e2e2f;
+  --white: #ffffff;
+  --black: #202020;
+  --accent: #FF731E;
+
+  --font-display: 'CF Mod Grotesk', 'Georgia', serif;
+  --font-body: 'CF Mod Grotesk', 'Helvetica Neue', sans-serif;
+
+  --menu-height: 100px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --pad-x: max(82px, calc((100vw - 1600px) / 2));
+}
