@@ -3254,11 +3254,16 @@ img {
 }
 
 /* ── Timeline opener tagline (from inline) ── */
+@media (max-width: 1024px) {
+  .timeline-opener-tagline {
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .timeline-opener-tagline {
     white-space: normal;
     font-size: 1.2em;
-    margin-left: 0;
   }
 }
 
