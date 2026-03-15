@@ -48,7 +48,7 @@
 /* ========== FOOTER ========== */
 .footer {
   position: relative;
-  padding: 100px var(--pad-x) 48px;
+  padding: 100px 82px 48px;
   overflow: hidden;
 }
 

@@ -57,6 +57,15 @@
   width: 80px;
 }
 
+/* Accent divider — thin orange line */
+.accent-line {
+  width: 60px;
+  height: 1px;
+  background: var(--accent);
+  margin: 48px 0;
+  opacity: 0.6;
+}
+
 /* ========== ABOUT PAGE ========== */
 .about-page {
   padding: 120px var(--pad-x) 240px;

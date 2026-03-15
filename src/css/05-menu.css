@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--pad-x);
+  padding: 0 82px;
   background: transparent;
   border-radius: 102px;
   mix-blend-mode: difference;
