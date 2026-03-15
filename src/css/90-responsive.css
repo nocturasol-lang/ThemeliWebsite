@@ -537,7 +537,7 @@
 
   .footer-inner {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 70px;
   }
@@ -756,7 +756,7 @@
   }
 
   .footer-logo {
-    width: 60px;
+    width: 80px;
   }
 
   .footer-inner {
