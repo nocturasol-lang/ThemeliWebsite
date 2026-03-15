@@ -82,28 +82,20 @@ if (pdetDetail) {
       relatedSection.style.display = 'none';
     }
 
-    // Adjacent project navigation
-    const prevProject = currentIdx > 0 ? allProjects[currentIdx - 1] : null;
-    const nextProject = currentIdx < allProjects.length - 1 ? allProjects[currentIdx + 1] : null;
+    // Adjacent project navigation (loops around)
+    const prevProject = allProjects[(currentIdx - 1 + allProjects.length) % allProjects.length];
+    const nextProject = allProjects[(currentIdx + 1) % allProjects.length];
 
     const prevLink = document.getElementById('pdetPrev');
     const nextLink = document.getElementById('pdetNext');
     const prevName = document.getElementById('pdetPrevName');
     const nextName = document.getElementById('pdetNextName');
 
-    if (prevProject) {
-      prevLink.href = `project.html#${prevProject.id}`;
-      prevName.textContent = prevProject.name;
-    } else {
-      prevLink.style.visibility = 'hidden';
-    }
+    prevLink.href = `project.html#${prevProject.id}`;
+    prevName.textContent = prevProject.name;
 
-    if (nextProject) {
-      nextLink.href = `project.html#${nextProject.id}`;
-      nextName.textContent = nextProject.name;
-    } else {
-      nextLink.style.visibility = 'hidden';
-    }
+    nextLink.href = `project.html#${nextProject.id}`;
+    nextName.textContent = nextProject.name;
 
     // Staggered reveal animation
     requestAnimationFrame(() => {
