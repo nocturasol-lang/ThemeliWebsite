@@ -87,6 +87,7 @@
   .timeline-opener-tagline {
     white-space: normal;
     font-size: 1.2em;
+    margin-left: 0;
   }
 }
 
