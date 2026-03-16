@@ -617,6 +617,10 @@
     min-width: 600px;
   }
 
+  .timeline-nav-track {
+    min-width: 600px;
+  }
+
   /* Lightbox touch-friendly */
   .lightbox-arrow {
     width: 48px;
