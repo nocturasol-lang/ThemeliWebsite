@@ -19,14 +19,14 @@
 .timeline-opener-tagline {
   display: block;
   margin-top: 24px;
-  margin-left: -60px;
   font-size: 1.5em;
   font-weight: 700;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  white-space: nowrap;
+  text-align: center;
+  white-space: normal;
 }
 
 

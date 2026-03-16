@@ -82,16 +82,9 @@
   }
 }
 
-/* ── Timeline opener tagline (from inline) ── */
-@media (max-width: 1024px) {
-  .timeline-opener-tagline {
-    margin-left: 0;
-  }
-}
-
+/* ── Timeline opener tagline (phone) ── */
 @media (max-width: 768px) {
   .timeline-opener-tagline {
-    white-space: normal;
     font-size: 1.2em;
   }
 }
