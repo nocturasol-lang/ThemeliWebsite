@@ -1,0 +1,106 @@
+/* THEMELI — Homepage Projects Teaser */
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 24px;
+}
+
+.project-card {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--gray-05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.project-card.large {
+  grid-row: span 2;
+  height: 100%;
+}
+
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 115, 30, 0.1), rgba(32, 32, 32, 0.8));
+  transition: all 0.4s var(--ease-out);
+}
+
+.project-card:hover .project-overlay {
+  background: linear-gradient(135deg, rgba(255, 115, 30, 0.2), rgba(32, 32, 32, 0.6));
+}
+
+.project-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 32px;
+  transform: translateY(8px);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.project-card:hover .project-content {
+  transform: translateY(0);
+}
+
+.project-type {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding: 4px 12px;
+  border: 1px solid var(--accent);
+  margin-bottom: 12px;
+}
+
+.project-content h3 {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.project-content p {
+  font-size: 14px;
+  color: var(--gray-03);
+}
+
+/* View All Arrow Card */
+.view-all-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.5s var(--ease-out);
+}
+
+.view-all-card:hover {
+  border-color: var(--accent);
+  background: rgba(255, 115, 30, 0.06);
+}
+
+.view-all-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-all-arrow {
+  font-size: clamp(80px, 10vw, 140px);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.15);
+  line-height: 1;
+  transition: all 0.5s var(--ease-out);
+}
+
+.view-all-card:hover .view-all-arrow {
+  color: var(--accent);
+  transform: translateX(12px);
+}

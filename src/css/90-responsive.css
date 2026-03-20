@@ -108,6 +108,7 @@
 
   .about-grid {
     grid-template-columns: 1fr;
+    gap: 48px;
   }
 
   .about-page-content {
@@ -280,6 +281,33 @@
 
   .hero-est {
     right: 24px;
+  }
+
+  /* Homepage sections */
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .home-section {
+    padding: 60px var(--pad-x);
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-card.large {
+    grid-row: span 1;
+    height: 300px;
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .home-timeline {
+    padding: 60px var(--pad-x) 100px;
   }
 
   .about-section {
@@ -700,6 +728,15 @@
 
   .subsidiaries-page {
     padding: 100px var(--pad-x) 40px;
+  }
+
+  /* Homepage sections */
+  .home-section {
+    padding: 40px var(--pad-x);
+  }
+
+  .home-timeline {
+    padding: 40px var(--pad-x) 80px;
   }
 
   /* About section (home) */

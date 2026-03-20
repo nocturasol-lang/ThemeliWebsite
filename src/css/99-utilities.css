@@ -26,6 +26,48 @@
   outline-offset: 2px;
 }
 
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--black);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ========== ACCENT TEXT ========== */
+.accent {
+  color: var(--accent);
+}
+
 /* ========== REDUCED MOTION ========== */
 @media (prefers-reduced-motion: reduce) {
 
@@ -41,7 +83,9 @@
   .reveal,
   .reveal-left,
   .reveal-right,
-  .reveal-scale {
+  .reveal-scale,
+  .reveal-line > span,
+  .reveal-up {
     opacity: 1 !important;
     transform: none !important;
   }
