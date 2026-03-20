@@ -216,6 +216,7 @@ function build() {
         .replace(/\{\{langCode\}\}/g, s.langCode || s.lang)
         .replace('{{ogLocale}}', s.ogLocale || 'en_US')
         .replace('{{langSwitch}}', s.langSwitch)
+        .replace('{{homeLink}}', lang === 'en' ? '/' : '/el/')
         .replace('{{footerAddressLabel}}', s.footerAddressLabel)
         .replace('{{footerAddressBody}}', s.footerAddressBody)
         .replace('{{footerInfoLabel}}', s.footerInfoLabel)
