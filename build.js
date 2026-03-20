@@ -51,7 +51,7 @@ function copyRecursive(src, dest) {
       copyRecursive(path.join(src, entry), path.join(dest, entry));
     }
   } else {
-    fs.copyFileSync(src, dest);
+    try { fs.copyFileSync(src, dest); } catch (_) { /* skip locked files */ }
   }
 }
 
@@ -125,16 +125,14 @@ function minifyCSS(css) {
 
 function minifyJS(js) {
   try {
-    const { minify } = require('terser');
-    // terser.minify is async but we run it synchronously via execSync workaround
-    // Instead, use terser's sync-compatible approach
-    let result;
-    minify(js, { compress: { passes: 1 }, mangle: false }).then(r => { result = r; });
-    // Since we can't easily do async in this build script, write unminified for now
-    // and use terser CLI in npm script instead
-    return js;
-  } catch {
-    console.warn('  terser not found, skipping JS minification');
+    const { execSync } = require('child_process');
+    const tmpIn = path.join(__dirname, '.tmp-terser-in.js');
+    fs.writeFileSync(tmpIn, js);
+    const result = execSync(`npx terser "${tmpIn}" --compress passes=1 --mangle`, { encoding: 'utf8' });
+    fs.unlinkSync(tmpIn);
+    return result;
+  } catch (e) {
+    console.warn('  terser minification failed, using unminified JS:', e.message);
     return js;
   }
 }
@@ -145,7 +143,23 @@ function build() {
   const start = Date.now();
 
   /* ── Clean dist ─────────────────────────────────────────── */
-  fs.rmSync(DIST, { recursive: true, force: true });
+  try {
+    fs.rmSync(DIST, { recursive: true, force: true });
+  } catch (e) {
+    // On Windows, font files may be locked — remove what we can
+    if (fs.existsSync(DIST)) {
+      const rimraf = (dir) => {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const p = path.join(dir, entry.name);
+          try {
+            if (entry.isDirectory()) { rimraf(p); fs.rmdirSync(p); }
+            else fs.unlinkSync(p);
+          } catch (_) { /* skip locked files */ }
+        }
+      };
+      rimraf(DIST);
+    }
+  }
   fs.mkdirSync(DIST, { recursive: true });
 
   /* ── Copy static files from public/ → dist/ ─────────────── */
@@ -160,15 +174,13 @@ function build() {
 
   /* ── Concatenate JS from src/js/ ────────────────────────── */
   let js = concatDir(path.join(SRC, 'js'), '.js');
-  // In production, minify with terser CLI post-build (async API not suitable here)
+  if (PROD) js = minifyJS(js);
 
-  const jsFilename = PROD ? `script.${shortHash(js)}.css` : 'script.js';
-  // Fix: JS files should have .js extension
-  const jsFilenameFixed = PROD ? `script.${shortHash(js)}.js` : 'script.js';
-  fs.writeFileSync(path.join(DIST, jsFilenameFixed), js);
+  const jsFilename = PROD ? `script.${shortHash(js)}.js` : 'script.js';
+  fs.writeFileSync(path.join(DIST, jsFilename), js);
 
   /* ── Copy data files → dist/ ────────────────────────────── */
-  for (const file of ['projects-data.js', 'supabase-config.js']) {
+  for (const file of ['projects-data.js']) {
     const srcFile = path.join(SRC, file);
     if (fs.existsSync(srcFile)) {
       fs.copyFileSync(srcFile, path.join(DIST, file));
@@ -216,6 +228,7 @@ function build() {
         .replace(/\{\{langCode\}\}/g, s.langCode || s.lang)
         .replace('{{ogLocale}}', s.ogLocale || 'en_US')
         .replace('{{langSwitch}}', s.langSwitch)
+        .replace('{{langSwitchHref}}', lang === 'en' ? '../el/' + pageName : '../en/' + pageName)
         .replace('{{homeLink}}', 'index.html')
         .replace('{{footerAddressLabel}}', s.footerAddressLabel)
         .replace('{{footerAddressBody}}', s.footerAddressBody)
@@ -237,7 +250,7 @@ function build() {
       // Replace asset filenames with hashed versions in production
       if (PROD) {
         html = html.replace('../styles.css', `../${cssFilename}`);
-        html = html.replace('../script.js', `../${jsFilenameFixed}`);
+        html = html.replace('../script.js', `../${jsFilename}`);
       }
 
       const outDir = path.join(DIST, lang);

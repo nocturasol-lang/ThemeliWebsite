@@ -4,11 +4,13 @@
 const I18N = {
   en: {
     projects: 'Projects', project: 'Project',
-    copied: 'Copied!', copyAddress: 'Copy Address', copyNumber: 'Copy Number'
+    copied: 'Copied!', copyAddress: 'Copy Address', copyNumber: 'Copy Number',
+    clearAll: 'Clear All'
   },
   el: {
     projects: 'Έργα', project: 'Έργο',
-    copied: 'Αντιγράφηκε!', copyAddress: 'Αντιγραφή Διεύθυνσης', copyNumber: 'Αντιγραφή Αριθμού'
+    copied: 'Αντιγράφηκε!', copyAddress: 'Αντιγραφή Διεύθυνσης', copyNumber: 'Αντιγραφή Αριθμού',
+    clearAll: 'Καθαρισμός'
   }
 };
 const T = I18N[LANG];
@@ -39,11 +41,3 @@ function prefixSubsPaths(data) {
 const rawSubsData = (typeof SUBS_DATA !== 'undefined') ? SUBS_DATA[LANG] : {};
 T.subsData = prefixSubsPaths(rawSubsData);
 
-// Language switcher
-const langSwitch = document.querySelector('[data-lang-switch]');
-if (langSwitch) {
-  const otherLang = LANG === 'en' ? 'el' : 'en';
-  const currentPath = window.location.pathname;
-  const newPath = currentPath.replace('/' + LANG + '/', '/' + otherLang + '/');
-  langSwitch.href = newPath + window.location.search;
-}

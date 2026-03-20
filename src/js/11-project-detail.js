@@ -13,7 +13,7 @@ if (pdetDetail) {
     return str ? str.replace(/['"\\()]/g, '\\$&') : '';
   }
 
-  // Load data from Supabase (async)
+  // Load project data
   (async function() {
   const allProjects = await fetchProjects();
   const currentIdx = allProjects.findIndex(p => Number(p.id) === projectId);

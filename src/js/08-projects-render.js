@@ -6,7 +6,7 @@ const projListView = document.getElementById('projListView');
 const projMapView = document.getElementById('projMapView');
 const mapInner = document.getElementById('mapInner');
 
-// Load projects from Supabase (async) with PROJECTS fallback
+// Load and render projects
 if (projGridView) {
 (async function renderProjects() {
 const projectData = await fetchProjects();
@@ -22,7 +22,7 @@ if (!projectData.length) return;
   projectData.forEach(p => {
     const imgStyle = p.image ? ` style="background-image:url('${esc(p.image)}')"` : '';
     projGridView.insertAdjacentHTML('beforeend',
-      `<a class="proj-card" data-typology="${esc(p.typology)}" href="project.html#${p.id}">
+      `<a class="proj-card" data-typology="${esc(p.typology)}" data-status="${esc(p.status || '')}" data-region="${esc(p.region || '')}" href="project.html#${p.id}">
         <div class="proj-card-img"${imgStyle}></div>
         <div class="proj-card-info"><span class="proj-card-name">${esc(p.name)}</span><span class="proj-card-year">${p.year}</span></div>
         <span class="proj-card-tag">${esc(p.typology)}</span>
@@ -34,7 +34,7 @@ if (!projectData.length) return;
   if (projListView) {
     projectData.forEach(p => {
       projListView.insertAdjacentHTML('beforeend',
-        `<a class="proj-row" data-typology="${esc(p.typology)}" href="project.html#${p.id}"><span class="proj-col proj-col-name">${esc(p.name)}</span><span class="proj-col proj-col-type">${esc(p.typology)}</span><span class="proj-col proj-col-loc">${esc(p.location)}</span><span class="proj-col proj-col-year">${p.year}</span></a>`
+        `<a class="proj-row" data-typology="${esc(p.typology)}" data-status="${esc(p.status || '')}" data-region="${esc(p.region || '')}" href="project.html#${p.id}"><span class="proj-col proj-col-name">${esc(p.name)}</span><span class="proj-col proj-col-type">${esc(p.typology)}</span><span class="proj-col proj-col-loc">${esc(p.location)}</span><span class="proj-col proj-col-year">${p.year}</span></a>`
       );
     });
   }
@@ -45,7 +45,7 @@ if (!projectData.length) return;
       if (p.mapX == null || p.mapY == null) return;
       const tooltipImg = p.image ? ` style="background-image:url('${esc(p.image)}')"` : '';
       mapInner.insertAdjacentHTML('beforeend',
-        `<a class="proj-map-dot" style="left:${p.mapX}%;top:${p.mapY}%" data-typology="${esc(p.typology)}" href="project.html#${p.id}">
+        `<a class="proj-map-dot" style="left:${p.mapX}%;top:${p.mapY}%" data-typology="${esc(p.typology)}" data-status="${esc(p.status || '')}" data-region="${esc(p.region || '')}" href="project.html#${p.id}">
           <div class="proj-map-tooltip">
             <div class="proj-map-tooltip-img"${tooltipImg}></div>
             <div class="proj-map-tooltip-body">

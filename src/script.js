@@ -237,7 +237,7 @@ const revealObserver = new IntersectionObserver((entries) => {
   rootMargin: '0px 0px -60px 0px'
 });
 
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .timeline-bar').forEach(el => {
+document.querySelectorAll('.reveal').forEach(el => {
   revealObserver.observe(el);
 });
 

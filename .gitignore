@@ -10,3 +10,9 @@ desktop.ini
 dist/
 node_modules/
 public/assets/src-images/
+
+# Local database & uploads
+data/themeli.sqlite
+data/admin.hash
+uploads/project-images/*
+!uploads/project-images/.gitkeep

@@ -131,6 +131,7 @@
   transition: color 0.3s;
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   gap: 10px;
 }
 
@@ -153,7 +154,7 @@
 
 .sub-detail-inner {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -317,8 +318,8 @@
 
 .sub-featured-name {
   font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--white);
   letter-spacing: -0.01em;
   line-height: 1.3;

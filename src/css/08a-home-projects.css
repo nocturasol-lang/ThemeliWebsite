@@ -88,8 +88,24 @@
 
 .view-all-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 12px;
+}
+
+.view-all-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.5s var(--ease-out);
+}
+
+.view-all-card:hover .view-all-label {
+  color: var(--accent);
 }
 
 .view-all-arrow {

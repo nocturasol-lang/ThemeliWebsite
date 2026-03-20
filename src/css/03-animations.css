@@ -32,42 +32,6 @@
   transition-delay: 0.15s;
 }
 
-/* Slide-in from left */
-.reveal-left {
-  opacity: 0;
-  transform: translateX(-30px);
-  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-}
-
-.reveal-left.is-visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Slide-in from right */
-.reveal-right {
-  opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-}
-
-.reveal-right.is-visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Scale reveal */
-.reveal-scale {
-  opacity: 0;
-  transform: scale(0.96);
-  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
-}
-
-.reveal-scale.is-visible {
-  opacity: 1;
-  transform: scale(1);
-}
-
 /* ========== HERO REVEAL ANIMATIONS ========== */
 @keyframes revealLine {
   from { opacity: 0; transform: translateY(110%); }

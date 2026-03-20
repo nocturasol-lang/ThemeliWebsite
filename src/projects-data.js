@@ -10,6 +10,8 @@ const PROJECTS = [
     year: 1993,
     typology: "Railways",
     location: "Pieria / Karditsa",
+    region: "Thessaly",
+    status: "Completed",
     image: "",
     mapX: 46.3,
     mapY: 49.3
@@ -21,6 +23,8 @@ const PROJECTS = [
     year: 2004,
     typology: "Railways",
     location: "Athens",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 46.3,
     mapY: 49.3
@@ -32,6 +36,8 @@ const PROJECTS = [
     year: 2013,
     typology: "Railways",
     location: "Athens / Piraeus",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 45.8,
     mapY: 49.5
@@ -43,6 +49,8 @@ const PROJECTS = [
     year: 1998,
     typology: "Railways",
     location: "Corinth",
+    region: "Peloponnese",
+    status: "Completed",
     image: "",
     mapX: 42.0,
     mapY: 51.0
@@ -54,6 +62,8 @@ const PROJECTS = [
     year: 2000,
     typology: "Railways",
     location: "Viotia",
+    region: "Central Greece",
+    status: "Completed",
     image: "",
     mapX: 43.5,
     mapY: 47.0
@@ -65,6 +75,8 @@ const PROJECTS = [
     year: 2000,
     typology: "Railways",
     location: "Thessaly",
+    region: "Thessaly",
+    status: "Completed",
     image: "",
     mapX: 45.3,
     mapY: 42.9
@@ -76,6 +88,8 @@ const PROJECTS = [
     year: 1986,
     typology: "Roadworks",
     location: "Thessaloniki",
+    region: "Northern Greece",
+    status: "Completed",
     image: "",
     mapX: 44.0,
     mapY: 35.5
@@ -87,6 +101,8 @@ const PROJECTS = [
     year: 1950,
     typology: "Roadworks",
     location: "Peloponnese",
+    region: "Peloponnese",
+    status: "Completed",
     image: "",
     mapX: 39.0,
     mapY: 53.0
@@ -98,6 +114,8 @@ const PROJECTS = [
     year: 1950,
     typology: "Roadworks",
     location: "Peloponnese",
+    region: "Peloponnese",
+    status: "Completed",
     image: "",
     mapX: 40.5,
     mapY: 53.5
@@ -109,6 +127,8 @@ const PROJECTS = [
     year: 2013,
     typology: "Roadworks",
     location: "Crete",
+    region: "Crete",
+    status: "Completed",
     image: "",
     mapX: 27.0,
     mapY: 57.3
@@ -120,6 +140,8 @@ const PROJECTS = [
     year: 1999,
     typology: "Roadworks",
     location: "Larissa",
+    region: "Thessaly",
+    status: "Completed",
     image: "",
     mapX: 34.7,
     mapY: 34.0
@@ -131,6 +153,8 @@ const PROJECTS = [
     year: 2004,
     typology: "Tunnels",
     location: "Piraeus / Perama",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 45.5,
     mapY: 49.8
@@ -142,6 +166,8 @@ const PROJECTS = [
     year: 2009,
     typology: "Tunnels",
     location: "Achaia",
+    region: "Peloponnese",
+    status: "Completed",
     image: "",
     mapX: 36.0,
     mapY: 50.0
@@ -153,6 +179,8 @@ const PROJECTS = [
     year: 1923,
     typology: "Buildings",
     location: "Athens",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 46.3,
     mapY: 49.3
@@ -164,6 +192,8 @@ const PROJECTS = [
     year: 1928,
     typology: "Buildings",
     location: "Athens",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 46.3,
     mapY: 49.3
@@ -175,6 +205,8 @@ const PROJECTS = [
     year: 1950,
     typology: "Buildings",
     location: "Kifissia, Athens",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 46.5,
     mapY: 48.5
@@ -186,6 +218,8 @@ const PROJECTS = [
     year: 1986,
     typology: "Buildings",
     location: "Aspropyrgos",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 45.0,
     mapY: 49.0
@@ -197,6 +231,8 @@ const PROJECTS = [
     year: 2012,
     typology: "Industrial & Energy",
     location: "Nafpaktia, W. Greece",
+    region: "Central Greece",
+    status: "Completed",
     image: "",
     mapX: 34.0,
     mapY: 47.5
@@ -208,6 +244,8 @@ const PROJECTS = [
     year: 2020,
     typology: "Industrial & Energy",
     location: "Achaia",
+    region: "Peloponnese",
+    status: "Completed",
     image: "",
     mapX: 35.5,
     mapY: 49.0
@@ -219,6 +257,8 @@ const PROJECTS = [
     year: 1988,
     typology: "Utility Networks",
     location: "Nafplio",
+    region: "Peloponnese",
+    status: "Completed",
     image: "",
     mapX: 41.0,
     mapY: 53.0
@@ -230,6 +270,8 @@ const PROJECTS = [
     year: 1998,
     typology: "Utility Networks",
     location: "Lesvos",
+    region: "Islands",
+    status: "Completed",
     image: "",
     mapX: 58.0,
     mapY: 34.0
@@ -241,6 +283,8 @@ const PROJECTS = [
     year: 2005,
     typology: "Utility Networks",
     location: "Agrinio",
+    region: "Central Greece",
+    status: "Completed",
     image: "",
     mapX: 32.0,
     mapY: 46.5
@@ -252,6 +296,8 @@ const PROJECTS = [
     year: 2005,
     typology: "Dams",
     location: "Chios",
+    region: "Islands",
+    status: "Completed",
     image: "",
     mapX: 57.0,
     mapY: 39.0
@@ -263,6 +309,8 @@ const PROJECTS = [
     year: 1999,
     typology: "Dams",
     location: "Fthiotida",
+    region: "Central Greece",
+    status: "Completed",
     image: "",
     mapX: 38.0,
     mapY: 44.0
@@ -274,6 +322,8 @@ const PROJECTS = [
     year: 2006,
     typology: "Ports & Marine",
     location: "Chios",
+    region: "Islands",
+    status: "Completed",
     image: "",
     mapX: 56.5,
     mapY: 40.0
@@ -285,6 +335,8 @@ const PROJECTS = [
     year: 1990,
     typology: "Urban Redevelopment",
     location: "Athens",
+    region: "Attica",
+    status: "Completed",
     image: "",
     mapX: 46.0,
     mapY: 49.0

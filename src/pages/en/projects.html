@@ -3,7 +3,7 @@ title: THEMELI — Projects
 description: THEMELI S.A. Projects — Browse our portfolio of major infrastructure, transportation, energy, and building construction projects across Greece.
 mainClass: projects-page
 mainId:
-scripts: ../projects-data.js
+scripts:
 -->
     <div class="page-header">
       <h1>Projects</h1>
@@ -31,21 +31,48 @@ scripts: ../projects-data.js
       </div>
     </div>
 
+    <!-- Active filter chips -->
+    <div class="proj-chips" id="projChips"></div>
+
     <!-- Filter panel -->
     <div class="proj-filters" id="projFilters">
       <div class="proj-filters-inner">
-        <span class="proj-filters-label">Typology</span>
-        <div class="proj-filters-grid">
-          <button class="proj-filter-btn is-active" data-filter="all">All</button>
-          <button class="proj-filter-btn" data-filter="Buildings">Buildings</button>
-          <button class="proj-filter-btn" data-filter="Utility Networks">Utility Networks</button>
-          <button class="proj-filter-btn" data-filter="Industrial &amp; Energy">Industrial &amp; Energy</button>
-          <button class="proj-filter-btn" data-filter="Roadworks">Roadworks</button>
-          <button class="proj-filter-btn" data-filter="Urban Redevelopment">Urban Redevelopment</button>
-          <button class="proj-filter-btn" data-filter="Ports &amp; Marine">Ports &amp; Marine</button>
-          <button class="proj-filter-btn" data-filter="Railways">Railways</button>
-          <button class="proj-filter-btn" data-filter="Dams">Dams</button>
-          <button class="proj-filter-btn" data-filter="Tunnels">Tunnels</button>
+        <div class="proj-filters-col">
+          <span class="proj-filters-label">Status</span>
+          <div class="proj-filters-list">
+            <button class="proj-filter-btn" data-category="status" data-filter="Completed">Completed</button>
+            <button class="proj-filter-btn" data-category="status" data-filter="In Progress">In Progress</button>
+          </div>
+        </div>
+        <div class="proj-filters-col">
+          <span class="proj-filters-label">Typology</span>
+          <div class="proj-filters-list">
+            <button class="proj-filter-btn" data-category="typology" data-filter="Buildings">Buildings</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Utility Networks">Utility Networks</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Industrial &amp; Energy">Industrial &amp; Energy</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Roadworks">Roadworks</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Urban Redevelopment">Urban Redevelopment</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Ports &amp; Marine">Ports &amp; Marine</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Railways">Railways</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Dams">Dams</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Tunnels">Tunnels</button>
+          </div>
+        </div>
+        <div class="proj-filters-col">
+          <span class="proj-filters-label">Location</span>
+          <div class="proj-filters-list">
+            <button class="proj-filter-btn" data-category="region" data-filter="Attica">Attica</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Peloponnese">Peloponnese</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Central Greece">Central Greece</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Thessaly">Thessaly</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Northern Greece">Northern Greece</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Crete">Crete</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Islands">Islands</button>
+          </div>
+        </div>
+        <div class="proj-filters-actions">
+          <button class="proj-apply-btn" id="projApply">Apply</button>
+          <button class="proj-clear-btn" id="projClearAll">&mdash; Clear all</button>
         </div>
       </div>
     </div>
@@ -56,10 +83,10 @@ scripts: ../projects-data.js
     <!-- ===== LIST VIEW ===== -->
     <div class="proj-table" id="projListView" style="display:none">
       <div class="proj-row proj-row-header">
-        <span class="proj-col proj-col-name">Project</span>
-        <span class="proj-col proj-col-type">Typology</span>
-        <span class="proj-col proj-col-loc">Location</span>
-        <span class="proj-col proj-col-year">Year</span>
+        <button class="proj-col proj-col-name proj-sort-btn" data-sort="name">Project</button>
+        <button class="proj-col proj-col-type proj-sort-btn" data-sort="typology">Typology</button>
+        <button class="proj-col proj-col-loc proj-sort-btn" data-sort="location">Location</button>
+        <button class="proj-col proj-col-year proj-sort-btn" data-sort="year">Year</button>
       </div>
     </div>
 
@@ -75,7 +102,7 @@ scripts: ../projects-data.js
       </div>
       <div class="proj-map-viewport" id="mapViewport">
         <div class="proj-map-inner" id="mapInner">
-          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img" loading="lazy">
+          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img" loading="lazy" width="2000" height="2000">
           <!-- dots rendered by JS -->
         </div>
       </div>

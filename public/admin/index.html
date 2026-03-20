@@ -515,6 +515,7 @@
       <span class="admin-status" id="adminStatus"></span>
       <a href="../en/projects.html" class="btn btn-sm" target="_blank">View Site</a>
       <button class="btn btn-sm btn-accent" id="addProjectBtn">+ Add Project</button>
+      <button class="btn btn-sm btn-publish" id="publishBtn">Publish to Site</button>
       <button class="btn btn-sm" id="exportBtn">Export File</button>
       <label class="btn btn-sm btn-import" for="importFile">Import File</label>
       <input type="file" id="importFile" accept=".js" style="display:none">
@@ -531,6 +532,7 @@
           <th>Year</th>
           <th>Typology</th>
           <th>Location</th>
+          <th>Region</th>
           <th>Map</th>
           <th>Actions</th>
         </tr>
@@ -570,7 +572,20 @@
         </div>
         <div class="form-group">
           <label>Location</label>
-          <input type="text" id="fLocation" placeholder="e.g. Athens">
+          <input type="text" id="fLocation" placeholder="π.χ. Αθήνα">
+        </div>
+        <div class="form-group">
+          <label>Περιοχή (Region)</label>
+          <select id="fRegion">
+            <option value="">— Επιλέξτε —</option>
+            <option value="Attica">Αττική</option>
+            <option value="Peloponnese">Πελοπόννησος</option>
+            <option value="Central Greece">Στερεά Ελλάδα</option>
+            <option value="Thessaly">Θεσσαλία</option>
+            <option value="Northern Greece">Βόρεια Ελλάδα</option>
+            <option value="Crete">Κρήτη</option>
+            <option value="Islands">Νησιά</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Architect</label>
@@ -625,9 +640,6 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../supabase-config.js"></script>
-  <script src="../projects-data.js"></script>
   <script src="auth.js"></script>
   <script src="admin.js"></script>
 </body>

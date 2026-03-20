@@ -1,10 +1,6 @@
 /**
- * THEMELI — Admin Panel Logic (Supabase)
+ * THEMELI — Admin Panel Logic (PHP/SQLite)
  */
-
-// Wait for auth.js to set up the client
-const sb = window._supabase;
-const BUCKET = 'project-images';
 
 let projects = [];
 let editingId = null;
@@ -17,6 +13,7 @@ const modalOverlay = document.getElementById('modalOverlay');
 const modalTitle = document.getElementById('modalTitle');
 const addProjectBtn = document.getElementById('addProjectBtn');
 const exportBtn = document.getElementById('exportBtn');
+const publishBtn = document.getElementById('publishBtn');
 const importFile = document.getElementById('importFile');
 const modalCancel = document.getElementById('modalCancel');
 const modalSave = document.getElementById('modalSave');
@@ -27,6 +24,7 @@ const fName = document.getElementById('fName');
 const fYear = document.getElementById('fYear');
 const fTypology = document.getElementById('fTypology');
 const fLocation = document.getElementById('fLocation');
+const fRegion = document.getElementById('fRegion');
 const fDesc = document.getElementById('fDesc');
 const fArchitect = document.getElementById('fArchitect');
 const fSize = document.getElementById('fSize');
@@ -46,7 +44,7 @@ const mapPickerCoords = document.getElementById('mapPickerCoords');
 let pickerX = null;
 let pickerY = null;
 
-// ========== SUPABASE HELPERS ==========
+// ========== API HELPERS ==========
 
 // Map DB snake_case → JS camelCase
 function fromDb(row) {
@@ -57,6 +55,7 @@ function fromDb(row) {
     year: row.year,
     typology: row.typology,
     location: row.location || '',
+    region: row.region || '',
     architect: row.architect || '',
     size: row.size || '',
     status: row.status || 'Completed',
@@ -75,6 +74,7 @@ function toDb(data) {
     year: data.year,
     typology: data.typology,
     location: data.location || '',
+    region: data.region || '',
     architect: data.architect || '',
     size: data.size || '',
     status: data.status || 'Completed',
@@ -86,24 +86,29 @@ function toDb(data) {
 }
 
 async function loadProjects() {
-  const { data, error } = await sb.from('projects').select('*').order('id');
-  if (error) {
-    console.error('Failed to load projects:', error);
-    return typeof PROJECTS !== 'undefined' ? [...PROJECTS] : [];
+  try {
+    const res = await fetch('../api/projects.php');
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.map(fromDb);
+  } catch (e) {
+    console.error('Failed to load projects:', e);
+    return [];
   }
-  return data.map(fromDb);
 }
 
 async function uploadImage(file) {
-  const ext = file.name.split('.').pop();
-  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const { error } = await sb.storage.from(BUCKET).upload(fileName, file);
-  if (error) {
-    console.error('Image upload failed:', error);
+  const form = new FormData();
+  form.append('image', file);
+  try {
+    const res = await fetch('../api/upload.php', { method: 'POST', body: form });
+    if (!res.ok) return '';
+    const data = await res.json();
+    return data.url;
+  } catch (e) {
+    console.error('Image upload failed:', e);
     return '';
   }
-  const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(fileName);
-  return urlData.publicUrl;
 }
 
 // ========== STATUS ==========
@@ -131,6 +136,7 @@ function renderTable() {
       <td>${p.year}</td>
       <td>${esc(p.typology)}</td>
       <td>${esc(p.location)}</td>
+      <td>${esc(p.region)}</td>
       <td class="cell-map-pos">${mapStr}</td>
       <td>
         <div class="cell-actions">
@@ -159,6 +165,7 @@ function openModal(project) {
     fYear.value = project.year;
     fTypology.value = project.typology;
     fLocation.value = project.location;
+    fRegion.value = project.region || '';
     fDesc.value = project.description || '';
     fArchitect.value = project.architect || '';
     fSize.value = project.size || '';
@@ -185,6 +192,7 @@ function openModal(project) {
     fYear.value = '';
     fTypology.value = 'Buildings';
     fLocation.value = '';
+    fRegion.value = '';
     fDesc.value = '';
     fArchitect.value = '';
     fSize.value = '';
@@ -291,6 +299,7 @@ modalSave.addEventListener('click', async () => {
     year,
     typology: fTypology.value,
     location: fLocation.value.trim(),
+    region: fRegion.value,
     architect: fArchitect.value.trim(),
     size: fSize.value.trim(),
     status: fStatus.value,
@@ -301,16 +310,33 @@ modalSave.addEventListener('click', async () => {
   };
 
   const dbData = toDb(data);
-  let error;
+  let res;
 
-  if (editingId !== null) {
-    ({ error } = await sb.from('projects').update(dbData).eq('id', editingId));
-  } else {
-    ({ error } = await sb.from('projects').insert(dbData));
-  }
+  try {
+    if (editingId !== null) {
+      dbData.id = editingId;
+      res = await fetch('../api/projects.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dbData)
+      });
+    } else {
+      res = await fetch('../api/projects.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dbData)
+      });
+    }
 
-  if (error) {
-    alert('Save failed: ' + error.message);
+    if (!res.ok) {
+      const err = await res.json();
+      alert('Save failed: ' + (err.error || 'Unknown error'));
+      modalSave.disabled = false;
+      modalSave.textContent = 'Save Project';
+      return;
+    }
+  } catch (e) {
+    alert('Save failed: ' + e.message);
     modalSave.disabled = false;
     modalSave.textContent = 'Save Project';
     return;
@@ -340,9 +366,15 @@ tableBody.addEventListener('click', async (e) => {
     const id = parseInt(deleteBtn.getAttribute('data-delete'), 10);
     const project = projects.find(p => p.id === id);
     if (project && confirm(`Delete "${project.name}"?`)) {
-      const { error } = await sb.from('projects').delete().eq('id', id);
-      if (error) {
-        alert('Delete failed: ' + error.message);
+      try {
+        const res = await fetch(`../api/projects.php?id=${id}`, { method: 'DELETE' });
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Delete failed: ' + (err.error || 'Unknown error'));
+          return;
+        }
+      } catch (e) {
+        alert('Delete failed: ' + e.message);
         return;
       }
       projects = await loadProjects();
@@ -351,6 +383,28 @@ tableBody.addEventListener('click', async (e) => {
     }
   }
 });
+
+// ========== PUBLISH TO SITE ==========
+if (publishBtn) {
+  publishBtn.addEventListener('click', async () => {
+    publishBtn.disabled = true;
+    publishBtn.textContent = 'Publishing...';
+    try {
+      const res = await fetch('../api/export.php');
+      if (res.ok) {
+        const data = await res.json();
+        alert(`Published ${data.count} projects to site.`);
+      } else {
+        const err = await res.json();
+        alert('Publish failed: ' + (err.error || 'Unknown error'));
+      }
+    } catch (e) {
+      alert('Publish failed: ' + e.message);
+    }
+    publishBtn.disabled = false;
+    publishBtn.textContent = 'Publish to Site';
+  });
+}
 
 // ========== EXPORT FILE ==========
 exportBtn.addEventListener('click', () => {
@@ -364,6 +418,7 @@ exportBtn.addEventListener('click', () => {
     output += `    year: ${p.year},\n`;
     output += `    typology: ${JSON.stringify(p.typology)},\n`;
     output += `    location: ${JSON.stringify(p.location || '')},\n`;
+    output += `    region: ${JSON.stringify(p.region || '')},\n`;
     output += `    architect: ${JSON.stringify(p.architect || '')},\n`;
     output += `    size: ${JSON.stringify(p.size || '')},\n`;
     output += `    status: ${JSON.stringify(p.status || '')},\n`;
@@ -413,11 +468,17 @@ importFile.addEventListener('change', async (e) => {
         return;
       }
 
-      // Insert each project into Supabase (skip id, let DB auto-generate)
+      // Insert each project via API
       const dbRows = imported.map(p => toDb(p));
-      const { error } = await sb.from('projects').insert(dbRows);
-      if (error) {
-        alert('Import failed: ' + error.message);
+      const res = await fetch('../api/projects.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dbRows)
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        alert('Import failed: ' + (err.error || 'Unknown error'));
         return;
       }
 

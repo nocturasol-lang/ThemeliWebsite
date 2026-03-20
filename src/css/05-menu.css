@@ -102,6 +102,9 @@
 
 .nav-overlay li {
   overflow: hidden;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
 }
 
 .nav-overlay a {
@@ -152,14 +155,6 @@
 .nav-overlay a.active {
   color: var(--accent);
 }
-
-/* Nav counter */
-.nav-overlay li {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-}
-
 
 
 /* Language Switcher */

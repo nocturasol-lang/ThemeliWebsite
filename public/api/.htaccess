@@ -1,0 +1,4 @@
+# Protect database and sensitive files from direct download
+<FilesMatch "\.(sqlite|db|hash)$">
+    Deny from all
+</FilesMatch>

@@ -11,6 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+  z-index: 40;
   margin-bottom: 0;
   padding-bottom: 20px;
 }
@@ -51,25 +53,92 @@
   letter-spacing: 0.06em;
 }
 
+/* Filter chips */
+.proj-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  position: relative;
+  z-index: 40;
+  gap: 8px;
+}
+
+.proj-chips:empty {
+  display: none;
+}
+
+.proj-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  background: none;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.proj-chip:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.proj-chip-x {
+  font-size: 11px;
+  opacity: 0.5;
+  font-weight: 600;
+}
+
+.proj-chips-clear {
+  background: none;
+  border: none;
+  color: var(--gray-04);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 0.3s;
+}
+
+.proj-chips-clear:hover {
+  color: var(--white);
+}
+
 /* Filter panel */
 .proj-filters {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.5s var(--ease-out), opacity 0.4s;
+  position: relative;
+  z-index: 40;
   opacity: 0;
 }
 
 .proj-filters.is-open {
-  max-height: 260px;
+  max-height: 500px;
   opacity: 1;
 }
 
 .proj-filters-inner {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 40px;
-  padding: 28px 32px;
+  padding: 28px 36px;
   margin-bottom: 24px;
   background: rgba(46, 46, 47, 0.4);
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: 0 48px;
+}
+
+.proj-filters-col {
+  min-width: 0;
 }
 
 .proj-filters-label {
@@ -80,25 +149,25 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gray-04);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.proj-filters-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px 40px;
+.proj-filters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .proj-filter-btn {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.5);
   font-family: var(--font-body);
   font-size: 15px;
   font-weight: 400;
   cursor: pointer;
   text-align: left;
-  padding: 6px 0;
+  padding: 4px 0 4px 18px;
   transition: color 0.3s;
   position: relative;
 }
@@ -108,19 +177,64 @@
 }
 
 .proj-filter-btn.is-active {
-  color: var(--accent);
+  color: var(--white);
 }
 
 .proj-filter-btn.is-active::before {
   content: '';
   position: absolute;
-  left: -14px;
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 5px;
-  height: 5px;
-  background: var(--accent);
+  width: 6px;
+  height: 6px;
+  background: var(--white);
   border-radius: 50%;
+}
+
+/* Filter actions */
+.proj-filters-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  align-items: center;
+}
+
+.proj-apply-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  padding: 8px 28px;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.proj-apply-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.proj-clear-btn {
+  background: none;
+  border: none;
+  color: var(--gray-04);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.3s;
+}
+
+.proj-clear-btn:hover {
+  color: var(--white);
 }
 
 /* Project table */
@@ -156,6 +270,29 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gray-04);
+}
+
+/* Sort buttons in list header */
+.proj-sort-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  gap: 4px;
+}
+
+.proj-sort-btn:hover {
+  color: var(--white);
+}
+
+.proj-sort-btn.is-sorted::after {
+  content: '\25B2';
+  font-size: 8px;
+  margin-left: 4px;
+}
+
+.proj-sort-btn.is-sorted.is-desc::after {
+  content: '\25BC';
 }
 
 .proj-col {
@@ -365,7 +502,7 @@
   margin: 40px auto 0;
   overflow: hidden;
   cursor: grab;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: none;
   aspect-ratio: 1 / 1;
 }
 
@@ -375,6 +512,7 @@
 
 .proj-map-viewport.is-zoomed {
   cursor: grab;
+  overflow: visible;
 }
 
 .proj-map-inner {
@@ -431,8 +569,10 @@
   display: none;
 }
 
-.proj-map-dot:hover {
+.proj-map-dot:hover,
+.proj-map-dot.is-active {
   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+  z-index: 30;
 }
 
 .proj-map-dot:hover::after {
@@ -446,7 +586,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 240px;
-  background: rgba(46, 46, 47, 0.96);
+  background: rgba(46, 46, 47, 1);
   border: 1px solid rgba(255, 255, 255, 0.12);
   opacity: 0;
   pointer-events: none;
@@ -455,10 +595,32 @@
   z-index: 20;
 }
 
-.proj-map-dot:hover .proj-map-tooltip {
+.proj-map-dot:hover .proj-map-tooltip,
+.proj-map-dot.is-active .proj-map-tooltip {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
+}
+
+/* Counter-scale dots and tooltips when map is zoomed */
+.proj-map-viewport.is-zoomed .proj-map-dot {
+  transform: translate(-50%, -50%) scale(var(--map-counter-scale, 1));
+}
+
+.proj-map-viewport.is-zoomed .proj-map-dot:hover,
+.proj-map-viewport.is-zoomed .proj-map-dot.is-active {
+  transform: translate(-50%, -50%) scale(var(--map-counter-scale, 1));
+}
+
+.proj-map-viewport.is-zoomed .proj-map-tooltip {
+  transform: translateX(-50%) translateY(6px) scale(var(--map-counter-scale, 1));
+  transform-origin: bottom center;
+}
+
+.proj-map-viewport.is-zoomed .proj-map-dot:hover .proj-map-tooltip,
+.proj-map-viewport.is-zoomed .proj-map-dot.is-active .proj-map-tooltip {
+  transform: translateX(-50%) translateY(0) scale(var(--map-counter-scale, 1));
+  transform-origin: bottom center;
 }
 
 /* Hide the simple label when tooltip is present */

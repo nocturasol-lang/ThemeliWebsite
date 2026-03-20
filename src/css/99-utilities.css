@@ -81,9 +81,6 @@
   }
 
   .reveal,
-  .reveal-left,
-  .reveal-right,
-  .reveal-scale,
   .reveal-line > span,
   .reveal-up {
     opacity: 1 !important;

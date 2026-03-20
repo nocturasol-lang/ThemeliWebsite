@@ -3,7 +3,7 @@ title: THEMELI — Έργα
 description: ΘΕΜΕΛΙ Α.Ε. Έργα — Περιηγηθείτε στο χαρτοφυλάκιο μεγάλων έργων υποδομών, μεταφορών, ενέργειας και κτιριακών κατασκευών σε όλη την Ελλάδα.
 mainClass: projects-page
 mainId:
-scripts: ../projects-data.js
+scripts:
 -->
     <div class="page-header">
       <h1>Έργα</h1>
@@ -31,21 +31,48 @@ scripts: ../projects-data.js
       </div>
     </div>
 
+    <!-- Active filter chips -->
+    <div class="proj-chips" id="projChips"></div>
+
     <!-- Filter panel -->
     <div class="proj-filters" id="projFilters">
       <div class="proj-filters-inner">
-        <span class="proj-filters-label">Τυπολογία</span>
-        <div class="proj-filters-grid">
-          <button class="proj-filter-btn is-active" data-filter="all">Όλα</button>
-          <button class="proj-filter-btn" data-filter="Buildings">Κτίρια</button>
-          <button class="proj-filter-btn" data-filter="Utility Networks">Δίκτυα Κοινής Ωφέλειας</button>
-          <button class="proj-filter-btn" data-filter="Industrial &amp; Energy">Βιομηχανικά &amp; Ενέργεια</button>
-          <button class="proj-filter-btn" data-filter="Roadworks">Οδοποιία</button>
-          <button class="proj-filter-btn" data-filter="Urban Redevelopment">Αστική Ανάπλαση</button>
-          <button class="proj-filter-btn" data-filter="Ports &amp; Marine">Λιμάνια &amp; Θαλάσσια</button>
-          <button class="proj-filter-btn" data-filter="Railways">Σιδηρόδρομοι</button>
-          <button class="proj-filter-btn" data-filter="Dams">Φράγματα</button>
-          <button class="proj-filter-btn" data-filter="Tunnels">Σήραγγες</button>
+        <div class="proj-filters-col">
+          <span class="proj-filters-label">Κατάσταση</span>
+          <div class="proj-filters-list">
+            <button class="proj-filter-btn" data-category="status" data-filter="Completed">Ολοκληρωμένα</button>
+            <button class="proj-filter-btn" data-category="status" data-filter="In Progress">Σε Εξέλιξη</button>
+          </div>
+        </div>
+        <div class="proj-filters-col">
+          <span class="proj-filters-label">Τυπολογία</span>
+          <div class="proj-filters-list">
+            <button class="proj-filter-btn" data-category="typology" data-filter="Buildings">Κτίρια</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Utility Networks">Δίκτυα Κοινής Ωφέλειας</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Industrial &amp; Energy">Βιομηχανικά &amp; Ενέργεια</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Roadworks">Οδοποιία</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Urban Redevelopment">Αστική Ανάπλαση</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Ports &amp; Marine">Λιμάνια &amp; Θαλάσσια</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Railways">Σιδηρόδρομοι</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Dams">Φράγματα</button>
+            <button class="proj-filter-btn" data-category="typology" data-filter="Tunnels">Σήραγγες</button>
+          </div>
+        </div>
+        <div class="proj-filters-col">
+          <span class="proj-filters-label">Τοποθεσία</span>
+          <div class="proj-filters-list">
+            <button class="proj-filter-btn" data-category="region" data-filter="Attica">Αττική</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Peloponnese">Πελοπόννησος</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Central Greece">Στερεά Ελλάδα</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Thessaly">Θεσσαλία</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Northern Greece">Βόρεια Ελλάδα</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Crete">Κρήτη</button>
+            <button class="proj-filter-btn" data-category="region" data-filter="Islands">Νησιά</button>
+          </div>
+        </div>
+        <div class="proj-filters-actions">
+          <button class="proj-apply-btn" id="projApply">Εφαρμογή</button>
+          <button class="proj-clear-btn" id="projClearAll">&mdash; Καθαρισμός</button>
         </div>
       </div>
     </div>
@@ -56,10 +83,10 @@ scripts: ../projects-data.js
     <!-- ===== LIST VIEW ===== -->
     <div class="proj-table" id="projListView" style="display:none">
       <div class="proj-row proj-row-header">
-        <span class="proj-col proj-col-name">Έργο</span>
-        <span class="proj-col proj-col-type">Τυπολογία</span>
-        <span class="proj-col proj-col-loc">Τοποθεσία</span>
-        <span class="proj-col proj-col-year">Έτος</span>
+        <button class="proj-col proj-col-name proj-sort-btn" data-sort="name">Έργο</button>
+        <button class="proj-col proj-col-type proj-sort-btn" data-sort="typology">Τυπολογία</button>
+        <button class="proj-col proj-col-loc proj-sort-btn" data-sort="location">Τοποθεσία</button>
+        <button class="proj-col proj-col-year proj-sort-btn" data-sort="year">Έτος</button>
       </div>
     </div>
 
@@ -75,7 +102,7 @@ scripts: ../projects-data.js
       </div>
       <div class="proj-map-viewport" id="mapViewport">
         <div class="proj-map-inner" id="mapInner">
-          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img" loading="lazy">
+          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img" loading="lazy" width="2000" height="2000">
           <!-- dots rendered by JS -->
         </div>
       </div>

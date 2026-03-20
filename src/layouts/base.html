@@ -26,10 +26,10 @@
 
   <header class="menu" role="banner">
     <a href="{{homeLink}}" class="menu-logo">
-      <img src="../assets/themeli-icon.svg" alt="Themeli">
+      <img src="../assets/themeli-icon.svg" alt="Themeli" width="75" height="50">
     </a>
     <div class="menu-right">
-      <a class="lang-switch" data-lang-switch>{{langSwitch}}</a>
+      <a class="lang-switch" href="{{langSwitchHref}}" data-lang-switch>{{langSwitch}}</a>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span>
         <span></span>
@@ -46,7 +46,7 @@
     <div class="footer-gradient"></div>
     <div class="footer-inner">
       <div class="footer-logo">
-        <a href=""><img src="../assets/themeli-footer-logo.svg" alt="Themeli"></a>
+        <a href=""><img src="../assets/themeli-footer-logo.svg" alt="Themeli" width="140" height="150"></a>
       </div>
       <div class="footer-columns">
         <div class="footer-col">
@@ -89,8 +89,7 @@
   </button>
 
 {{scripts}}  <script src="../subsidiaries-data.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../supabase-config.js"></script>
+  <script src="../projects-data.js"></script>
   <script src="../script.js"></script>
   <script type="application/ld+json">
   {
