@@ -21,7 +21,9 @@ foreach ($rows as $i => $r) {
     $output .= "  {\n";
     $output .= "    id: " . (int)$r['id'] . ",\n";
     $output .= "    name: " . json_encode($r['name']) . ",\n";
+    $output .= "    name_en: " . json_encode($r['name_en'] ?? '') . ",\n";
     $output .= "    description: " . json_encode($r['description'] ?? '') . ",\n";
+    $output .= "    description_en: " . json_encode($r['description_en'] ?? '') . ",\n";
     $output .= "    year: " . (int)$r['year'] . ",\n";
     $output .= "    typology: " . json_encode($r['typology']) . ",\n";
     $output .= "    location: " . json_encode($r['location'] ?? '') . ",\n";
@@ -31,6 +33,9 @@ foreach ($rows as $i => $r) {
     $output .= "    status: " . json_encode($r['status'] ?? '') . ",\n";
     $output .= "    dateCompleted: " . json_encode($r['date_completed'] ?? '') . ",\n";
     $output .= "    image: " . json_encode($r['image_url'] ?? '') . ",\n";
+    $imgs = json_decode($r['images'] ?? '[]', true);
+    if (!is_array($imgs)) $imgs = [];
+    $output .= "    images: " . json_encode($imgs) . ",\n";
     $output .= "    mapX: " . ($r['map_x'] !== null ? (float)$r['map_x'] : 'null') . ",\n";
     $output .= "    mapY: " . ($r['map_y'] !== null ? (float)$r['map_y'] : 'null') . "\n";
     $output .= "  }" . ($i < count($rows) - 1 ? "," : "") . "\n";

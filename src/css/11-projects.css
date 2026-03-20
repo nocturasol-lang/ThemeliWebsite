@@ -122,7 +122,7 @@
 }
 
 .proj-filters.is-open {
-  max-height: 500px;
+  max-height: 600px;
   opacity: 1;
 }
 
@@ -276,8 +276,15 @@
 .proj-sort-btn {
   background: none;
   border: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   cursor: pointer;
   transition: color 0.3s;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
   gap: 4px;
 }
 
@@ -602,7 +609,7 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Counter-scale dots and tooltips when map is zoomed */
+/* Counter-scale dots when map is zoomed (keep them small) */
 .proj-map-viewport.is-zoomed .proj-map-dot {
   transform: translate(-50%, -50%) scale(var(--map-counter-scale, 1));
 }
@@ -612,14 +619,15 @@
   transform: translate(-50%, -50%) scale(var(--map-counter-scale, 1));
 }
 
+/* Restore tooltip to full size (cancel dot's counter-scale) */
 .proj-map-viewport.is-zoomed .proj-map-tooltip {
-  transform: translateX(-50%) translateY(6px) scale(var(--map-counter-scale, 1));
+  transform: translateX(-50%) translateY(6px) scale(var(--map-tooltip-restore, 1));
   transform-origin: bottom center;
 }
 
 .proj-map-viewport.is-zoomed .proj-map-dot:hover .proj-map-tooltip,
 .proj-map-viewport.is-zoomed .proj-map-dot.is-active .proj-map-tooltip {
-  transform: translateX(-50%) translateY(0) scale(var(--map-counter-scale, 1));
+  transform: translateX(-50%) translateY(0) scale(var(--map-tooltip-restore, 1));
   transform-origin: bottom center;
 }
 

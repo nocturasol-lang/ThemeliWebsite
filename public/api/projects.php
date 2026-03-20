@@ -36,15 +36,17 @@ if ($method === 'POST') {
     // Normalize to array of rows
     $rows = isset($body[0]) ? $body : [$body];
 
-    $sql = 'INSERT INTO projects (name, description, year, typology, location, region, architect, size, status, date_completed, image_url, map_x, map_y)
-            VALUES (:name, :description, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :map_x, :map_y)';
+    $sql = 'INSERT INTO projects (name, name_en, description, description_en, year, typology, location, region, architect, size, status, date_completed, image_url, images, map_x, map_y)
+            VALUES (:name, :name_en, :description, :description_en, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :images, :map_x, :map_y)';
     $stmt = $db->prepare($sql);
 
     $ids = [];
     foreach ($rows as $r) {
         $stmt->execute([
             ':name'           => $r['name'] ?? '',
+            ':name_en'        => $r['name_en'] ?? '',
             ':description'    => $r['description'] ?? '',
+            ':description_en' => $r['description_en'] ?? '',
             ':year'           => (int)($r['year'] ?? 0),
             ':typology'       => $r['typology'] ?? '',
             ':location'       => $r['location'] ?? '',
@@ -54,6 +56,7 @@ if ($method === 'POST') {
             ':status'         => $r['status'] ?? 'Completed',
             ':date_completed' => $r['date_completed'] ?? '',
             ':image_url'      => $r['image_url'] ?? '',
+            ':images'         => $r['images'] ?? '[]',
             ':map_x'          => isset($r['map_x']) ? (float)$r['map_x'] : null,
             ':map_y'          => isset($r['map_y']) ? (float)$r['map_y'] : null,
         ]);
@@ -68,15 +71,17 @@ if ($method === 'PUT') {
     $body = getJsonBody();
     if (!$body || !isset($body['id'])) jsonResponse(['error' => 'Missing id'], 400);
 
-    $sql = 'UPDATE projects SET name=:name, description=:description, year=:year, typology=:typology,
+    $sql = 'UPDATE projects SET name=:name, name_en=:name_en, description=:description, description_en=:description_en, year=:year, typology=:typology,
             location=:location, region=:region, architect=:architect, size=:size, status=:status,
-            date_completed=:date_completed, image_url=:image_url, map_x=:map_x, map_y=:map_y
+            date_completed=:date_completed, image_url=:image_url, images=:images, map_x=:map_x, map_y=:map_y
             WHERE id=:id';
     $stmt = $db->prepare($sql);
     $stmt->execute([
         ':id'             => (int)$body['id'],
         ':name'           => $body['name'] ?? '',
+        ':name_en'        => $body['name_en'] ?? '',
         ':description'    => $body['description'] ?? '',
+        ':description_en' => $body['description_en'] ?? '',
         ':year'           => (int)($body['year'] ?? 0),
         ':typology'       => $body['typology'] ?? '',
         ':location'       => $body['location'] ?? '',
@@ -86,6 +91,7 @@ if ($method === 'PUT') {
         ':status'         => $body['status'] ?? 'Completed',
         ':date_completed' => $body['date_completed'] ?? '',
         ':image_url'      => $body['image_url'] ?? '',
+        ':images'         => $body['images'] ?? '[]',
         ':map_x'          => isset($body['map_x']) ? (float)$body['map_x'] : null,
         ':map_y'          => isset($body['map_y']) ? (float)$body['map_y'] : null,
     ]);

@@ -170,20 +170,20 @@ function build() {
   if (PROD) css = minifyCSS(css);
 
   const cssFilename = PROD ? `styles.${shortHash(css)}.css` : 'styles.css';
-  fs.writeFileSync(path.join(DIST, cssFilename), css);
+  try { fs.writeFileSync(path.join(DIST, cssFilename), css); } catch (_) { console.warn('Warning: could not write ' + cssFilename); }
 
   /* ── Concatenate JS from src/js/ ────────────────────────── */
   let js = concatDir(path.join(SRC, 'js'), '.js');
   if (PROD) js = minifyJS(js);
 
   const jsFilename = PROD ? `script.${shortHash(js)}.js` : 'script.js';
-  fs.writeFileSync(path.join(DIST, jsFilename), js);
+  try { fs.writeFileSync(path.join(DIST, jsFilename), js); } catch (_) { console.warn('Warning: could not write ' + jsFilename); }
 
   /* ── Copy data files → dist/ ────────────────────────────── */
   for (const file of ['projects-data.js']) {
     const srcFile = path.join(SRC, file);
     if (fs.existsSync(srcFile)) {
-      fs.copyFileSync(srcFile, path.join(DIST, file));
+      try { fs.copyFileSync(srcFile, path.join(DIST, file)); } catch (_) { console.warn('Warning: could not copy ' + file); }
     }
   }
 

@@ -49,7 +49,9 @@ if (mapViewport && mapInner) {
     mapInner.style.transition = smooth ? 'transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
     mapInner.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
     mapViewport.classList.toggle('is-zoomed', scale > 1);
-    mapViewport.style.setProperty('--map-counter-scale', Math.max(0.35, 1 / scale));
+    const cs = Math.max(0.35, 1 / scale);
+    mapViewport.style.setProperty('--map-counter-scale', cs);
+    mapViewport.style.setProperty('--map-tooltip-restore', 1 / cs);
   }
 
   function clampPan() {
@@ -62,7 +64,6 @@ if (mapViewport && mapInner) {
 
   mapZoomIn.addEventListener('click', () => {
     if (scale < 2) { scale = 2; clampPan(); applyTransform(true); }
-    else if (scale < 4) { scale = 4; clampPan(); applyTransform(true); }
   });
 
   mapZoomOut.addEventListener('click', () => {

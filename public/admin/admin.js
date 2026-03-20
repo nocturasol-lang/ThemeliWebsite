@@ -23,9 +23,11 @@ const statusEl = document.getElementById('adminStatus');
 const fName = document.getElementById('fName');
 const fYear = document.getElementById('fYear');
 const fTypology = document.getElementById('fTypology');
+const fNameEn = document.getElementById('fNameEn');
 const fLocation = document.getElementById('fLocation');
 const fRegion = document.getElementById('fRegion');
 const fDesc = document.getElementById('fDesc');
+const fDescEn = document.getElementById('fDescEn');
 const fArchitect = document.getElementById('fArchitect');
 const fSize = document.getElementById('fSize');
 const fStatus = document.getElementById('fStatus');
@@ -36,6 +38,12 @@ const fImageFile = document.getElementById('fImageFile');
 const fImageDropzone = document.getElementById('fImageDropzone');
 const fImagePrompt = document.getElementById('fImagePrompt');
 const fImageRemove = document.getElementById('fImageRemove');
+const fGalleryDropzone = document.getElementById('fGalleryDropzone');
+const fGalleryThumbs = document.getElementById('fGalleryThumbs');
+const fGalleryFile = document.getElementById('fGalleryFile');
+const fGalleryPrompt = document.getElementById('fGalleryPrompt');
+let galleryImages = [];       // URLs of already-uploaded gallery images
+let pendingGalleryFiles = [];  // Files waiting to be uploaded on save
 
 // Map picker
 const mapPickerContainer = document.getElementById('mapPickerContainer');
@@ -51,7 +59,9 @@ function fromDb(row) {
   return {
     id: row.id,
     name: row.name,
+    nameEn: row.name_en || '',
     description: row.description || '',
+    descriptionEn: row.description_en || '',
     year: row.year,
     typology: row.typology,
     location: row.location || '',
@@ -61,6 +71,7 @@ function fromDb(row) {
     status: row.status || 'Completed',
     dateCompleted: row.date_completed || '',
     image: row.image_url || '',
+    images: (() => { try { return JSON.parse(row.images || '[]'); } catch(_) { return []; } })(),
     mapX: row.map_x,
     mapY: row.map_y
   };
@@ -70,7 +81,9 @@ function fromDb(row) {
 function toDb(data) {
   return {
     name: data.name,
+    name_en: data.nameEn || '',
     description: data.description || '',
+    description_en: data.descriptionEn || '',
     year: data.year,
     typology: data.typology,
     location: data.location || '',
@@ -80,6 +93,7 @@ function toDb(data) {
     status: data.status || 'Completed',
     date_completed: data.dateCompleted || '',
     image_url: data.image || '',
+    images: JSON.stringify(data.images || []),
     map_x: data.mapX,
     map_y: data.mapY
   };
@@ -114,7 +128,7 @@ async function uploadImage(file) {
 // ========== STATUS ==========
 function updateStatus() {
   if (!statusEl) return;
-  statusEl.textContent = `${projects.length} projects in database`;
+  statusEl.textContent = `${projects.length} έργα στη βάση`;
   statusEl.className = 'admin-status is-published';
 }
 
@@ -160,18 +174,23 @@ function openModal(project) {
   pendingImageFile = null;
   if (project) {
     editingId = project.id;
-    modalTitle.textContent = 'Edit Project';
+    modalTitle.textContent = 'Επεξεργασία Έργου';
     fName.value = project.name;
+    fNameEn.value = project.nameEn || '';
     fYear.value = project.year;
     fTypology.value = project.typology;
     fLocation.value = project.location;
     fRegion.value = project.region || '';
     fDesc.value = project.description || '';
+    fDescEn.value = project.descriptionEn || '';
     fArchitect.value = project.architect || '';
     fSize.value = project.size || '';
     fStatus.value = project.status || 'Completed';
     fDateCompleted.value = project.dateCompleted || '';
     setImagePreview(project.image || '');
+    galleryImages = Array.isArray(project.images) ? [...project.images] : [];
+    pendingGalleryFiles = [];
+    renderGalleryThumbs();
     if (project.mapX != null && project.mapY != null) {
       pickerX = project.mapX;
       pickerY = project.mapY;
@@ -187,18 +206,23 @@ function openModal(project) {
     }
   } else {
     editingId = null;
-    modalTitle.textContent = 'Add Project';
+    modalTitle.textContent = 'Προσθήκη Έργου';
     fName.value = '';
+    fNameEn.value = '';
     fYear.value = '';
     fTypology.value = 'Buildings';
     fLocation.value = '';
     fRegion.value = '';
     fDesc.value = '';
+    fDescEn.value = '';
     fArchitect.value = '';
     fSize.value = '';
     fStatus.value = 'Completed';
     fDateCompleted.value = '';
     setImagePreview('');
+    galleryImages = [];
+    pendingGalleryFiles = [];
+    renderGalleryThumbs();
     pickerX = null;
     pickerY = null;
     mapPickerDot.classList.remove('is-placed');
@@ -274,6 +298,67 @@ fImageRemove.addEventListener('click', () => {
   setImagePreview('');
 });
 
+// ========== GALLERY UPLOAD ==========
+function renderGalleryThumbs() {
+  fGalleryThumbs.innerHTML = '';
+  galleryImages.forEach((url, i) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-thumb';
+    div.style.backgroundImage = `url('${url}')`;
+    const btn = document.createElement('button');
+    btn.className = 'gallery-thumb-remove';
+    btn.textContent = '×';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryImages.splice(i, 1);
+      renderGalleryThumbs();
+    });
+    div.appendChild(btn);
+    fGalleryThumbs.appendChild(div);
+  });
+  // Show pending files as local previews
+  pendingGalleryFiles.forEach((file, i) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-thumb';
+    div.style.backgroundImage = `url('${URL.createObjectURL(file)}')`;
+    const btn = document.createElement('button');
+    btn.className = 'gallery-thumb-remove';
+    btn.textContent = '×';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pendingGalleryFiles.splice(i, 1);
+      renderGalleryThumbs();
+    });
+    div.appendChild(btn);
+    fGalleryThumbs.appendChild(div);
+  });
+  fGalleryPrompt.style.display = (galleryImages.length || pendingGalleryFiles.length) ? 'none' : '';
+}
+
+fGalleryDropzone.addEventListener('click', () => fGalleryFile.click());
+fGalleryFile.addEventListener('change', (e) => {
+  for (const file of e.target.files) {
+    if (file.type.startsWith('image/')) pendingGalleryFiles.push(file);
+  }
+  renderGalleryThumbs();
+  fGalleryFile.value = '';
+});
+fGalleryDropzone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  fGalleryDropzone.classList.add('is-dragover');
+});
+fGalleryDropzone.addEventListener('dragleave', () => {
+  fGalleryDropzone.classList.remove('is-dragover');
+});
+fGalleryDropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  fGalleryDropzone.classList.remove('is-dragover');
+  for (const file of e.dataTransfer.files) {
+    if (file.type.startsWith('image/')) pendingGalleryFiles.push(file);
+  }
+  renderGalleryThumbs();
+});
+
 // ========== SAVE PROJECT ==========
 modalSave.addEventListener('click', async () => {
   const name = fName.value.trim();
@@ -284,7 +369,7 @@ modalSave.addEventListener('click', async () => {
 
   // Disable button while saving
   modalSave.disabled = true;
-  modalSave.textContent = 'Saving...';
+  modalSave.textContent = 'Αποθήκευση...';
 
   // Upload image if a new file was selected
   let imageUrl = fImage.value;
@@ -293,9 +378,18 @@ modalSave.addEventListener('click', async () => {
   }
   if (imageUrl === '__pending__') imageUrl = '';
 
+  // Upload pending gallery files
+  const uploadedGallery = [...galleryImages];
+  for (const file of pendingGalleryFiles) {
+    const url = await uploadImage(file);
+    if (url) uploadedGallery.push(url);
+  }
+
   const data = {
     name,
+    nameEn: fNameEn.value.trim(),
     description: fDesc.value.trim(),
+    descriptionEn: fDescEn.value.trim(),
     year,
     typology: fTypology.value,
     location: fLocation.value.trim(),
@@ -305,6 +399,7 @@ modalSave.addEventListener('click', async () => {
     status: fStatus.value,
     dateCompleted: fDateCompleted.value.trim(),
     image: imageUrl,
+    images: uploadedGallery,
     mapX: pickerX,
     mapY: pickerY
   };
@@ -332,20 +427,20 @@ modalSave.addEventListener('click', async () => {
       const err = await res.json();
       alert('Save failed: ' + (err.error || 'Unknown error'));
       modalSave.disabled = false;
-      modalSave.textContent = 'Save Project';
+      modalSave.textContent = 'Αποθήκευση';
       return;
     }
   } catch (e) {
     alert('Save failed: ' + e.message);
     modalSave.disabled = false;
-    modalSave.textContent = 'Save Project';
+    modalSave.textContent = 'Αποθήκευση';
     return;
   }
 
   // Reload from DB
   projects = await loadProjects();
   modalSave.disabled = false;
-  modalSave.textContent = 'Save Project';
+  modalSave.textContent = 'Αποθήκευση';
   closeModal();
   renderTable();
   updateStatus();
@@ -365,7 +460,7 @@ tableBody.addEventListener('click', async (e) => {
   if (deleteBtn) {
     const id = parseInt(deleteBtn.getAttribute('data-delete'), 10);
     const project = projects.find(p => p.id === id);
-    if (project && confirm(`Delete "${project.name}"?`)) {
+    if (project && confirm(`Διαγραφή "${project.name}";`)) {
       try {
         const res = await fetch(`../api/projects.php?id=${id}`, { method: 'DELETE' });
         if (!res.ok) {
@@ -388,12 +483,12 @@ tableBody.addEventListener('click', async (e) => {
 if (publishBtn) {
   publishBtn.addEventListener('click', async () => {
     publishBtn.disabled = true;
-    publishBtn.textContent = 'Publishing...';
+    publishBtn.textContent = 'Δημοσίευση...';
     try {
       const res = await fetch('../api/export.php');
       if (res.ok) {
         const data = await res.json();
-        alert(`Published ${data.count} projects to site.`);
+        alert(`Δημοσιεύτηκαν ${data.count} έργα στη σελίδα.`);
       } else {
         const err = await res.json();
         alert('Publish failed: ' + (err.error || 'Unknown error'));
@@ -402,7 +497,7 @@ if (publishBtn) {
       alert('Publish failed: ' + e.message);
     }
     publishBtn.disabled = false;
-    publishBtn.textContent = 'Publish to Site';
+    publishBtn.textContent = 'Δημοσίευση';
   });
 }
 
@@ -414,7 +509,9 @@ exportBtn.addEventListener('click', () => {
     output += '  {\n';
     output += `    id: ${p.id},\n`;
     output += `    name: ${JSON.stringify(p.name)},\n`;
+    output += `    name_en: ${JSON.stringify(p.nameEn || '')},\n`;
     output += `    description: ${JSON.stringify(p.description || '')},\n`;
+    output += `    description_en: ${JSON.stringify(p.descriptionEn || '')},\n`;
     output += `    year: ${p.year},\n`;
     output += `    typology: ${JSON.stringify(p.typology)},\n`;
     output += `    location: ${JSON.stringify(p.location || '')},\n`;
@@ -424,6 +521,7 @@ exportBtn.addEventListener('click', () => {
     output += `    status: ${JSON.stringify(p.status || '')},\n`;
     output += `    dateCompleted: ${JSON.stringify(p.dateCompleted || '')},\n`;
     output += `    image: ${JSON.stringify(p.image || '')},\n`;
+    output += `    images: ${JSON.stringify(p.images || [])},\n`;
     output += `    mapX: ${p.mapX != null ? p.mapX : 'null'},\n`;
     output += `    mapY: ${p.mapY != null ? p.mapY : 'null'}\n`;
     output += '  }' + (i < projects.length - 1 ? ',' : '') + '\n';
@@ -485,7 +583,7 @@ importFile.addEventListener('change', async (e) => {
       projects = await loadProjects();
       renderTable();
       updateStatus();
-      alert(`Imported ${imported.length} projects successfully.`);
+      alert(`Εισήχθησαν ${imported.length} έργα επιτυχώς.`);
     } catch (err) {
       alert('Failed to parse file: ' + err.message);
     }

@@ -198,6 +198,40 @@
   transform: translateY(0);
 }
 
+/* Photo Gallery */
+.pdet-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 48px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-out) 0.18s, transform 0.5s var(--ease-out) 0.18s;
+}
+
+.pdet.is-loaded .pdet-gallery {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pdet-gallery:empty {
+  display: none;
+}
+
+.pdet-gallery-img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  cursor: pointer;
+  filter: grayscale(30%);
+  transition: filter 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.pdet-gallery-img:hover {
+  filter: grayscale(0%);
+  transform: scale(1.02);
+}
+
 /* Info board (lobsintl-style vertical list) */
 .pdet-info-board {
   border-top: 1px solid rgba(255, 255, 255, 0.08);

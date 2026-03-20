@@ -20,7 +20,9 @@ function initSchema($pdo) {
     $pdo->exec('CREATE TABLE IF NOT EXISTS projects (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        name_en TEXT DEFAULT "",
         description TEXT DEFAULT "",
+        description_en TEXT DEFAULT "",
         year INTEGER NOT NULL,
         typology TEXT NOT NULL,
         location TEXT DEFAULT "",
@@ -30,6 +32,7 @@ function initSchema($pdo) {
         status TEXT DEFAULT "Completed",
         date_completed TEXT DEFAULT "",
         image_url TEXT DEFAULT "",
+        images TEXT DEFAULT "[]",
         map_x REAL,
         map_y REAL
     )');
@@ -39,5 +42,14 @@ function initSchema($pdo) {
     $colNames = array_column($cols, 'name');
     if (!in_array('region', $colNames)) {
         $pdo->exec('ALTER TABLE projects ADD COLUMN region TEXT DEFAULT ""');
+    }
+    if (!in_array('images', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN images TEXT DEFAULT "[]"');
+    }
+    if (!in_array('name_en', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN name_en TEXT DEFAULT ""');
+    }
+    if (!in_array('description_en', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN description_en TEXT DEFAULT ""');
     }
 }

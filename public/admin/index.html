@@ -468,6 +468,62 @@
       background: rgba(212,87,78,0.1);
     }
 
+    /* Gallery upload */
+    .gallery-upload-area {
+      border: 2px dashed var(--border);
+      padding: 16px;
+      min-height: 100px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .gallery-upload-area:hover,
+    .gallery-upload-area.is-dragover {
+      border-color: var(--accent);
+    }
+
+    .gallery-upload-prompt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray);
+      padding: 20px 0;
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .gallery-thumb {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      background-size: cover;
+      background-position: center;
+      border: 1px solid var(--border);
+    }
+
+    .gallery-thumb-remove {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 11px;
+      line-height: 18px;
+      text-align: center;
+      cursor: pointer;
+      padding: 0;
+    }
+
     /* Form footer */
     .form-footer {
       display: flex;
@@ -500,11 +556,11 @@
           <input type="email" id="loginEmail" placeholder="admin@themeli.gr" autofocus>
         </div>
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter password">
+          <label>Κωδικός</label>
+          <input type="password" id="loginPassword" placeholder="Εισάγετε κωδικό">
         </div>
         <p class="login-error" id="loginError"></p>
-        <button type="submit" class="btn btn-accent login-btn">Sign In</button>
+        <button type="submit" class="btn btn-accent login-btn">Σύνδεση</button>
       </form>
     </div>
   </div>
@@ -513,13 +569,13 @@
     <h1>THEMELI <span>Admin Panel</span></h1>
     <div class="admin-actions">
       <span class="admin-status" id="adminStatus"></span>
-      <a href="../en/projects.html" class="btn btn-sm" target="_blank">View Site</a>
-      <button class="btn btn-sm btn-accent" id="addProjectBtn">+ Add Project</button>
-      <button class="btn btn-sm btn-publish" id="publishBtn">Publish to Site</button>
-      <button class="btn btn-sm" id="exportBtn">Export File</button>
-      <label class="btn btn-sm btn-import" for="importFile">Import File</label>
+      <a href="../el/projects.html" class="btn btn-sm" target="_blank">Προβολή Σελίδας</a>
+      <button class="btn btn-sm btn-accent" id="addProjectBtn">+ Προσθήκη Έργου</button>
+      <button class="btn btn-sm btn-publish" id="publishBtn">Δημοσίευση</button>
+      <button class="btn btn-sm" id="exportBtn">Εξαγωγή</button>
+      <label class="btn btn-sm btn-import" for="importFile">Εισαγωγή</label>
       <input type="file" id="importFile" accept=".js" style="display:none">
-      <button class="btn btn-sm btn-danger" id="logoutBtn">Logout</button>
+      <button class="btn btn-sm btn-danger" id="logoutBtn">Αποσύνδεση</button>
     </div>
   </header>
 
@@ -527,55 +583,59 @@
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Image</th>
-          <th>Name</th>
-          <th>Year</th>
-          <th>Typology</th>
-          <th>Location</th>
-          <th>Region</th>
-          <th>Map</th>
-          <th>Actions</th>
+          <th>Εικόνα</th>
+          <th>Όνομα</th>
+          <th>Έτος</th>
+          <th>Τυπολογία</th>
+          <th>Τοποθεσία</th>
+          <th>Περιοχή</th>
+          <th>Χάρτης</th>
+          <th>Ενέργειες</th>
         </tr>
       </thead>
       <tbody id="adminTableBody">
       </tbody>
     </table>
-    <div class="empty-state" id="emptyState" style="display:none">No projects yet. Click "+ Add Project" to get started.</div>
+    <div class="empty-state" id="emptyState" style="display:none">Δεν υπάρχουν έργα. Κάντε κλικ στο «+ Προσθήκη Έργου» για να ξεκινήσετε.</div>
   </main>
 
   <!-- Modal -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <h2 id="modalTitle">Add Project</h2>
+      <h2 id="modalTitle">Προσθήκη Έργου</h2>
       <div class="form-grid">
         <div class="form-group">
-          <label>Project Name</label>
-          <input type="text" id="fName" placeholder="e.g. Athens Tramway Extension">
+          <label>Όνομα Έργου</label>
+          <input type="text" id="fName" placeholder="π.χ. Επέκταση Τραμ Αθήνας">
         </div>
         <div class="form-group">
-          <label>Year</label>
-          <input type="number" id="fYear" placeholder="e.g. 2004" min="1900" max="2100">
+          <label>Όνομα (Αγγλικά)</label>
+          <input type="text" id="fNameEn" placeholder="e.g. Athens-Thessaloniki Railway">
         </div>
         <div class="form-group">
-          <label>Typology</label>
+          <label>Έτος</label>
+          <input type="number" id="fYear" placeholder="π.χ. 2004" min="1900" max="2100">
+        </div>
+        <div class="form-group">
+          <label>Τυπολογία</label>
           <select id="fTypology">
-            <option value="Buildings">Buildings</option>
-            <option value="Railways">Railways</option>
-            <option value="Roadworks">Roadworks</option>
-            <option value="Tunnels">Tunnels</option>
-            <option value="Industrial & Energy">Industrial & Energy</option>
-            <option value="Utility Networks">Utility Networks</option>
-            <option value="Dams">Dams</option>
-            <option value="Ports & Marine">Ports & Marine</option>
-            <option value="Urban Redevelopment">Urban Redevelopment</option>
+            <option value="Buildings">Κτίρια</option>
+            <option value="Railways">Σιδηρόδρομοι</option>
+            <option value="Roadworks">Οδοποιία</option>
+            <option value="Tunnels">Σήραγγες</option>
+            <option value="Industrial & Energy">Βιομηχανικά & Ενέργεια</option>
+            <option value="Utility Networks">Δίκτυα Κοινής Ωφέλειας</option>
+            <option value="Dams">Φράγματα</option>
+            <option value="Ports & Marine">Λιμάνια & Θαλάσσια</option>
+            <option value="Urban Redevelopment">Αστική Ανάπλαση</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Location</label>
+          <label>Τοποθεσία</label>
           <input type="text" id="fLocation" placeholder="π.χ. Αθήνα">
         </div>
         <div class="form-group">
-          <label>Περιοχή (Region)</label>
+          <label>Περιοχή</label>
           <select id="fRegion">
             <option value="">— Επιλέξτε —</option>
             <option value="Attica">Αττική</option>
@@ -588,44 +648,59 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Architect</label>
-          <input type="text" id="fArchitect" placeholder="e.g. Gehry Partners">
+          <label>Αρχιτέκτονας</label>
+          <input type="text" id="fArchitect" placeholder="π.χ. Gehry Partners">
         </div>
         <div class="form-group">
-          <label>Size</label>
-          <input type="text" id="fSize" placeholder="e.g. 110,000 ft² / 10,219 m²">
+          <label>Μέγεθος</label>
+          <input type="text" id="fSize" placeholder="π.χ. 110.000 ft² / 10.219 m²">
         </div>
         <div class="form-group">
-          <label>Status</label>
+          <label>Κατάσταση</label>
           <select id="fStatus">
-            <option value="Completed">Completed</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Planning">Planning</option>
+            <option value="Completed">Ολοκληρωμένο</option>
+            <option value="In Progress">Σε Εξέλιξη</option>
+            <option value="Planning">Σχεδιασμός</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Date Completed</label>
-          <input type="text" id="fDateCompleted" placeholder="e.g. 2003">
+          <label>Ημερομηνία Ολοκλήρωσης</label>
+          <input type="text" id="fDateCompleted" placeholder="π.χ. 2003">
         </div>
         <div class="form-group full">
-          <label>Description</label>
-          <textarea id="fDesc" placeholder="Brief project description..."></textarea>
+          <label>Περιγραφή</label>
+          <textarea id="fDesc" placeholder="Σύντομη περιγραφή έργου..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Περιγραφή (Αγγλικά)</label>
+          <textarea id="fDescEn" placeholder="Brief project description in English..."></textarea>
         </div>
         <div class="form-group">
-          <label>Project Image</label>
+          <label>Εικόνα Έργου</label>
           <div class="img-upload-area" id="fImageDropzone">
             <div class="img-preview" id="fImagePreview"></div>
             <div class="img-upload-prompt" id="fImagePrompt">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span>Click or drop image</span>
+              <span>Κλικ ή σύρετε εικόνα</span>
             </div>
             <input type="file" id="fImageFile" accept="image/*" style="display:none">
           </div>
           <input type="hidden" id="fImage">
-          <button type="button" class="btn btn-sm btn-remove-img" id="fImageRemove" style="display:none">Remove Image</button>
+          <button type="button" class="btn btn-sm btn-remove-img" id="fImageRemove" style="display:none">Αφαίρεση Εικόνας</button>
+        </div>
+        <div class="form-group full">
+          <label>Φωτογραφίες Έργου (Gallery)</label>
+          <div class="gallery-upload-area" id="fGalleryDropzone">
+            <div class="gallery-thumbs" id="fGalleryThumbs"></div>
+            <div class="gallery-upload-prompt" id="fGalleryPrompt">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Κλικ ή σύρετε φωτογραφίες</span>
+            </div>
+            <input type="file" id="fGalleryFile" accept="image/*" multiple style="display:none">
+          </div>
         </div>
         <div class="map-picker">
-          <label>Map Position <span style="font-weight:300;text-transform:none;letter-spacing:0">(click on the map to place the dot)</span></label>
+          <label>Θέση στον Χάρτη <span style="font-weight:300;text-transform:none;letter-spacing:0">(κλικ στον χάρτη για τοποθέτηση)</span></label>
           <div class="map-picker-coords" id="mapPickerCoords">X: — Y: —</div>
           <div class="map-picker-container" id="mapPickerContainer">
             <img src="../assets/greece-map.png" alt="Greece">
@@ -634,8 +709,8 @@
         </div>
       </div>
       <div class="form-footer">
-        <button class="btn" id="modalCancel">Cancel</button>
-        <button class="btn btn-accent" id="modalSave">Save Project</button>
+        <button class="btn" id="modalCancel">Ακύρωση</button>
+        <button class="btn btn-accent" id="modalSave">Αποθήκευση</button>
       </div>
     </div>
   </div>

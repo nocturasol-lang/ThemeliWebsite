@@ -5,12 +5,24 @@ const I18N = {
   en: {
     projects: 'Projects', project: 'Project',
     copied: 'Copied!', copyAddress: 'Copy Address', copyNumber: 'Copy Number',
-    clearAll: 'Clear All'
+    clearAll: 'Clear All',
+    typ: {}
   },
   el: {
     projects: 'Έργα', project: 'Έργο',
     copied: 'Αντιγράφηκε!', copyAddress: 'Αντιγραφή Διεύθυνσης', copyNumber: 'Αντιγραφή Αριθμού',
-    clearAll: 'Καθαρισμός'
+    clearAll: 'Καθαρισμός',
+    typ: {
+      'Buildings': 'Κτίρια',
+      'Railways': 'Σιδηρόδρομοι',
+      'Roadworks': 'Οδοποιία',
+      'Tunnels': 'Σήραγγες',
+      'Industrial & Energy': 'Βιομηχανικά & Ενέργεια',
+      'Utility Networks': 'Δίκτυα Κοινής Ωφέλειας',
+      'Dams': 'Φράγματα',
+      'Ports & Marine': 'Λιμάνια & Θαλάσσια',
+      'Urban Redevelopment': 'Αστική Ανάπλαση'
+    }
   }
 };
 const T = I18N[LANG];

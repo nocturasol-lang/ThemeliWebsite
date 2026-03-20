@@ -6,7 +6,9 @@ const PROJECTS = [
   {
     id: 1,
     name: "Athens-Thessaloniki Railway",
+    name_en: "Athens-Thessaloniki Railway",
     description: "Major railway line connecting Greece's two largest cities through Pieria and Karditsa.",
+    description_en: "Major railway line connecting Greece's two largest cities through Pieria and Karditsa.",
     year: 1993,
     typology: "Railways",
     location: "Pieria / Karditsa",
@@ -19,7 +21,9 @@ const PROJECTS = [
   {
     id: 2,
     name: "Athens Tramway Extension",
+    name_en: "Athens Tramway Extension",
     description: "Extension of the Athens tramway network serving the southern coastal suburbs.",
+    description_en: "Extension of the Athens tramway network serving the southern coastal suburbs.",
     year: 2004,
     typology: "Railways",
     location: "Athens",
@@ -32,7 +36,9 @@ const PROJECTS = [
   {
     id: 3,
     name: "Tramway Extension to Piraeus",
+    name_en: "Tramway Extension to Piraeus",
     description: "Connecting the existing tramway line from Faliro to the port of Piraeus.",
+    description_en: "Connecting the existing tramway line from Faliro to the port of Piraeus.",
     year: 2013,
     typology: "Railways",
     location: "Athens / Piraeus",
@@ -45,7 +51,9 @@ const PROJECTS = [
   {
     id: 4,
     name: "Elefsina-Corinth High Speed Rail",
+    name_en: "Elefsina-Corinth High Speed Rail",
     description: "High-speed railway section linking Elefsina to Corinth along the Saronic Gulf.",
+    description_en: "High-speed railway section linking Elefsina to Corinth along the Saronic Gulf.",
     year: 1998,
     typology: "Railways",
     location: "Corinth",
@@ -58,7 +66,9 @@ const PROJECTS = [
   {
     id: 5,
     name: "Inoi-Tithorea Track Laying",
+    name_en: "Inoi-Tithorea Track Laying",
     description: "Track laying works on the Inoi-Tithorea section of the Athens-Thessaloniki line.",
+    description_en: "Track laying works on the Inoi-Tithorea section of the Athens-Thessaloniki line.",
     year: 2000,
     typology: "Railways",
     location: "Viotia",
@@ -71,7 +81,9 @@ const PROJECTS = [
   {
     id: 6,
     name: "Slab Track System — Tempi",
+    name_en: "Slab Track System — Tempi",
     description: "Installation of slab track system in the Tempi valley railway corridor.",
+    description_en: "Installation of slab track system in the Tempi valley railway corridor.",
     year: 2000,
     typology: "Railways",
     location: "Thessaly",
@@ -84,7 +96,9 @@ const PROJECTS = [
   {
     id: 7,
     name: "Egnatia Odos Motorway",
+    name_en: "Egnatia Odos Motorway",
     description: "Major sections of Greece's cross-country motorway connecting Igoumenitsa to the Turkish border.",
+    description_en: "Major sections of Greece's cross-country motorway connecting Igoumenitsa to the Turkish border.",
     year: 1986,
     typology: "Roadworks",
     location: "Thessaloniki",
@@ -97,7 +111,9 @@ const PROJECTS = [
   {
     id: 8,
     name: "Corinth-Argos-Tripoli Highway",
+    name_en: "Corinth-Argos-Tripoli Highway",
     description: "National highway traversing the eastern Peloponnese from Corinth to Tripoli.",
+    description_en: "National highway traversing the eastern Peloponnese from Corinth to Tripoli.",
     year: 1950,
     typology: "Roadworks",
     location: "Peloponnese",
@@ -110,7 +126,9 @@ const PROJECTS = [
   {
     id: 9,
     name: "Argos-Nafplio Highway",
+    name_en: "Argos-Nafplio Highway",
     description: "Road connecting the city of Argos with the coastal town of Nafplio.",
+    description_en: "Road connecting the city of Argos with the coastal town of Nafplio.",
     year: 1950,
     typology: "Roadworks",
     location: "Peloponnese",
@@ -123,7 +141,9 @@ const PROJECTS = [
   {
     id: 10,
     name: "VOAK — Northern Axis of Crete",
+    name_en: "VOAK — Northern Axis of Crete",
     description: "Northern road axis of Crete, the island's primary east-west motorway.",
+    description_en: "Northern road axis of Crete, the island's primary east-west motorway.",
     year: 2013,
     typology: "Roadworks",
     location: "Crete",
@@ -136,7 +156,9 @@ const PROJECTS = [
   {
     id: 11,
     name: "Larissa Bypass — Gyrtoni",
+    name_en: "Larissa Bypass — Gyrtoni",
     description: "Bypass road around the city of Larissa through the Gyrtoni area.",
+    description_en: "Bypass road around the city of Larissa through the Gyrtoni area.",
     year: 1999,
     typology: "Roadworks",
     location: "Larissa",
@@ -149,7 +171,9 @@ const PROJECTS = [
   {
     id: 12,
     name: "Piraeus Ikonio Tunnel",
+    name_en: "Piraeus Ikonio Tunnel",
     description: "Road tunnel connecting Piraeus port area with the Ikonio district.",
+    description_en: "Road tunnel connecting Piraeus port area with the Ikonio district.",
     year: 2004,
     typology: "Tunnels",
     location: "Piraeus / Perama",
@@ -162,7 +186,9 @@ const PROJECTS = [
   {
     id: 13,
     name: "Aigio Double Railway Tunnel",
+    name_en: "Aigio Double Railway Tunnel",
     description: "Twin-bore railway tunnel near the city of Aigio in Achaia.",
+    description_en: "Twin-bore railway tunnel near the city of Aigio in Achaia.",
     year: 2009,
     typology: "Tunnels",
     location: "Achaia",
@@ -175,7 +201,9 @@ const PROJECTS = [
   {
     id: 14,
     name: "Army's Joined Found Building",
+    name_en: "Army's Joined Found Building",
     description: "Historic military administrative building constructed in central Athens.",
+    description_en: "Historic military administrative building constructed in central Athens.",
     year: 1923,
     typology: "Buildings",
     location: "Athens",
@@ -188,7 +216,9 @@ const PROJECTS = [
   {
     id: 15,
     name: "Bank of Athens — Stadiou St",
+    name_en: "Bank of Athens — Stadiou St",
     description: "Neoclassical bank building on Stadiou Street in the Athens city center.",
+    description_en: "Neoclassical bank building on Stadiou Street in the Athens city center.",
     year: 1928,
     typology: "Buildings",
     location: "Athens",
@@ -201,7 +231,9 @@ const PROJECTS = [
   {
     id: 16,
     name: "KAT Hospital Complex",
+    name_en: "KAT Hospital Complex",
     description: "Major trauma hospital complex in Kifissia, northern Athens.",
+    description_en: "Major trauma hospital complex in Kifissia, northern Athens.",
     year: 1950,
     typology: "Buildings",
     location: "Kifissia, Athens",
@@ -214,7 +246,9 @@ const PROJECTS = [
   {
     id: 17,
     name: "Hellenic Aspropyrgos Refinery",
+    name_en: "Hellenic Aspropyrgos Refinery",
     description: "Industrial refinery complex in the Aspropyrgos area west of Athens.",
+    description_en: "Industrial refinery complex in the Aspropyrgos area west of Athens.",
     year: 1986,
     typology: "Buildings",
     location: "Aspropyrgos",
@@ -227,7 +261,9 @@ const PROJECTS = [
   {
     id: 18,
     name: "Xirovouni Wind Farm — 17 MW",
+    name_en: "Xirovouni Wind Farm — 17 MW",
     description: "17 MW wind energy park in the Xirovouni area of Nafpaktia, Western Greece.",
+    description_en: "17 MW wind energy park in the Xirovouni area of Nafpaktia, Western Greece.",
     year: 2012,
     typology: "Industrial & Energy",
     location: "Nafpaktia, W. Greece",
@@ -240,7 +276,9 @@ const PROJECTS = [
   {
     id: 19,
     name: "Perganti Wind Farm — 41.8 MW",
+    name_en: "Perganti Wind Farm — 41.8 MW",
     description: "Large-scale 41.8 MW wind farm in the mountainous terrain of Achaia.",
+    description_en: "Large-scale 41.8 MW wind farm in the mountainous terrain of Achaia.",
     year: 2020,
     typology: "Industrial & Energy",
     location: "Achaia",
@@ -253,7 +291,9 @@ const PROJECTS = [
   {
     id: 20,
     name: "Nafplio Sewerage System",
+    name_en: "Nafplio Sewerage System",
     description: "Complete sewerage network for the historic city of Nafplio.",
+    description_en: "Complete sewerage network for the historic city of Nafplio.",
     year: 1988,
     typology: "Utility Networks",
     location: "Nafplio",
@@ -266,7 +306,9 @@ const PROJECTS = [
   {
     id: 21,
     name: "Mitilini Sewerage Network",
+    name_en: "Mitilini Sewerage Network",
     description: "Sewerage infrastructure for the capital of Lesvos island.",
+    description_en: "Sewerage infrastructure for the capital of Lesvos island.",
     year: 1998,
     typology: "Utility Networks",
     location: "Lesvos",
@@ -279,7 +321,9 @@ const PROJECTS = [
   {
     id: 22,
     name: "Paravola Underground Watering",
+    name_en: "Paravola Underground Watering",
     description: "Underground irrigation system in the Paravola area near Agrinio.",
+    description_en: "Underground irrigation system in the Paravola area near Agrinio.",
     year: 2005,
     typology: "Utility Networks",
     location: "Agrinio",
@@ -292,7 +336,9 @@ const PROJECTS = [
   {
     id: 23,
     name: "Kalamoti Earth Dam",
+    name_en: "Kalamoti Earth Dam",
     description: "Earth dam construction on Chios island for water management.",
+    description_en: "Earth dam construction on Chios island for water management.",
     year: 2005,
     typology: "Dams",
     location: "Chios",
@@ -305,7 +351,9 @@ const PROJECTS = [
   {
     id: 24,
     name: "Agrinio Flood Protection Dams",
+    name_en: "Agrinio Flood Protection Dams",
     description: "Flood protection dam system in the Fthiotida region.",
+    description_en: "Flood protection dam system in the Fthiotida region.",
     year: 1999,
     typology: "Dams",
     location: "Fthiotida",
@@ -318,7 +366,9 @@ const PROJECTS = [
   {
     id: 25,
     name: "Mesta Port Modernisation",
+    name_en: "Mesta Port Modernisation",
     description: "Modernisation of the Mesta port facilities on Chios island.",
+    description_en: "Modernisation of the Mesta port facilities on Chios island.",
     year: 2006,
     typology: "Ports & Marine",
     location: "Chios",
@@ -331,7 +381,9 @@ const PROJECTS = [
   {
     id: 26,
     name: "Kifissos River Arrangement",
+    name_en: "Kifissos River Arrangement",
     description: "River bed arrangement and flood protection works along the Kifissos in Athens.",
+    description_en: "River bed arrangement and flood protection works along the Kifissos in Athens.",
     year: 1990,
     typology: "Urban Redevelopment",
     location: "Athens",

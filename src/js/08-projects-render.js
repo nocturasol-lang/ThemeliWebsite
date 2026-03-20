@@ -18,14 +18,20 @@ if (!projectData.length) return;
     return d.innerHTML;
   }
 
+  // Helper: translate typology for display
+  function tTyp(v) { return T.typ[v] || v; }
+  // Helper: pick localized name/description
+  function lName(p) { return LANG === 'el' ? p.name : (p.name_en || p.name); }
+  function lDesc(p) { return LANG === 'el' ? (p.description || '') : (p.description_en || p.description || ''); }
+
   // Render grid cards
   projectData.forEach(p => {
     const imgStyle = p.image ? ` style="background-image:url('${esc(p.image)}')"` : '';
     projGridView.insertAdjacentHTML('beforeend',
       `<a class="proj-card" data-typology="${esc(p.typology)}" data-status="${esc(p.status || '')}" data-region="${esc(p.region || '')}" href="project.html#${p.id}">
         <div class="proj-card-img"${imgStyle}></div>
-        <div class="proj-card-info"><span class="proj-card-name">${esc(p.name)}</span><span class="proj-card-year">${p.year}</span></div>
-        <span class="proj-card-tag">${esc(p.typology)}</span>
+        <div class="proj-card-info"><span class="proj-card-name">${esc(lName(p))}</span><span class="proj-card-year">${p.year}</span></div>
+        <span class="proj-card-tag">${esc(tTyp(p.typology))}</span>
       </a>`
     );
   });
@@ -34,7 +40,7 @@ if (!projectData.length) return;
   if (projListView) {
     projectData.forEach(p => {
       projListView.insertAdjacentHTML('beforeend',
-        `<a class="proj-row" data-typology="${esc(p.typology)}" data-status="${esc(p.status || '')}" data-region="${esc(p.region || '')}" href="project.html#${p.id}"><span class="proj-col proj-col-name">${esc(p.name)}</span><span class="proj-col proj-col-type">${esc(p.typology)}</span><span class="proj-col proj-col-loc">${esc(p.location)}</span><span class="proj-col proj-col-year">${p.year}</span></a>`
+        `<a class="proj-row" data-typology="${esc(p.typology)}" data-status="${esc(p.status || '')}" data-region="${esc(p.region || '')}" href="project.html#${p.id}"><span class="proj-col proj-col-name">${esc(lName(p))}</span><span class="proj-col proj-col-type">${esc(tTyp(p.typology))}</span><span class="proj-col proj-col-loc">${esc(p.location)}</span><span class="proj-col proj-col-year">${p.year}</span></a>`
       );
     });
   }
@@ -49,10 +55,10 @@ if (!projectData.length) return;
           <div class="proj-map-tooltip">
             <div class="proj-map-tooltip-img"${tooltipImg}></div>
             <div class="proj-map-tooltip-body">
-              <span class="proj-map-tooltip-name">${esc(p.name)}</span>
+              <span class="proj-map-tooltip-name">${esc(lName(p))}</span>
               <span class="proj-map-tooltip-year">${p.year}</span>
             </div>
-            <span class="proj-map-tooltip-tag">${esc(p.typology)}</span>
+            <span class="proj-map-tooltip-tag">${esc(tTyp(p.typology))}</span>
           </div>
         </a>`
       );
