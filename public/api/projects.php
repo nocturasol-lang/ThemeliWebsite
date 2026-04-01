@@ -36,8 +36,8 @@ if ($method === 'POST') {
     // Normalize to array of rows
     $rows = isset($body[0]) ? $body : [$body];
 
-    $sql = 'INSERT INTO projects (name, name_en, description, description_en, year, typology, location, region, architect, size, status, date_completed, image_url, images, map_x, map_y)
-            VALUES (:name, :name_en, :description, :description_en, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :images, :map_x, :map_y)';
+    $sql = 'INSERT INTO projects (name, name_en, description, description_en, year, typology, location, region, architect, size, status, date_completed, image_url, images, map_x, map_y, client, contractor, participation, year_start, budget)
+            VALUES (:name, :name_en, :description, :description_en, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :images, :map_x, :map_y, :client, :contractor, :participation, :year_start, :budget)';
     $stmt = $db->prepare($sql);
 
     $ids = [];
@@ -59,6 +59,11 @@ if ($method === 'POST') {
             ':images'         => $r['images'] ?? '[]',
             ':map_x'          => isset($r['map_x']) ? (float)$r['map_x'] : null,
             ':map_y'          => isset($r['map_y']) ? (float)$r['map_y'] : null,
+            ':client'         => $r['client'] ?? '',
+            ':contractor'     => $r['contractor'] ?? '',
+            ':participation'  => $r['participation'] ?? '',
+            ':year_start'     => isset($r['year_start']) ? (int)$r['year_start'] : null,
+            ':budget'         => isset($r['budget']) ? (float)$r['budget'] : null,
         ]);
         $ids[] = (int)$db->lastInsertId();
     }
@@ -73,7 +78,8 @@ if ($method === 'PUT') {
 
     $sql = 'UPDATE projects SET name=:name, name_en=:name_en, description=:description, description_en=:description_en, year=:year, typology=:typology,
             location=:location, region=:region, architect=:architect, size=:size, status=:status,
-            date_completed=:date_completed, image_url=:image_url, images=:images, map_x=:map_x, map_y=:map_y
+            date_completed=:date_completed, image_url=:image_url, images=:images, map_x=:map_x, map_y=:map_y,
+            client=:client, contractor=:contractor, participation=:participation, year_start=:year_start, budget=:budget
             WHERE id=:id';
     $stmt = $db->prepare($sql);
     $stmt->execute([
@@ -94,6 +100,11 @@ if ($method === 'PUT') {
         ':images'         => $body['images'] ?? '[]',
         ':map_x'          => isset($body['map_x']) ? (float)$body['map_x'] : null,
         ':map_y'          => isset($body['map_y']) ? (float)$body['map_y'] : null,
+        ':client'         => $body['client'] ?? '',
+        ':contractor'     => $body['contractor'] ?? '',
+        ':participation'  => $body['participation'] ?? '',
+        ':year_start'     => isset($body['year_start']) ? (int)$body['year_start'] : null,
+        ':budget'         => isset($body['budget']) ? (float)$body['budget'] : null,
     ]);
 
     jsonResponse(['ok' => true]);

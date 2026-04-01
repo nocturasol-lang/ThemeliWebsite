@@ -19,7 +19,7 @@ set_exception_handler(function ($e) {
 
 // ── Hosting mode ──────────────────────────────────────────────
 // Set to 'hostinger' when deployed, 'local' for php -S development
-define('HOSTING_MODE', 'hostinger');
+define('HOSTING_MODE', 'local');
 
 if (HOSTING_MODE === 'hostinger') {
     // Hostinger: data outside public_html, uploads inside it

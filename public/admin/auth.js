@@ -41,7 +41,7 @@
           unlock();
         } else {
           const data = await res.json();
-          error.textContent = data.error || 'Login failed';
+          error.textContent = data.error || 'Αποτυχία σύνδεσης';
           passInput.value = '';
           passInput.focus();
           box.classList.remove('shake');
@@ -49,7 +49,7 @@
           box.classList.add('shake');
         }
       } catch (err) {
-        error.textContent = 'Connection failed. Is the PHP server running?';
+        error.textContent = 'Αποτυχία σύνδεσης. Ελέγξτε τον server.';
         box.classList.remove('shake');
         void box.offsetWidth;
         box.classList.add('shake');

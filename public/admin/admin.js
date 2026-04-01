@@ -31,7 +31,11 @@ const fDescEn = document.getElementById('fDescEn');
 const fArchitect = document.getElementById('fArchitect');
 const fSize = document.getElementById('fSize');
 const fStatus = document.getElementById('fStatus');
-const fDateCompleted = document.getElementById('fDateCompleted');
+const fClient = document.getElementById('fClient');
+const fContractor = document.getElementById('fContractor');
+const fParticipation = document.getElementById('fParticipation');
+const fYearStart = document.getElementById('fYearStart');
+const fBudget = document.getElementById('fBudget');
 const fImage = document.getElementById('fImage');
 const fImagePreview = document.getElementById('fImagePreview');
 const fImageFile = document.getElementById('fImageFile');
@@ -73,7 +77,12 @@ function fromDb(row) {
     image: row.image_url || '',
     images: (() => { try { return JSON.parse(row.images || '[]'); } catch(_) { return []; } })(),
     mapX: row.map_x,
-    mapY: row.map_y
+    mapY: row.map_y,
+    client: row.client || '',
+    contractor: row.contractor || '',
+    participation: row.participation || '',
+    yearStart: row.year_start,
+    budget: row.budget
   };
 }
 
@@ -95,7 +104,12 @@ function toDb(data) {
     image_url: data.image || '',
     images: JSON.stringify(data.images || []),
     map_x: data.mapX,
-    map_y: data.mapY
+    map_y: data.mapY,
+    client: data.client || '',
+    contractor: data.contractor || '',
+    participation: data.participation || '',
+    year_start: data.yearStart,
+    budget: data.budget
   };
 }
 
@@ -133,33 +147,75 @@ function updateStatus() {
 }
 
 // ========== RENDER TABLE ==========
+const typologyLabels = {
+  'Buildings': 'Κτίρια', 'Railways': 'Σιδηρόδρομοι', 'Roadworks': 'Οδοποιία',
+  'Tunnels': 'Σήραγγες', 'Industrial & Energy': 'Βιομηχ. & Ενέργεια',
+  'Utility Networks': 'Δίκτυα Κ.Ω.', 'Dams': 'Φράγματα',
+  'Ports & Marine': 'Λιμάνια & Θαλάσσια', 'Urban Redevelopment': 'Αστική Ανάπλαση'
+};
+const statusLabels = {
+  'Completed': 'Ολοκληρωμένο', 'In Progress': 'Σε Εξέλιξη', 'Planning': 'Σχεδιασμός'
+};
+
+function formatBudget(val) {
+  if (val == null) return '';
+  if (val >= 1000000) return (val / 1000000).toFixed(1).replace('.0', '') + 'M €';
+  if (val >= 1000) return Math.round(val / 1000) + 'K €';
+  return Math.round(val) + ' €';
+}
+
+function yearRange(p) {
+  if (p.yearStart && p.year && p.yearStart !== p.year) return `${p.yearStart}\u2013${p.year}`;
+  if (p.yearStart && p.status === 'In Progress') return `${p.yearStart}\u2013\u03c3\u03ae\u03bc\u03b5\u03c1\u03b1`;
+  if (p.yearStart) return `${p.yearStart}`;
+  if (p.year) return `${p.year}`;
+  return '\u2014';
+}
+
 function renderTable() {
   tableBody.innerHTML = '';
   emptyState.style.display = projects.length === 0 ? '' : 'none';
 
   projects.forEach(p => {
-    const tr = document.createElement('tr');
-    const imgStyle = p.image ? `background-image:url('${p.image}')` : '';
-    const mapStr = (p.mapX != null && p.mapY != null)
-      ? `${p.mapX.toFixed(1)}%, ${p.mapY.toFixed(1)}%`
-      : '\u2014';
+    const row = document.createElement('div');
+    row.className = 'proj-row';
+    row.setAttribute('data-edit', p.id);
 
-    tr.innerHTML = `
-      <td><div class="thumb" style="${imgStyle}"></div></td>
-      <td class="cell-name">${esc(p.name)}</td>
-      <td>${p.year}</td>
-      <td>${esc(p.typology)}</td>
-      <td>${esc(p.location)}</td>
-      <td>${esc(p.region)}</td>
-      <td class="cell-map-pos">${mapStr}</td>
-      <td>
-        <div class="cell-actions">
-          <button class="btn btn-sm" data-edit="${p.id}">Edit</button>
-          <button class="btn btn-sm btn-danger" data-delete="${p.id}">Delete</button>
+    const imgStyle = p.image ? `background-image:url('${p.image}')` : '';
+    const statusTag = p.status === 'In Progress' ? 'tag-progress' :
+                      p.status === 'Planning' ? 'tag-planning' : '';
+
+    // Build meta items (only show non-empty fields)
+    const meta = [];
+    if (p.client) meta.push(`<span><strong>Φορέας:</strong> ${esc(p.client)}</span>`);
+    if (p.contractor) meta.push(`<span><strong>Ανάδοχος:</strong> ${esc(p.contractor)}</span>`);
+    if (p.participation) meta.push(`<span><strong>Συμμετοχή:</strong> ${esc(p.participation)}</span>`);
+    if (p.budget) meta.push(`<span><strong>Π/Υ:</strong> ${formatBudget(p.budget)}</span>`);
+    if (p.location) meta.push(`<span><strong>Τοποθεσία:</strong> ${esc(p.location)}</span>`);
+    if (p.region) meta.push(`<span><strong>Περιοχή:</strong> ${esc(p.region)}</span>`);
+    const mapSet = p.mapX != null && p.mapY != null;
+    if (mapSet) meta.push(`<span><strong>Χάρτης:</strong> \u2713</span>`);
+
+    row.innerHTML = `
+      <div class="thumb" style="${imgStyle}"></div>
+      <div class="proj-info">
+        <div class="proj-info-top">
+          <span class="proj-title">${esc(p.name)}</span>
+          <div class="proj-tags">
+            <span class="proj-tag">${yearRange(p)}</span>
+            <span class="proj-tag">${esc(typologyLabels[p.typology] || p.typology)}</span>
+            ${p.status !== 'Completed' ? `<span class="proj-tag ${statusTag}">${esc(statusLabels[p.status] || p.status)}</span>` : ''}
+          </div>
         </div>
-      </td>
+        ${p.description ? `<div class="proj-desc">${esc(p.description)}</div>` : ''}
+        ${meta.length ? `<div class="proj-meta">${meta.join('')}</div>` : ''}
+      </div>
+      <div class="proj-actions">
+        <button class="btn btn-sm" data-edit="${p.id}">Επεξ.</button>
+        <button class="btn btn-sm btn-danger" data-delete="${p.id}">Διαγρ.</button>
+      </div>
     `;
-    tableBody.appendChild(tr);
+    tableBody.appendChild(row);
   });
 }
 
@@ -186,7 +242,11 @@ function openModal(project) {
     fArchitect.value = project.architect || '';
     fSize.value = project.size || '';
     fStatus.value = project.status || 'Completed';
-    fDateCompleted.value = project.dateCompleted || '';
+    fClient.value = project.client || '';
+    fContractor.value = project.contractor || '';
+    fParticipation.value = project.participation || '';
+    fYearStart.value = project.yearStart || '';
+    fBudget.value = project.budget || '';
     setImagePreview(project.image || '');
     galleryImages = Array.isArray(project.images) ? [...project.images] : [];
     pendingGalleryFiles = [];
@@ -218,7 +278,11 @@ function openModal(project) {
     fArchitect.value = '';
     fSize.value = '';
     fStatus.value = 'Completed';
-    fDateCompleted.value = '';
+    fClient.value = '';
+    fContractor.value = '';
+    fParticipation.value = '';
+    fYearStart.value = '';
+    fBudget.value = '';
     setImagePreview('');
     galleryImages = [];
     pendingGalleryFiles = [];
@@ -362,10 +426,14 @@ fGalleryDropzone.addEventListener('drop', (e) => {
 // ========== SAVE PROJECT ==========
 modalSave.addEventListener('click', async () => {
   const name = fName.value.trim();
-  const year = parseInt(fYear.value, 10);
+  const yearVal = fYear.value.trim();
+  const yearStartVal = fYearStart.value.trim();
+  const year = yearVal ? parseInt(yearVal, 10) : 0;
+  const yearStart = yearStartVal ? parseInt(yearStartVal, 10) : null;
 
   if (!name) { fName.focus(); return; }
-  if (!year || year < 1900) { fYear.focus(); return; }
+  // Need at least one year (start or end)
+  if (!year && !yearStart) { fYearStart.focus(); return; }
 
   // Disable button while saving
   modalSave.disabled = true;
@@ -390,18 +458,23 @@ modalSave.addEventListener('click', async () => {
     nameEn: fNameEn.value.trim(),
     description: fDesc.value.trim(),
     descriptionEn: fDescEn.value.trim(),
-    year,
+    year: year || (yearStart || 0),
     typology: fTypology.value,
     location: fLocation.value.trim(),
     region: fRegion.value,
     architect: fArchitect.value.trim(),
     size: fSize.value.trim(),
     status: fStatus.value,
-    dateCompleted: fDateCompleted.value.trim(),
+    dateCompleted: '',
     image: imageUrl,
     images: uploadedGallery,
     mapX: pickerX,
-    mapY: pickerY
+    mapY: pickerY,
+    client: fClient.value.trim(),
+    contractor: fContractor.value.trim(),
+    participation: fParticipation.value.trim(),
+    yearStart: yearStart,
+    budget: fBudget.value ? parseFloat(fBudget.value) : null
   };
 
   const dbData = toDb(data);
@@ -425,13 +498,13 @@ modalSave.addEventListener('click', async () => {
 
     if (!res.ok) {
       const err = await res.json();
-      alert('Save failed: ' + (err.error || 'Unknown error'));
+      alert('Αποτυχία αποθήκευσης: ' + (err.error || 'Άγνωστο σφάλμα'));
       modalSave.disabled = false;
       modalSave.textContent = 'Αποθήκευση';
       return;
     }
   } catch (e) {
-    alert('Save failed: ' + e.message);
+    alert('Αποτυχία αποθήκευσης: ' + e.message);
     modalSave.disabled = false;
     modalSave.textContent = 'Αποθήκευση';
     return;
@@ -448,16 +521,10 @@ modalSave.addEventListener('click', async () => {
 
 // ========== EDIT / DELETE ==========
 tableBody.addEventListener('click', async (e) => {
-  const editBtn = e.target.closest('[data-edit]');
+  // Delete button takes priority
   const deleteBtn = e.target.closest('[data-delete]');
-
-  if (editBtn) {
-    const id = parseInt(editBtn.getAttribute('data-edit'), 10);
-    const project = projects.find(p => p.id === id);
-    if (project) openModal(project);
-  }
-
   if (deleteBtn) {
+    e.stopPropagation();
     const id = parseInt(deleteBtn.getAttribute('data-delete'), 10);
     const project = projects.find(p => p.id === id);
     if (project && confirm(`Διαγραφή "${project.name}";`)) {
@@ -465,17 +532,26 @@ tableBody.addEventListener('click', async (e) => {
         const res = await fetch(`../api/projects.php?id=${id}`, { method: 'DELETE' });
         if (!res.ok) {
           const err = await res.json();
-          alert('Delete failed: ' + (err.error || 'Unknown error'));
+          alert('Αποτυχία διαγραφής: ' + (err.error || 'Άγνωστο σφάλμα'));
           return;
         }
       } catch (e) {
-        alert('Delete failed: ' + e.message);
+        alert('Αποτυχία διαγραφής: ' + e.message);
         return;
       }
       projects = await loadProjects();
       renderTable();
       updateStatus();
     }
+    return;
+  }
+
+  // Click on row or edit button opens modal
+  const row = e.target.closest('.proj-row[data-edit]');
+  if (row) {
+    const id = parseInt(row.getAttribute('data-edit'), 10);
+    const project = projects.find(p => p.id === id);
+    if (project) openModal(project);
   }
 });
 
@@ -491,10 +567,10 @@ if (publishBtn) {
         alert(`Δημοσιεύτηκαν ${data.count} έργα στη σελίδα.`);
       } else {
         const err = await res.json();
-        alert('Publish failed: ' + (err.error || 'Unknown error'));
+        alert('Αποτυχία δημοσίευσης: ' + (err.error || 'Άγνωστο σφάλμα'));
       }
     } catch (e) {
-      alert('Publish failed: ' + e.message);
+      alert('Αποτυχία δημοσίευσης: ' + e.message);
     }
     publishBtn.disabled = false;
     publishBtn.textContent = 'Δημοσίευση';
@@ -523,7 +599,12 @@ exportBtn.addEventListener('click', () => {
     output += `    image: ${JSON.stringify(p.image || '')},\n`;
     output += `    images: ${JSON.stringify(p.images || [])},\n`;
     output += `    mapX: ${p.mapX != null ? p.mapX : 'null'},\n`;
-    output += `    mapY: ${p.mapY != null ? p.mapY : 'null'}\n`;
+    output += `    mapY: ${p.mapY != null ? p.mapY : 'null'},\n`;
+    output += `    client: ${JSON.stringify(p.client || '')},\n`;
+    output += `    contractor: ${JSON.stringify(p.contractor || '')},\n`;
+    output += `    participation: ${JSON.stringify(p.participation || '')},\n`;
+    output += `    yearStart: ${p.yearStart != null ? p.yearStart : 'null'},\n`;
+    output += `    budget: ${p.budget != null ? p.budget : 'null'}\n`;
     output += '  }' + (i < projects.length - 1 ? ',' : '') + '\n';
   });
 
@@ -562,7 +643,7 @@ importFile.addEventListener('change', async (e) => {
       }
 
       if (!Array.isArray(imported) || imported.length === 0) {
-        alert('No valid PROJECTS array found in this file.');
+        alert('Δεν βρέθηκε έγκυρος πίνακας PROJECTS στο αρχείο.');
         return;
       }
 
@@ -576,7 +657,7 @@ importFile.addEventListener('change', async (e) => {
 
       if (!res.ok) {
         const err = await res.json();
-        alert('Import failed: ' + (err.error || 'Unknown error'));
+        alert('Αποτυχία εισαγωγής: ' + (err.error || 'Άγνωστο σφάλμα'));
         return;
       }
 
@@ -585,7 +666,7 @@ importFile.addEventListener('change', async (e) => {
       updateStatus();
       alert(`Εισήχθησαν ${imported.length} έργα επιτυχώς.`);
     } catch (err) {
-      alert('Failed to parse file: ' + err.message);
+      alert('Αποτυχία ανάγνωσης αρχείου: ' + err.message);
     }
     importFile.value = '';
   };

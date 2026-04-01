@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -212,59 +212,123 @@
       padding: 32px 40px;
     }
 
-    /* Table */
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
+    /* Project cards list */
+    .proj-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
     }
 
-    .admin-table th {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gray);
-      text-align: left;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-hover);
+    .proj-row {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 16px;
+      padding: 14px 16px;
+      background: var(--bg);
+      align-items: start;
+      cursor: pointer;
+      transition: background 0.15s;
     }
 
-    .admin-table td {
-      font-size: 14px;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      vertical-align: middle;
+    .proj-row:hover {
+      background: var(--bg-card);
     }
 
-    .admin-table tr:hover td {
-      background: rgba(255,255,255,0.02);
-    }
-
-    .admin-table .thumb {
-      width: 60px;
-      height: 40px;
-      background-color: var(--bg);
+    .proj-row .thumb {
+      width: 64px;
+      height: 44px;
+      background-color: var(--bg-dark);
       background-size: cover;
       background-position: center;
       border: 1px solid var(--border);
-      filter: grayscale(80%);
+      flex-shrink: 0;
     }
 
-    .admin-table .cell-name {
+    .proj-info {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .proj-info-top {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .proj-title {
       font-family: var(--font-display);
       font-weight: 600;
       font-size: 14px;
+      color: var(--white);
     }
 
-    .admin-table .cell-actions {
+    .proj-tags {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .cell-map-pos {
+    .proj-tag {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .proj-tag.tag-status {
+      border-color: rgba(106,191,105,0.4);
+      color: #6abf69;
+    }
+
+    .proj-tag.tag-progress {
+      border-color: rgba(106,191,105,0.4);
+      color: #6abf69;
+    }
+
+    .proj-tag.tag-planning {
+      border-color: rgba(255,115,30,0.4);
+      color: var(--accent);
+    }
+
+    .proj-desc {
       font-size: 12px;
       color: var(--gray);
-      font-family: monospace;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 800px;
+    }
+
+    .proj-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .proj-meta span {
+      white-space: nowrap;
+    }
+
+    .proj-meta strong {
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .proj-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
     /* Modal overlay */
@@ -549,7 +613,7 @@
   <div class="login-gate" id="loginGate">
     <div class="login-box">
       <h1 class="login-title">THEMELI</h1>
-      <p class="login-subtitle">Admin Panel</p>
+      <p class="login-subtitle">Πίνακας Διαχείρισης</p>
       <form id="loginForm" autocomplete="off">
         <div class="form-group">
           <label>Email</label>
@@ -566,7 +630,7 @@
   </div>
 
   <header class="admin-header">
-    <h1>THEMELI <span>Admin Panel</span></h1>
+    <h1>THEMELI <span>Πίνακας Διαχείρισης</span></h1>
     <div class="admin-actions">
       <span class="admin-status" id="adminStatus"></span>
       <a href="../el/projects.html" class="btn btn-sm" target="_blank">Προβολή Σελίδας</a>
@@ -580,22 +644,7 @@
   </header>
 
   <main class="admin-main">
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>Εικόνα</th>
-          <th>Όνομα</th>
-          <th>Έτος</th>
-          <th>Τυπολογία</th>
-          <th>Τοποθεσία</th>
-          <th>Περιοχή</th>
-          <th>Χάρτης</th>
-          <th>Ενέργειες</th>
-        </tr>
-      </thead>
-      <tbody id="adminTableBody">
-      </tbody>
-    </table>
+    <div class="proj-list" id="adminTableBody"></div>
     <div class="empty-state" id="emptyState" style="display:none">Δεν υπάρχουν έργα. Κάντε κλικ στο «+ Προσθήκη Έργου» για να ξεκινήσετε.</div>
   </main>
 
@@ -604,17 +653,9 @@
     <div class="modal">
       <h2 id="modalTitle">Προσθήκη Έργου</h2>
       <div class="form-grid">
-        <div class="form-group">
-          <label>Όνομα Έργου</label>
-          <input type="text" id="fName" placeholder="π.χ. Επέκταση Τραμ Αθήνας">
-        </div>
-        <div class="form-group">
-          <label>Όνομα (Αγγλικά)</label>
-          <input type="text" id="fNameEn" placeholder="e.g. Athens-Thessaloniki Railway">
-        </div>
-        <div class="form-group">
-          <label>Έτος</label>
-          <input type="number" id="fYear" placeholder="π.χ. 2004" min="1900" max="2100">
+        <div class="form-group full">
+          <label>Τίτλος Έργου <span style="font-weight:300;text-transform:none;letter-spacing:0">(σύντομος τίτλος για κάρτες & λίστες)</span></label>
+          <input type="text" id="fName" placeholder="π.χ. Νοσοκομείο Χαλκίδος">
         </div>
         <div class="form-group">
           <label>Τυπολογία</label>
@@ -629,6 +670,38 @@
             <option value="Ports & Marine">Λιμάνια & Θαλάσσια</option>
             <option value="Urban Redevelopment">Αστική Ανάπλαση</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Κατάσταση</label>
+          <select id="fStatus">
+            <option value="Completed">Ολοκληρωμένο</option>
+            <option value="In Progress">Σε Εξέλιξη</option>
+            <option value="Planning">Σχεδιασμός</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Έτος Έναρξης</label>
+          <input type="number" id="fYearStart" placeholder="π.χ. 1990" min="1900" max="2100">
+        </div>
+        <div class="form-group">
+          <label>Έτος Ολοκλήρωσης</label>
+          <input type="number" id="fYear" placeholder="π.χ. 2004 (κενό αν σε εξέλιξη)" min="1900" max="2100">
+        </div>
+        <div class="form-group">
+          <label>Φορέας / Υπηρεσία</label>
+          <input type="text" id="fClient" placeholder="π.χ. ΥΠΟΥΡΓΕΙΟ ΠΕ.ΧΩ.Δ.Ε.">
+        </div>
+        <div class="form-group">
+          <label>Ανάδοχος</label>
+          <input type="text" id="fContractor" placeholder="π.χ. ΘΕΜΕΛΗ Α.Ε.">
+        </div>
+        <div class="form-group">
+          <label>Ποσοστό Συμμετοχής</label>
+          <input type="text" id="fParticipation" placeholder="π.χ. 100% ή 50%">
+        </div>
+        <div class="form-group">
+          <label>Προϋπολογισμός (€)</label>
+          <input type="number" id="fBudget" placeholder="π.χ. 1500000" step="0.01">
         </div>
         <div class="form-group">
           <label>Τοποθεσία</label>
@@ -648,28 +721,23 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Αρχιτέκτονας</label>
-          <input type="text" id="fArchitect" placeholder="π.χ. Gehry Partners">
-        </div>
-        <div class="form-group">
           <label>Μέγεθος</label>
-          <input type="text" id="fSize" placeholder="π.χ. 110.000 ft² / 10.219 m²">
+          <input type="text" id="fSize" placeholder="π.χ. 110.000 m²">
         </div>
         <div class="form-group">
-          <label>Κατάσταση</label>
-          <select id="fStatus">
-            <option value="Completed">Ολοκληρωμένο</option>
-            <option value="In Progress">Σε Εξέλιξη</option>
-            <option value="Planning">Σχεδιασμός</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Ημερομηνία Ολοκλήρωσης</label>
-          <input type="text" id="fDateCompleted" placeholder="π.χ. 2003">
+          <label>Μελετητής / Αρχιτέκτονας</label>
+          <input type="text" id="fArchitect" placeholder="π.χ. Μελετητική Α.Ε.">
         </div>
         <div class="form-group full">
-          <label>Περιγραφή</label>
-          <textarea id="fDesc" placeholder="Σύντομη περιγραφή έργου..."></textarea>
+          <label>Περιγραφή <span style="font-weight:300;text-transform:none;letter-spacing:0">(πλήρης τίτλος ή αναλυτική περιγραφή)</span></label>
+          <textarea id="fDesc" placeholder="Πλήρης περιγραφή έργου..."></textarea>
+        </div>
+        <div class="form-group full" style="border-top:1px solid var(--border);padding-top:20px;margin-top:8px">
+          <label style="font-size:12px;color:var(--accent);letter-spacing:0.1em">Μετάφραση (Αγγλικά)</label>
+        </div>
+        <div class="form-group full">
+          <label>Όνομα (Αγγλικά)</label>
+          <input type="text" id="fNameEn" placeholder="e.g. Athens Tramway Extension">
         </div>
         <div class="form-group full">
           <label>Περιγραφή (Αγγλικά)</label>

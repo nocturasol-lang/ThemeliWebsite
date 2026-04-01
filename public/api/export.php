@@ -37,7 +37,12 @@ foreach ($rows as $i => $r) {
     if (!is_array($imgs)) $imgs = [];
     $output .= "    images: " . json_encode($imgs) . ",\n";
     $output .= "    mapX: " . ($r['map_x'] !== null ? (float)$r['map_x'] : 'null') . ",\n";
-    $output .= "    mapY: " . ($r['map_y'] !== null ? (float)$r['map_y'] : 'null') . "\n";
+    $output .= "    mapY: " . ($r['map_y'] !== null ? (float)$r['map_y'] : 'null') . ",\n";
+    $output .= "    client: " . json_encode($r['client'] ?? '') . ",\n";
+    $output .= "    contractor: " . json_encode($r['contractor'] ?? '') . ",\n";
+    $output .= "    participation: " . json_encode($r['participation'] ?? '') . ",\n";
+    $output .= "    yearStart: " . ($r['year_start'] !== null ? (int)$r['year_start'] : 'null') . ",\n";
+    $output .= "    budget: " . ($r['budget'] !== null ? (float)$r['budget'] : 'null') . "\n";
     $output .= "  }" . ($i < count($rows) - 1 ? "," : "") . "\n";
 }
 

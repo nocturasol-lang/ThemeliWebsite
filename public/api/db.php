@@ -52,4 +52,19 @@ function initSchema($pdo) {
     if (!in_array('description_en', $colNames)) {
         $pdo->exec('ALTER TABLE projects ADD COLUMN description_en TEXT DEFAULT ""');
     }
+    if (!in_array('client', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN client TEXT DEFAULT ""');
+    }
+    if (!in_array('contractor', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN contractor TEXT DEFAULT ""');
+    }
+    if (!in_array('participation', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN participation TEXT DEFAULT ""');
+    }
+    if (!in_array('year_start', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN year_start INTEGER');
+    }
+    if (!in_array('budget', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN budget REAL');
+    }
 }
