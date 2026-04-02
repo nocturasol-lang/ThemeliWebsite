@@ -24,8 +24,30 @@ if ($method === 'DELETE') {
 
 // POST — login
 if ($method === 'POST') {
+    // Rate limiting: max 5 attempts per 5 minutes
+    if (!isset($_SESSION['login_attempts'])) {
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['login_first_attempt'] = time();
+    }
+    if ($_SESSION['login_attempts'] >= 5) {
+        $elapsed = time() - $_SESSION['login_first_attempt'];
+        if ($elapsed < 300) {
+            jsonResponse(['error' => 'Too many login attempts. Try again in ' . ceil((300 - $elapsed) / 60) . ' minutes.'], 429);
+        }
+        // Window expired — reset
+        $_SESSION['login_attempts'] = 0;
+        $_SESSION['login_first_attempt'] = time();
+    }
+
     $body = getJsonBody();
     $password = $body['password'] ?? '';
+    $email = strtolower(trim($body['email'] ?? ''));
+    $adminEmail = 'admin@themeli.gr';
+
+    if ($email !== $adminEmail) {
+        $_SESSION['login_attempts']++;
+        jsonResponse(['error' => 'Invalid credentials'], 401);
+    }
 
     // If no admin.hash exists yet, prompt setup
     if (!file_exists(HASH_PATH)) {
@@ -35,9 +57,12 @@ if ($method === 'POST') {
     $storedHash = trim(file_get_contents(HASH_PATH));
 
     if (password_verify($password, $storedHash)) {
+        session_regenerate_id(true);
+        $_SESSION['login_attempts'] = 0;
         $_SESSION['admin'] = true;
         jsonResponse(['ok' => true]);
     } else {
+        $_SESSION['login_attempts']++;
         jsonResponse(['error' => 'Invalid credentials'], 401);
     }
 }

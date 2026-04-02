@@ -13,6 +13,11 @@ public/assets/src-images/
 
 # Local database & uploads
 data/themeli.sqlite
+data/themeli.sqlite-shm
+data/themeli.sqlite-wal
 data/admin.hash
 uploads/project-images/*
 !uploads/project-images/.gitkeep
+
+# Utility scripts (regenerated)
+scripts/

@@ -38,6 +38,10 @@ foreach ($rows as $i => $r) {
     $output .= "    images: " . json_encode($imgs) . ",\n";
     $output .= "    mapX: " . ($r['map_x'] !== null ? (float)$r['map_x'] : 'null') . ",\n";
     $output .= "    mapY: " . ($r['map_y'] !== null ? (float)$r['map_y'] : 'null') . ",\n";
+    $output .= "    mapX2: " . ($r['map_x2'] !== null ? (float)$r['map_x2'] : 'null') . ",\n";
+    $output .= "    mapY2: " . ($r['map_y2'] !== null ? (float)$r['map_y2'] : 'null') . ",\n";
+    $mp = json_decode($r['map_points'] ?? 'null', true);
+    $output .= "    mapPoints: " . ($mp ? json_encode($mp) : 'null') . ",\n";
     $output .= "    client: " . json_encode($r['client'] ?? '') . ",\n";
     $output .= "    contractor: " . json_encode($r['contractor'] ?? '') . ",\n";
     $output .= "    participation: " . json_encode($r['participation'] ?? '') . ",\n";

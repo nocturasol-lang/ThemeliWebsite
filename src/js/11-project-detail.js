@@ -4,9 +4,16 @@
 const pdetDetail = document.getElementById('projectDetail');
 
 if (pdetDetail) {
-  // Support both ?id=X (direct) and #X (clean URL fallback)
+  // Support both ?id=X (direct) and #X (legacy fallback)
   const params = new URLSearchParams(window.location.search);
-  const projectId = parseInt(params.get('id'), 10) || parseInt(window.location.hash.replace('#', ''), 10);
+  const hashId = window.location.hash.replace('#', '');
+
+  // Normalize hash-based URLs to query params for SEO
+  if (hashId && !params.get('id')) {
+    window.history.replaceState(null, '', `project.html?id=${hashId}`);
+  }
+
+  const projectId = parseInt(params.get('id'), 10) || parseInt(hashId, 10);
 
   // Sanitise a string for use inside a CSS url()
   function cssUrl(str) {
@@ -20,8 +27,33 @@ if (pdetDetail) {
   const project = currentIdx !== -1 ? allProjects[currentIdx] : null;
 
   if (project) {
-    // Set page title
+    // Content
+    const tTyp = v => (T.typ[v] || v);
+    const tLoc = v => (T.loc && T.loc[v]) || v;
+    const pName = LANG === 'el' ? project.name : (project.name_en || project.name);
+    const pDesc = LANG === 'el' ? (project.description || '') : (project.description_en || project.description || '');
+
+    // Set page title and update meta tags for SEO
     document.title = `THEMELI — ${pName}`;
+    const canonicalUrl = window.location.origin + window.location.pathname + '?id=' + project.id;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.content = pDesc;
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.content = document.title;
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.content = pDesc;
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.content = canonicalUrl;
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.href = canonicalUrl;
+    if (project.image) {
+      const ogImg = document.querySelector('meta[property="og:image"]');
+      if (ogImg) {
+        // OG images require absolute URLs for social sharing
+        const imgUrl = project.image.startsWith('http') ? project.image : window.location.origin + '/' + project.image.replace(/^\.\.\//, '');
+        ogImg.content = imgUrl;
+      }
+    }
 
     // Hero image
     const heroImg = document.getElementById('pdetHeroImg');
@@ -29,15 +61,10 @@ if (pdetDetail) {
       heroImg.style.backgroundImage = `url('${cssUrl(project.image)}')`;
       heroImg.classList.add('has-image');
     }
-
-    // Content
-    const tTyp = v => (T.typ[v] || v);
-    const pName = LANG === 'el' ? project.name : (project.name_en || project.name);
-    const pDesc = LANG === 'el' ? (project.description || '') : (project.description_en || project.description || '');
     document.getElementById('pdetTag').textContent = tTyp(project.typology);
     document.getElementById('pdetTitle').textContent = pName;
     document.getElementById('pdetYear').textContent = project.year;
-    document.getElementById('pdetLocation').textContent = project.location || '—';
+    document.getElementById('pdetLocation').textContent = tLoc(project.location) || '—';
     document.getElementById('pdetTypology').textContent = tTyp(project.typology);
     document.getElementById('pdetDesc').textContent = pDesc;
 
@@ -66,9 +93,10 @@ if (pdetDetail) {
 
     archEl.textContent = project.architect || '—';
     sizeEl.textContent = project.size || '—';
-    statusEl.textContent = project.status || 'Completed';
+    const tStat = v => (T.stat && T.stat[v]) || v;
+    statusEl.textContent = tStat(project.status || 'Completed');
     dateCompEl.textContent = project.dateCompleted || String(project.year);
-    infoLocEl.textContent = project.location || '—';
+    infoLocEl.textContent = tLoc(project.location) || '—';
     infoTypEl.textContent = tTyp(project.typology);
 
     // Hide empty optional rows
@@ -87,11 +115,11 @@ if (pdetDetail) {
       related.forEach(p => {
         const imgStyle = p.image ? `background-image:url('${cssUrl(p.image)}')` : '';
         relatedGrid.insertAdjacentHTML('beforeend',
-          `<a class="pdet-related-card" href="project.html#${p.id}">
+          `<a class="pdet-related-card" href="project.html?id=${p.id}">
             <div class="pdet-related-card-img" style="${imgStyle}"></div>
             <div class="pdet-related-card-body">
               <span class="pdet-related-card-name">${LANG === 'el' ? p.name : (p.name_en || p.name)}</span>
-              <span class="pdet-related-card-meta">${tTyp(p.typology)} &middot; ${p.location || ''}</span>
+              <span class="pdet-related-card-meta">${tTyp(p.typology)} &middot; ${tLoc(p.location) || ''}</span>
             </div>
           </a>`
         );
@@ -109,10 +137,10 @@ if (pdetDetail) {
     const prevName = document.getElementById('pdetPrevName');
     const nextName = document.getElementById('pdetNextName');
 
-    prevLink.href = `project.html#${prevProject.id}`;
+    prevLink.href = `project.html?id=${prevProject.id}`;
     prevName.textContent = LANG === 'el' ? prevProject.name : (prevProject.name_en || prevProject.name);
 
-    nextLink.href = `project.html#${nextProject.id}`;
+    nextLink.href = `project.html?id=${nextProject.id}`;
     nextName.textContent = LANG === 'el' ? nextProject.name : (nextProject.name_en || nextProject.name);
 
     // Staggered reveal animation
@@ -139,6 +167,7 @@ function openGalleryLightbox(images, startIndex) {
     ${images.length > 1 ? '<div class="lightbox-counter">' + (idx + 1) + ' / ' + images.length + '</div>' : ''}
   `;
   document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
   requestAnimationFrame(() => overlay.classList.add('is-visible'));
 
   const img = overlay.querySelector('.lightbox-img');
@@ -150,7 +179,15 @@ function openGalleryLightbox(images, startIndex) {
     if (counter) counter.textContent = (idx + 1) + ' / ' + images.length;
   }
 
+  function handler(e) {
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft' && prev) show(idx - 1);
+    if (e.key === 'ArrowRight' && next) show(idx + 1);
+  }
+
   function close() {
+    document.removeEventListener('keydown', handler);
+    document.body.style.overflow = '';
     overlay.classList.remove('is-visible');
     setTimeout(() => overlay.remove(), 300);
   }
@@ -161,9 +198,5 @@ function openGalleryLightbox(images, startIndex) {
   const next = overlay.querySelector('.lightbox-next');
   if (prev) prev.addEventListener('click', () => show(idx - 1));
   if (next) next.addEventListener('click', () => show(idx + 1));
-  document.addEventListener('keydown', function handler(e) {
-    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
-    if (e.key === 'ArrowLeft' && prev) show(idx - 1);
-    if (e.key === 'ArrowRight' && next) show(idx + 1);
-  });
+  document.addEventListener('keydown', handler);
 }

@@ -445,6 +445,14 @@
       border: 1px solid var(--border);
       cursor: crosshair;
       user-select: none;
+      overflow: hidden;
+    }
+
+    .map-picker-inner {
+      position: relative;
+      width: 100%;
+      transform-origin: center center;
+      transition: transform 0.3s ease;
     }
 
     .map-picker-container img {
@@ -454,12 +462,63 @@
       opacity: 0.33;
     }
 
+    .map-picker-controls {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .map-picker-nav {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 28px 28px 28px;
+      grid-template-rows: 28px 28px 28px;
+      gap: 2px;
+    }
+
+    .map-picker-nav-up    { grid-column: 2; grid-row: 1; }
+    .map-picker-nav-left  { grid-column: 1; grid-row: 2; }
+    .map-picker-nav-right { grid-column: 3; grid-row: 2; }
+    .map-picker-nav-down  { grid-column: 2; grid-row: 3; }
+
+    .mp-btn {
+      width: 28px;
+      height: 28px;
+      background: rgba(37, 37, 38, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--white);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .mp-btn:hover { border-color: var(--accent); }
+
+    .mp-btn-lg {
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+      border-radius: 6px;
+    }
+
     .map-picker-dot {
       position: absolute;
-      width: 14px;
-      height: 14px;
+      width: 8px;
+      height: 8px;
       background: var(--accent);
-      border: 2px solid var(--white);
+      border: 1.5px solid var(--white);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -469,6 +528,42 @@
 
     .map-picker-dot.is-placed {
       display: block;
+    }
+
+    .map-picker-dot2 {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #4a9eff;
+      border: 1.5px solid var(--white);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 0 3px rgba(74,158,255,0.3);
+    }
+
+    .map-picker-dot2.is-placed {
+      display: block;
+    }
+
+    .map-picker-line {
+      position: absolute;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.5);
+      transform-origin: 0 50%;
+      pointer-events: none;
+      display: none;
+    }
+
+    .map-picker-line.is-placed {
+      display: block;
+    }
+
+    .map-picker-hint {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 6px;
     }
 
     /* Image upload area */
@@ -771,9 +866,24 @@
           <label>Θέση στον Χάρτη <span style="font-weight:300;text-transform:none;letter-spacing:0">(κλικ στον χάρτη για τοποθέτηση)</span></label>
           <div class="map-picker-coords" id="mapPickerCoords">X: — Y: —</div>
           <div class="map-picker-container" id="mapPickerContainer">
-            <img src="../assets/greece-map.png" alt="Greece">
-            <div class="map-picker-dot" id="mapPickerDot"></div>
+            <div class="map-picker-controls">
+              <button type="button" class="mp-btn mp-btn-lg" id="mapPickerZoomIn">+</button>
+              <button type="button" class="mp-btn mp-btn-lg" id="mapPickerZoomOut">−</button>
+            </div>
+            <div class="map-picker-nav" id="mapPickerNav">
+              <button type="button" class="mp-btn map-picker-nav-up" data-dir="up">↑</button>
+              <button type="button" class="mp-btn map-picker-nav-left" data-dir="left">←</button>
+              <button type="button" class="mp-btn map-picker-nav-right" data-dir="right">→</button>
+              <button type="button" class="mp-btn map-picker-nav-down" data-dir="down">↓</button>
+            </div>
+            <div class="map-picker-inner" id="mapPickerInner">
+              <img src="../assets/greece-map.png" alt="Greece">
+              <div class="map-picker-line" id="mapPickerLine"></div>
+              <div class="map-picker-dot" id="mapPickerDot"></div>
+              <div class="map-picker-dot2" id="mapPickerDot2"></div>
+            </div>
           </div>
+          <div class="map-picker-hint" id="mapPickerHint"></div>
         </div>
       </div>
       <div class="form-footer">
@@ -783,7 +893,7 @@
     </div>
   </div>
 
-  <script src="auth.js"></script>
-  <script src="admin.js"></script>
+  <script src="auth.js?v=2"></script>
+  <script src="admin.js?v=2"></script>
 </body>
 </html>

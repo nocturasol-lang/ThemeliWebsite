@@ -38,43 +38,78 @@ const mapZoomIn = document.getElementById('mapZoomIn');
 const mapZoomOut = document.getElementById('mapZoomOut');
 
 if (mapViewport && mapInner) {
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 3;
+  const ZOOM_STEP = 0.5;
   let scale = 1;
   let panX = 0;
   let panY = 0;
   let isDragging = false;
   let startX = 0;
   let startY = 0;
+  let touchMoved = false;
+  let lastTouchEnd = 0;
+
+  // Pinch state
+  let initialPinchDist = 0;
+  let initialPinchScale = 1;
 
   function applyTransform(smooth) {
-    mapInner.style.transition = smooth ? 'transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
+    mapInner.style.transition = smooth ? 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
     mapInner.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
     mapViewport.classList.toggle('is-zoomed', scale > 1);
-    const cs = Math.max(0.35, 1 / scale);
+    // Counter-scale dots so they don't grow with zoom, but keep them tappable
+    const cs = Math.max(0.5, 1 / scale);
     mapViewport.style.setProperty('--map-counter-scale', cs);
-    mapViewport.style.setProperty('--map-tooltip-restore', 1 / cs);
+    // Tooltip must undo BOTH dot counter-scale AND parent map zoom
+    // Effective inherited scale on tooltip = scale * cs
+    // To get tooltip back to 1.0: multiply by 1 / (scale * cs)
+    mapViewport.style.setProperty('--map-tooltip-restore', 1 / (scale * cs));
   }
 
   function clampPan() {
     if (scale <= 1) { panX = 0; panY = 0; return; }
     const rect = mapViewport.getBoundingClientRect();
-    const maxPan = (rect.width * (scale - 1)) / 2;
-    panX = Math.max(-maxPan, Math.min(maxPan, panX));
-    panY = Math.max(-maxPan, Math.min(maxPan, panY));
+    const maxPanX = (rect.width * (scale - 1)) / 2;
+    const maxPanY = (rect.height * (scale - 1)) / 2;
+    panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+    panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
   }
 
-  mapZoomIn.addEventListener('click', () => {
-    if (scale < 2) { scale = 2; clampPan(); applyTransform(true); }
+  function zoomTo(newScale, centerX, centerY, smooth) {
+    const prev = scale;
+    scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+    if (centerX !== undefined && centerY !== undefined) {
+      const rect = mapViewport.getBoundingClientRect();
+      const cx = centerX - rect.left - rect.width / 2;
+      const cy = centerY - rect.top - rect.height / 2;
+      panX = panX - cx * (scale / prev - 1);
+      panY = panY - cy * (scale / prev - 1);
+    }
+    if (scale <= 1) { panX = 0; panY = 0; }
+    clampPan();
+    applyTransform(smooth !== false);
+  }
+
+  // Button zoom
+  mapZoomIn.addEventListener('click', () => { zoomTo(scale + ZOOM_STEP); });
+  mapZoomOut.addEventListener('click', () => { zoomTo(scale - ZOOM_STEP); });
+
+  // Double-click zoom
+  mapViewport.addEventListener('dblclick', (e) => {
+    if (scale > 1) {
+      zoomTo(1);
+    } else {
+      zoomTo(2, e.clientX, e.clientY);
+    }
   });
 
-  mapZoomOut.addEventListener('click', () => {
-    scale = 1; panX = 0; panY = 0; applyTransform(true);
-  });
-
-  // Expose reset for other components (filters, view switching)
+  // Expose reset
   window._resetMapZoom = function() {
     if (scale > 1) { scale = 1; panX = 0; panY = 0; applyTransform(true); }
   };
 
+  // ── Mouse pan ──
   mapViewport.addEventListener('mousedown', (e) => {
     if (scale <= 1) return;
     isDragging = true;
@@ -82,7 +117,6 @@ if (mapViewport && mapInner) {
     startY = e.clientY - panY;
     e.preventDefault();
   });
-
   window.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
     panX = e.clientX - startX;
@@ -90,84 +124,120 @@ if (mapViewport && mapInner) {
     clampPan();
     applyTransform(false);
   });
-
   window.addEventListener('mouseup', () => { isDragging = false; });
 
+  // ── Touch pan + pinch zoom ──
+  function getTouchDist(e) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    return Math.hypot(dx, dy);
+  }
+
   mapViewport.addEventListener('touchstart', (e) => {
-    if (scale <= 1 || e.touches.length !== 1) return;
-    isDragging = true;
-    startX = e.touches[0].clientX - panX;
-    startY = e.touches[0].clientY - panY;
+    touchMoved = false;
+    if (e.touches.length === 2) {
+      // Pinch start
+      isDragging = false;
+      initialPinchDist = getTouchDist(e);
+      initialPinchScale = scale;
+    } else if (e.touches.length === 1 && scale > 1) {
+      // Single-finger pan (only when zoomed)
+      isDragging = true;
+      startX = e.touches[0].clientX - panX;
+      startY = e.touches[0].clientY - panY;
+    }
   }, { passive: true });
 
   mapViewport.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    panX = e.touches[0].clientX - startX;
-    panY = e.touches[0].clientY - startY;
-    clampPan();
-    applyTransform(false);
-    e.preventDefault();
+    touchMoved = true;
+    if (e.touches.length === 2 && initialPinchDist) {
+      // Pinch zoom
+      const dist = getTouchDist(e);
+      const ratio = dist / initialPinchDist;
+      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      zoomTo(initialPinchScale * ratio, midX, midY, false);
+      e.preventDefault();
+    } else if (isDragging && e.touches.length === 1) {
+      // Pan
+      panX = e.touches[0].clientX - startX;
+      panY = e.touches[0].clientY - startY;
+      clampPan();
+      applyTransform(false);
+      e.preventDefault();
+    }
   }, { passive: false });
 
-  mapViewport.addEventListener('touchend', () => { isDragging = false; });
-
-  mapViewport.addEventListener('dblclick', (e) => {
-    if (scale > 1) {
-      scale = 1; panX = 0; panY = 0;
-    } else {
-      scale = 2;
-      const rect = mapViewport.getBoundingClientRect();
-      panX = -(e.clientX - rect.left - rect.width / 2);
-      panY = -(e.clientY - rect.top - rect.height / 2);
-      clampPan();
-    }
-    applyTransform(true);
-  });
-}
-
-// ========== MAP DOTS: TAP-TO-PREVIEW ON TOUCH ==========
-if (mapViewport) {
-  let touchMoved = false;
-
-  mapViewport.addEventListener('touchstart', () => { touchMoved = false; }, { passive: true });
-  mapViewport.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
-
   mapViewport.addEventListener('touchend', (e) => {
-    if (touchMoved) return; // Was a drag, not a tap
+    if (e.touches.length < 2) initialPinchDist = 0;
+    if (e.touches.length === 0) isDragging = false;
+    lastTouchEnd = Date.now();
+  }, { passive: true });
 
+  // ── Focus + line visibility helpers ──
+  function showLineForDot(dot) {
+    if (!dot) return;
+    mapInner.classList.add('has-focus');
+    const id = dot.dataset.id;
+    if (id) {
+      // Show the line
+      const line = mapInner.querySelector(`.proj-map-line[data-project="${id}"]`);
+      if (line) line.classList.add('is-active');
+      // Activate ALL dots for this project (both endpoints)
+      mapInner.querySelectorAll(`.proj-map-dot[data-id="${id}"]`).forEach(d => d.classList.add('is-active'));
+    }
+  }
+  function hideAllLines() {
+    mapInner.classList.remove('has-focus');
+    mapInner.querySelectorAll('.proj-map-line.is-active').forEach(l => l.classList.remove('is-active'));
+    mapInner.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
+  }
+
+  // ── Desktop click → toggle focus + line ──
+  mapViewport.addEventListener('click', (e) => {
+    if (Date.now() - lastTouchEnd < 300) return; // handled by touch
     const dot = e.target.closest('.proj-map-dot');
-
-    // Tap on map background — close any active tooltip
     if (!dot) {
       mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
+      hideAllLines();
       return;
     }
-
-    // If this dot is already active, navigate
     if (dot.classList.contains('is-active')) {
       window.location.href = dot.href;
       return;
     }
-
-    // First tap: show tooltip, block navigation
     e.preventDefault();
     mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
+    hideAllLines();
     dot.classList.add('is-active');
+    showLineForDot(dot);
   });
 
-  // On touch devices, block click events on dots (touchend handles navigation)
-  let lastTouchEnd = 0;
+  // ── Touch dot interaction (tap-to-preview) ──
+  mapViewport.addEventListener('touchend', (e) => {
+    if (touchMoved || e.touches.length > 0) return;
+    const dot = e.target.closest('.proj-map-dot');
+    if (!dot) {
+      mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
+      hideAllLines();
+      return;
+    }
+    if (dot.classList.contains('is-active')) {
+      window.location.href = dot.href;
+      return;
+    }
+    e.preventDefault();
+    mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
+    hideAllLines();
+    dot.classList.add('is-active');
+    showLineForDot(dot);
+  });
+
+  // Block click on touch devices (touchend handles dots)
   mapViewport.addEventListener('click', (e) => {
     const dot = e.target.closest('.proj-map-dot');
-    if (dot && Date.now() - lastTouchEnd < 500) {
-      e.preventDefault();
-    }
+    if (dot && Date.now() - lastTouchEnd < 300) e.preventDefault();
   });
-
-  // Track when touch events happen
-  mapViewport.addEventListener('touchend', function() {
-    lastTouchEnd = Date.now();
-  }, { passive: true, capture: true });
 }
 
 // ========== PROJECTS FILTER (multi-category with chips) ==========
@@ -186,6 +256,14 @@ if (projFilterToggle && projFilters) {
     projFilters.classList.toggle('is-open');
     projFilterToggle.classList.toggle('is-active');
     if (window._resetMapZoom) window._resetMapZoom();
+  });
+
+  // Close filter panel when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!projFilters.contains(e.target) && !projFilterToggle.contains(e.target) && projFilters.classList.contains('is-open')) {
+      projFilters.classList.remove('is-open');
+      projFilterToggle.classList.remove('is-active');
+    }
   });
 
   // Toggle filter buttons on click and apply immediately
@@ -231,9 +309,16 @@ if (projFilterToggle && projFilters) {
       row.classList.toggle('is-hidden', !matchesFilters(row));
     });
 
-    // Filter map dots
+    // Filter map dots (clear active tooltips on hidden dots)
     document.querySelectorAll('.proj-map-dot').forEach(dot => {
-      dot.classList.toggle('is-hidden', !matchesFilters(dot));
+      const hidden = !matchesFilters(dot);
+      dot.classList.toggle('is-hidden', hidden);
+      if (hidden) dot.classList.remove('is-active');
+    });
+
+    // Filter map lines
+    document.querySelectorAll('.proj-map-line').forEach(line => {
+      line.classList.toggle('is-hidden', !matchesFilters(line));
     });
 
     // Update count

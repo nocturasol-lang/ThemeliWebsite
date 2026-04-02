@@ -43,6 +43,11 @@ if (hamburger && navOverlay) {
     });
   });
 
+  // Close menu when clicking the backdrop (overlay itself, not links)
+  navOverlay.addEventListener('click', (e) => {
+    if (e.target === navOverlay) closeMenu();
+  });
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && navOverlay.classList.contains('is-open')) {
       closeMenu();

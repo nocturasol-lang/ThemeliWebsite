@@ -67,4 +67,13 @@ function initSchema($pdo) {
     if (!in_array('budget', $colNames)) {
         $pdo->exec('ALTER TABLE projects ADD COLUMN budget REAL');
     }
+    if (!in_array('map_x2', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN map_x2 REAL');
+    }
+    if (!in_array('map_y2', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN map_y2 REAL');
+    }
+    if (!in_array('map_points', $colNames)) {
+        $pdo->exec('ALTER TABLE projects ADD COLUMN map_points TEXT');
+    }
 }

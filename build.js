@@ -10,6 +10,7 @@ const WATCH = process.argv.includes('--watch');
 const SRC  = path.join(__dirname, 'src');
 const PUB  = path.join(__dirname, 'public');
 const DIST = path.join(__dirname, 'dist');
+const SITE_URL = 'https://themeli.gr';
 
 /* ── Navigation items per language ────────────────────────────── */
 const NAV_ITEMS = {
@@ -269,6 +270,66 @@ function build() {
     fs.writeFileSync(path.join(DIST, `${page}.html`), html);
     count++;
   }
+
+  /* ── Root .htaccess for 301 redirects (Apache/Hostinger) ──── */
+  const htaccessRules = [
+    'RewriteEngine On',
+    '',
+    '# Language redirect: root pages → /en/ (301)',
+    ...REDIRECT_PAGES.map(page =>
+      `RewriteRule ^${page}\\.html$ /en/${page}.html [R=301,L]`
+    ),
+    '',
+    '# Bare domain → /en/',
+    'RewriteRule ^$ /en/index.html [R=301,L]',
+  ].join('\n') + '\n';
+  fs.writeFileSync(path.join(DIST, '.htaccess'), htaccessRules);
+  count++;
+
+  /* ── Auto-generate sitemap.xml ─────────────────────────────── */
+  const today = new Date().toISOString().split('T')[0];
+  let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n';
+  sitemap += '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
+
+  for (const pageName of PAGES) {
+    if (pageName === 'project.html') continue;
+    for (const lang of LANGUAGES) {
+      sitemap += '  <url>\n';
+      sitemap += `    <loc>${SITE_URL}/${lang}/${pageName}</loc>\n`;
+      sitemap += `    <lastmod>${today}</lastmod>\n`;
+      const priority = pageName === 'index.html' ? '1.0' : '0.8';
+      sitemap += `    <priority>${priority}</priority>\n`;
+      for (const altLang of LANGUAGES) {
+        sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/${pageName}"/>\n`;
+      }
+      sitemap += '  </url>\n';
+    }
+  }
+
+  // Add individual project URLs from projects-data.js
+  const projectsDataPath = path.join(SRC, 'projects-data.js');
+  if (fs.existsSync(projectsDataPath)) {
+    const projRaw = fs.readFileSync(projectsDataPath, 'utf8');
+    const idMatches = [...projRaw.matchAll(/id:\s*(\d+)/g)];
+    for (const m of idMatches) {
+      const id = m[1];
+      for (const lang of LANGUAGES) {
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${SITE_URL}/${lang}/project.html?id=${id}</loc>\n`;
+        sitemap += `    <lastmod>${today}</lastmod>\n`;
+        sitemap += `    <priority>0.6</priority>\n`;
+        for (const altLang of LANGUAGES) {
+          sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/project.html?id=${id}"/>\n`;
+        }
+        sitemap += '  </url>\n';
+      }
+    }
+  }
+
+  sitemap += '</urlset>\n';
+  fs.writeFileSync(path.join(DIST, 'sitemap.xml'), sitemap);
+  count++;
 
   const elapsed = Date.now() - start;
   console.log(`Build complete: ${count} files written (${elapsed}ms)${PROD ? ' [production]' : ''}`);

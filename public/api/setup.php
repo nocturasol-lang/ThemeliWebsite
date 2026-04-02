@@ -7,12 +7,10 @@
  */
 require_once __DIR__ . '/config.php';
 
-// If admin.hash already exists, block access
+// If admin.hash already exists, return 404 — reveal nothing
 if (file_exists(HASH_PATH)) {
-    echo '<!DOCTYPE html><html><body style="font-family:sans-serif;padding:40px;background:#252526;color:#fff">';
-    echo '<h2>Admin account already configured.</h2>';
-    echo '<p>Delete <code>data/admin.hash</code> if you need to reset the password.</p>';
-    echo '</body></html>';
+    http_response_code(404);
+    echo '<!DOCTYPE html><html><body><h1>Not Found</h1></body></html>';
     exit;
 }
 

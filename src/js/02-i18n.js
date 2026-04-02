@@ -6,7 +6,32 @@ const I18N = {
     projects: 'Projects', project: 'Project',
     copied: 'Copied!', copyAddress: 'Copy Address', copyNumber: 'Copy Number',
     clearAll: 'Clear All',
-    typ: {}
+    typ: {},
+    loc: {
+      'Αθήνα': 'Athens', 'Πειραιάς': 'Piraeus', 'Θεσσαλονίκη': 'Thessaloniki',
+      'Κως': 'Kos', 'Κόρινθος': 'Corinth', 'Λάρισα': 'Larissa', 'Πάτρα': 'Patras',
+      'Ελευσίνα': 'Elefsina', 'Χαλανδρί': 'Chalandri', 'Φιλοθέη': 'Filothei',
+      'Αργυρούπολη': 'Argyroupoli', 'Βούλα': 'Voula', 'Παπάγου': 'Papagou',
+      'Πεύκη': 'Peyki', 'Νέα Ιωνία': 'Nea Ionia', 'Λαύριο': 'Lavrio',
+      'Παλαιό Φάληρο': 'Palaio Faliro', 'Ελληνικό': 'Elliniko', 'Σαλαμίνα': 'Salamina',
+      'Μαραθώνας': 'Marathon', 'Ίλιον': 'Ilion',
+      'Κέα': 'Kea', 'Χίος': 'Chios', 'Λέσβος': 'Lesvos', 'Εύβοια': 'Evia',
+      'Κεφαλλονιά': 'Kefalonia', 'Μυτιλήνη': 'Mytilene',
+      'Ναύπλιο': 'Nafplio', 'Καλαμάτα': 'Kalamata', 'Αίγιο': 'Aigio',
+      'Κιάτο': 'Kiato', 'Σικυώνα': 'Sikyon', 'Μεγαλόπολη': 'Megalopoli',
+      'Αγρίνιο': 'Agrinio', 'Αιτωλοακαρνανία': 'Aitoloakarnania',
+      'Αιτωλοακαρρανία': 'Aitoloakarnania', 'Μεσοχώρα': 'Mesochora',
+      'Τρίκαλα': 'Trikala', 'Μουζάκι': 'Mouzaki',
+      'Λαμία': 'Lamia', 'Δομοκός': 'Domokos',
+      'Ιωάννινα': 'Ioannina', 'Φλώρινα': 'Florina',
+      'Κιλκίς': 'Kilkis', 'Σταυροχώρι': 'Stavrochori',
+      'Χερσόνησος': 'Hersonissos',
+      'Χαλκίδα': 'Chalkida', 'Γαλάτσι': 'Galatsi', 'Κρήτη': 'Crete',
+      'Αττική': 'Attica',
+      'Βουκουρέστι, Ρουμανία': 'Bucharest, Romania',
+      'Βουδαπέστη, Ουγγαρία': 'Budapest, Hungary',
+      'Iasi, Ρουμανία': 'Iași, Romania'
+    }
   },
   el: {
     projects: 'Έργα', project: 'Έργο',
@@ -22,6 +47,10 @@ const I18N = {
       'Dams': 'Φράγματα',
       'Ports & Marine': 'Λιμάνια & Θαλάσσια',
       'Urban Redevelopment': 'Αστική Ανάπλαση'
+    },
+    stat: {
+      'Completed': 'Ολοκληρωμένο',
+      'In Progress': 'Σε Εξέλιξη'
     }
   }
 };

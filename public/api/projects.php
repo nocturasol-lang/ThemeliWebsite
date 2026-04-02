@@ -14,6 +14,32 @@ requireAuth();
 $method = $_SERVER['REQUEST_METHOD'];
 $db = getDb();
 
+// Validate numeric fields in a project row
+function validateProjectRow($r) {
+    $year = (int)($r['year'] ?? 0);
+    if ($year !== 0 && ($year < 1900 || $year > 2100)) {
+        jsonResponse(['error' => 'Invalid year: must be between 1900 and 2100'], 400);
+    }
+    if (isset($r['year_start'])) {
+        $ys = (int)$r['year_start'];
+        if ($ys < 1900 || $ys > 2100) {
+            jsonResponse(['error' => 'Invalid year_start: must be between 1900 and 2100'], 400);
+        }
+    }
+    if (isset($r['map_x']) && ($r['map_x'] < 0 || $r['map_x'] > 100)) {
+        jsonResponse(['error' => 'Invalid map_x: must be between 0 and 100'], 400);
+    }
+    if (isset($r['map_y']) && ($r['map_y'] < 0 || $r['map_y'] > 100)) {
+        jsonResponse(['error' => 'Invalid map_y: must be between 0 and 100'], 400);
+    }
+    if (isset($r['map_x2']) && ($r['map_x2'] < 0 || $r['map_x2'] > 100)) {
+        jsonResponse(['error' => 'Invalid map_x2: must be between 0 and 100'], 400);
+    }
+    if (isset($r['map_y2']) && ($r['map_y2'] < 0 || $r['map_y2'] > 100)) {
+        jsonResponse(['error' => 'Invalid map_y2: must be between 0 and 100'], 400);
+    }
+}
+
 // GET — list or single
 if ($method === 'GET') {
     $id = $_GET['id'] ?? null;
@@ -36,12 +62,13 @@ if ($method === 'POST') {
     // Normalize to array of rows
     $rows = isset($body[0]) ? $body : [$body];
 
-    $sql = 'INSERT INTO projects (name, name_en, description, description_en, year, typology, location, region, architect, size, status, date_completed, image_url, images, map_x, map_y, client, contractor, participation, year_start, budget)
-            VALUES (:name, :name_en, :description, :description_en, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :images, :map_x, :map_y, :client, :contractor, :participation, :year_start, :budget)';
+    $sql = 'INSERT INTO projects (name, name_en, description, description_en, year, typology, location, region, architect, size, status, date_completed, image_url, images, map_x, map_y, map_x2, map_y2, map_points, client, contractor, participation, year_start, budget)
+            VALUES (:name, :name_en, :description, :description_en, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :images, :map_x, :map_y, :map_x2, :map_y2, :map_points, :client, :contractor, :participation, :year_start, :budget)';
     $stmt = $db->prepare($sql);
 
     $ids = [];
     foreach ($rows as $r) {
+        validateProjectRow($r);
         $stmt->execute([
             ':name'           => $r['name'] ?? '',
             ':name_en'        => $r['name_en'] ?? '',
@@ -59,6 +86,9 @@ if ($method === 'POST') {
             ':images'         => $r['images'] ?? '[]',
             ':map_x'          => isset($r['map_x']) ? (float)$r['map_x'] : null,
             ':map_y'          => isset($r['map_y']) ? (float)$r['map_y'] : null,
+            ':map_x2'         => isset($r['map_x2']) ? (float)$r['map_x2'] : null,
+            ':map_y2'         => isset($r['map_y2']) ? (float)$r['map_y2'] : null,
+            ':map_points'     => $r['map_points'] ?? null,
             ':client'         => $r['client'] ?? '',
             ':contractor'     => $r['contractor'] ?? '',
             ':participation'  => $r['participation'] ?? '',
@@ -75,10 +105,11 @@ if ($method === 'POST') {
 if ($method === 'PUT') {
     $body = getJsonBody();
     if (!$body || !isset($body['id'])) jsonResponse(['error' => 'Missing id'], 400);
+    validateProjectRow($body);
 
     $sql = 'UPDATE projects SET name=:name, name_en=:name_en, description=:description, description_en=:description_en, year=:year, typology=:typology,
             location=:location, region=:region, architect=:architect, size=:size, status=:status,
-            date_completed=:date_completed, image_url=:image_url, images=:images, map_x=:map_x, map_y=:map_y,
+            date_completed=:date_completed, image_url=:image_url, images=:images, map_x=:map_x, map_y=:map_y, map_x2=:map_x2, map_y2=:map_y2, map_points=:map_points,
             client=:client, contractor=:contractor, participation=:participation, year_start=:year_start, budget=:budget
             WHERE id=:id';
     $stmt = $db->prepare($sql);
@@ -100,6 +131,9 @@ if ($method === 'PUT') {
         ':images'         => $body['images'] ?? '[]',
         ':map_x'          => isset($body['map_x']) ? (float)$body['map_x'] : null,
         ':map_y'          => isset($body['map_y']) ? (float)$body['map_y'] : null,
+        ':map_x2'         => isset($body['map_x2']) ? (float)$body['map_x2'] : null,
+        ':map_y2'         => isset($body['map_y2']) ? (float)$body['map_y2'] : null,
+        ':map_points'     => $body['map_points'] ?? null,
         ':client'         => $body['client'] ?? '',
         ':contractor'     => $body['contractor'] ?? '',
         ':participation'  => $body['participation'] ?? '',

@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#252526">
   <meta name="description" content="{{description}}">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
   <link rel="canonical" href="https://themeli.gr/{{langCode}}/{{pageName}}">
   <link rel="alternate" hreflang="en" href="https://themeli.gr/en/{{pageName}}">
   <link rel="alternate" hreflang="el" href="https://themeli.gr/el/{{pageName}}">
+  <link rel="alternate" hreflang="x-default" href="https://themeli.gr/en/{{pageName}}">
   <meta property="og:title" content="{{title}}">
   <meta property="og:description" content="{{description}}">
   <meta property="og:url" content="https://themeli.gr/{{langCode}}/{{pageName}}">
@@ -16,6 +19,9 @@
   <meta property="og:locale" content="{{ogLocale}}">
   <meta property="og:site_name" content="THEMELI S.A.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{title}}">
+  <meta name="twitter:description" content="{{description}}">
+  <meta name="twitter:image" content="https://themeli.gr/assets/landing-poster.jpg">
   <title>{{title}}</title>
   <link rel="preload" href="../assets/fonts/CFModGrotesk-RegularExpanded.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../styles.css">
@@ -46,7 +52,7 @@
     <div class="footer-gradient"></div>
     <div class="footer-inner">
       <div class="footer-logo">
-        <a href=""><img src="../assets/themeli-footer-logo.svg" alt="Themeli" width="140" height="150"></a>
+        <a href="{{homeLink}}"><img src="../assets/themeli-footer-logo.svg" alt="Themeli" width="140" height="150"></a>
       </div>
       <div class="footer-columns">
         <div class="footer-col">
@@ -73,9 +79,9 @@
         </div>
         <div class="footer-col">
           <h4>{{footerSocialsLabel}}</h4>
-          <a href="#">Linkedin</a>
-          <a href="#">Facebook</a>
-          <a href="#">Instagram</a>
+          <a href="#" rel="nofollow">Linkedin</a>
+          <a href="#" rel="nofollow">Facebook</a>
+          <a href="#" rel="nofollow">Instagram</a>
         </div>
       </div>
     </div>
@@ -94,11 +100,12 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "ConstructionCompany",
     "name": "THEMELI S.A.",
     "alternateName": "ΘΕΜΕΛΗ Α.Ε.",
     "url": "https://themeli.gr",
     "logo": "https://themeli.gr/assets/themeli-logo.svg",
+    "image": "https://themeli.gr/assets/landing-poster.jpg",
     "foundingDate": "1923",
     "address": {
       "@type": "PostalAddress",
@@ -107,8 +114,21 @@
       "postalCode": "142 35",
       "addressCountry": "GR"
     },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 38.03279,
+      "longitude": 23.77454
+    },
     "telephone": "+302102717720",
-    "email": "INFO@THEMELI.GR"
+    "faxNumber": "+302102717723",
+    "email": "INFO@THEMELI.GR",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+302102717720",
+      "contactType": "Customer Service",
+      "areaServed": "GR",
+      "availableLanguage": ["en", "el"]
+    },
   }
   </script>
 </body>

@@ -25,6 +25,7 @@ if (subsGrid && subDetail) {
       <button class="lightbox-arrow lightbox-next" aria-label="Next">&rsaquo;</button>
       <div class="lightbox-counter">${idx + 1} / ${images.length}</div>`;
     document.body.appendChild(lb);
+    document.body.style.overflow = 'hidden';
 
     const img = lb.querySelector('.lightbox-img');
     const counter = lb.querySelector('.lightbox-counter');
@@ -42,7 +43,15 @@ if (subsGrid && subDetail) {
       requestAnimationFrame(() => lb.classList.add('is-visible'));
     });
 
+    function handler(e) {
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') { idx = (idx - 1 + images.length) % images.length; show(); }
+      if (e.key === 'ArrowRight') { idx = (idx + 1) % images.length; show(); }
+    }
+
     const close = () => {
+      document.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
       lb.classList.remove('is-visible');
       setTimeout(() => lb.remove(), 300);
     };
@@ -58,11 +67,7 @@ if (subsGrid && subDetail) {
       show();
     });
     lb.addEventListener('click', e => { if (e.target === lb) close(); });
-    document.addEventListener('keydown', function handler(e) {
-      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
-      if (e.key === 'ArrowLeft') { idx = (idx - 1 + images.length) % images.length; show(); }
-      if (e.key === 'ArrowRight') { idx = (idx + 1) % images.length; show(); }
-    });
+    document.addEventListener('keydown', handler);
   };
 
   // Show subsidiary detail view
