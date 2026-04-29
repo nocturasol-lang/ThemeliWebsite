@@ -1,0 +1,10 @@
+node_modules/
+.git/
+.DS_Store
+*.log
+.claude/
+.mcp.json
+.env
+.env.deploy
+public/api/data/
+public/uploads/projects/

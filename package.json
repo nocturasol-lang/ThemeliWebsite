@@ -5,14 +5,13 @@
     "build": "node build.js",
     "build:prod": "node build.js --prod",
     "dev": "node build.js --watch",
-    "serve": "npx serve dist -l 3000",
-    "images": "node scripts/optimize-images.js",
-    "images:clean": "node scripts/optimize-images.js --clean"
+    "serve": "php -S localhost:8000 -t dist scripts/router.php",
+    "seed": "php scripts/seed-projects.php",
+    "deploy": "bash scripts/deploy.sh"
   },
   "devDependencies": {
     "chokidar": "^4.0.0",
     "csso": "^5.0.0",
-    "sharp": "^0.33.0",
     "terser": "^5.46.1"
   }
 }

@@ -11,13 +11,19 @@ dist/
 node_modules/
 public/assets/src-images/
 
-# Local database & uploads
-data/themeli.sqlite
-data/themeli.sqlite-shm
-data/themeli.sqlite-wal
-data/admin.hash
-uploads/project-images/*
-!uploads/project-images/.gitkeep
+# Runtime data (SQLite + uploads) — written by the live PHP backend
+public/api/data/*
+!public/api/data/.gitkeep
+!public/api/data/.htaccess
+public/uploads/projects/
+!public/uploads/.gitkeep
 
-# Utility scripts (regenerated)
-scripts/
+# Deploy credentials
+.env
+.env.deploy
+
+# Local test artifacts and backups (screenshots, server backups, etc.)
+_*
+!_archive/
+.mcp.json
+prototypes/
