@@ -65,7 +65,7 @@
   pointer-events: none;
 }
 .portal-content-inner {
-  position: absolute; top: 52%; left: 50%;
+  position: absolute; top: 60%; left: 50%;
   transform: translate(-50%, var(--portal-shift, 32px));
   max-width: 640px; width: 100%;
   padding: 0 24px;

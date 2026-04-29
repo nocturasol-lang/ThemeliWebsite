@@ -2,7 +2,7 @@
 
 /* ========== SUBSIDIARIES ========== */
 .subsidiaries-page {
-  padding: 350px var(--pad-x) 100px;
+  padding: 220px var(--pad-x) 100px;
   min-height: calc(100vh - var(--menu-height) - 319px);
   display: flex;
   flex-direction: column;

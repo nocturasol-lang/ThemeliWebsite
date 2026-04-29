@@ -154,7 +154,7 @@
     const driftX   = Math.sin(t * DRIFT_FREQ_X) * DRIFT_X * driftSc;
     const driftY   = Math.cos(t * DRIFT_FREQ_Y) * DRIFT_Y * driftSc;
     const breathe  = 1 + Math.sin(t * BREATHE_FREQ) * BREATHE_AMT * driftSc;
-    const LOGO_LIFT = H * 0.13;
+    const LOGO_LIFT = H * 0.08;
     const liftY    = -LOGO_LIFT * shiftSc;
 
     for (let i = 0; i < particles.length; i++) {
