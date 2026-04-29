@@ -408,7 +408,7 @@
             showLogin();
           }
         } catch (_) { /* api() already calls showLogin on 401 */ }
-      }, 60000);
+      }, 15000);
     }
     function stopIdleCheck() { if (idleTimer) { clearInterval(idleTimer); idleTimer = null; } }
 

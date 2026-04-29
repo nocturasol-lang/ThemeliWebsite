@@ -138,9 +138,28 @@
     let typeFilter = '';
 
     function show(view) {
-      if (view === 'login') { loginEl.classList.remove('hidden'); listEl.classList.add('hidden'); }
-      else { loginEl.classList.add('hidden'); listEl.classList.remove('hidden'); load(); }
+      if (view === 'login') { loginEl.classList.remove('hidden'); listEl.classList.add('hidden'); stopIdleCheck(); }
+      else { loginEl.classList.add('hidden'); listEl.classList.remove('hidden'); load(); startIdleCheck(); }
     }
+
+    let idleTimer = null;
+    function startIdleCheck() {
+      stopIdleCheck();
+      idleTimer = setInterval(async () => {
+        try {
+          const status = await api('/auth.php');
+          if (!status.authenticated) {
+            if (status.reason === 'displaced') {
+              try { alert('Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή. Η συνεδρία σας τερματίστηκε.'); } catch (_) {}
+              loginErr.textContent = 'Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή.';
+              loginErr.style.display = 'block';
+            }
+            show('login');
+          }
+        } catch (_) { /* api() handles 401 */ }
+      }, 15000);
+    }
+    function stopIdleCheck() { if (idleTimer) { clearInterval(idleTimer); idleTimer = null; } }
 
     (async () => {
       try {

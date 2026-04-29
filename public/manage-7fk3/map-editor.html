@@ -337,8 +337,27 @@
     });
 
     // ── Auth ──
-    function showLogin() { loginEl.classList.remove('hidden'); editorEl.classList.add('hidden'); logoutBtn.style.display = 'none'; }
-    function showEditor() { loginEl.classList.add('hidden'); editorEl.classList.remove('hidden'); logoutBtn.style.display = ''; loadProjects(); setTimeout(() => fitToGreece(false), 50); }
+    function showLogin() { loginEl.classList.remove('hidden'); editorEl.classList.add('hidden'); logoutBtn.style.display = 'none'; stopIdleCheck(); }
+    function showEditor() { loginEl.classList.add('hidden'); editorEl.classList.remove('hidden'); logoutBtn.style.display = ''; loadProjects(); setTimeout(() => fitToGreece(false), 50); startIdleCheck(); }
+
+    let idleTimer = null;
+    function startIdleCheck() {
+      stopIdleCheck();
+      idleTimer = setInterval(async () => {
+        try {
+          const status = await api('/auth.php');
+          if (!status.authenticated) {
+            if (status.reason === 'displaced') {
+              try { alert('Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή. Η συνεδρία σας τερματίστηκε.'); } catch (_) {}
+              loginStatus.textContent = 'Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή.';
+              loginStatus.className = 'status err';
+            }
+            showLogin();
+          }
+        } catch (_) { /* api() handles 401 */ }
+      }, 15000);
+    }
+    function stopIdleCheck() { if (idleTimer) { clearInterval(idleTimer); idleTimer = null; } }
 
     (async () => {
       try {
