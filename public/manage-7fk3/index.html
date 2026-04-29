@@ -392,8 +392,22 @@
     /* ──────────────────────────────────────────────────────────────
      * Auth
      * ────────────────────────────────────────────────────────────── */
-    function showLogin() { loginView.classList.remove('hidden'); dashView.classList.add('hidden'); }
-    function showDash()  { loginView.classList.add('hidden');    dashView.classList.remove('hidden'); loadProjects(); updateInquiryBadge(); }
+    function showLogin() { loginView.classList.remove('hidden'); dashView.classList.add('hidden'); stopIdleCheck(); }
+    function showDash()  { loginView.classList.add('hidden');    dashView.classList.remove('hidden'); loadProjects(); updateInquiryBadge(); startIdleCheck(); }
+
+    // Poll auth status every 60s — server logs you out after 30' of inactivity,
+    // and this catches it without waiting for the user's next click.
+    let idleTimer = null;
+    function startIdleCheck() {
+      stopIdleCheck();
+      idleTimer = setInterval(async () => {
+        try {
+          const status = await api('/auth.php');
+          if (!status.authenticated) showLogin();
+        } catch (_) { /* api() already calls showLogin on 401 */ }
+      }, 60000);
+    }
+    function stopIdleCheck() { if (idleTimer) { clearInterval(idleTimer); idleTimer = null; } }
 
     (async () => {
       try {

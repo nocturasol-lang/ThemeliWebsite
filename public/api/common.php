@@ -102,9 +102,25 @@ function start_session(): void {
     session_start();
 }
 
+// Auto-logout after this many seconds of inactivity.
+const ADMIN_IDLE_TIMEOUT = 30 * 60;
+
 function is_admin(): bool {
     start_session();
-    return !empty($_SESSION['admin_email']);
+    if (empty($_SESSION['admin_email'])) return false;
+    $last = $_SESSION['last_activity'] ?? 0;
+    if ($last && (time() - $last) > ADMIN_IDLE_TIMEOUT) {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+        }
+        session_destroy();
+        return false;
+    }
+    $_SESSION['last_activity'] = time();
+    return true;
 }
 
 function require_admin(): void {

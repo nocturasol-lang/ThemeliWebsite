@@ -31,6 +31,7 @@ if ($action === 'setup') {
     $st = db()->prepare("INSERT INTO settings (key, value) VALUES ('admin_email', :e), ('admin_password_hash', :h)");
     $st->execute([':e' => $email, ':h' => $hash]);
     $_SESSION['admin_email'] = $email;
+    $_SESSION['last_activity'] = time();
     json_ok(['email' => $email]);
 }
 
@@ -65,4 +66,5 @@ if (strcasecmp($email, $cfg['admin_email']) !== 0 || !password_verify($pass, $cf
 }
 
 $_SESSION['admin_email'] = $cfg['admin_email'];
+$_SESSION['last_activity'] = time();
 json_ok(['email' => $cfg['admin_email']]);
