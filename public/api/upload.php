@@ -1,60 +1,57 @@
 <?php
-/**
- * THEMELI — Image Upload API
- *
- * POST with multipart/form-data, field: "image"
- * Returns: { "url": "relative/path/to/image.jpg" }
- */
-require_once __DIR__ . '/config.php';
+// Image upload for project hero/gallery.
+//
+// POST multipart/form-data:
+//   project_id  (int, required) — legacy_id of the project
+//   file        (file,  required)
+//   kind        ("hero" | "gallery") — informational; storage is identical
+//
+// Response: { filename: "<stored-name>.ext", url: "/uploads/projects/<id>/<stored-name>.ext" }
 
-requireAuth();
+require __DIR__ . '/common.php';
+require_admin();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    jsonResponse(['error' => 'Method not allowed'], 405);
+if (method() !== 'POST') json_err('Method not allowed', 405);
+
+$projectId = (int)($_POST['project_id'] ?? 0);
+if ($projectId <= 0) json_err('project_id is required');
+
+if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+    $code = $_FILES['file']['error'] ?? UPLOAD_ERR_NO_FILE;
+    json_err('Upload failed (code ' . (int)$code . ')');
 }
 
-if (!isset($_FILES['image'])) {
-    jsonResponse(['error' => 'No image file provided'], 400);
-}
+$file = $_FILES['file'];
+if ($file['size'] > 10 * 1024 * 1024) json_err('File too large (max 10 MB)');
 
-$file = $_FILES['image'];
-if ($file['error'] !== UPLOAD_ERR_OK) {
-    jsonResponse(['error' => 'Upload error: ' . $file['error']], 400);
-}
-
-// Size limit: 10 MB
-$maxSize = 10 * 1024 * 1024;
-if ($file['size'] > $maxSize) {
-    jsonResponse(['error' => 'File too large. Maximum size: 10 MB'], 400);
-}
-
-// Validate MIME type
-$allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+// MIME sniff via fileinfo
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
-$mime = finfo_file($finfo, $file['tmp_name']);
-finfo_close($finfo);
+$mime  = $finfo ? finfo_file($finfo, $file['tmp_name']) : ($file['type'] ?? '');
+if ($finfo) finfo_close($finfo);
 
-if (!in_array($mime, $allowed)) {
-    jsonResponse(['error' => 'Invalid file type. Allowed: jpeg, png, webp, gif'], 400);
-}
+$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+$allowed = [
+    'image/jpeg' => 'jpg',
+    'image/png'  => 'png',
+    'image/webp' => 'webp',
+    'image/avif' => 'avif',
+];
+if (!isset($allowed[$mime])) json_err('Unsupported image type: ' . $mime, 415);
+if ($ext === '' || $ext === 'jpeg') $ext = $allowed[$mime];
 
-// Validate extension against allowlist
-$allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'jpg');
-if (!in_array($ext, $allowedExts)) {
-    jsonResponse(['error' => 'Invalid file extension'], 400);
-}
+$base   = pathinfo($file['name'], PATHINFO_FILENAME);
+$base   = safe_filename($base);
+$rand   = substr(bin2hex(random_bytes(4)), 0, 8);
+$stored = $base . '_' . $rand . '.' . $ext;
 
-// Validate it's a real image with sane dimensions
-$imgInfo = getimagesize($file['tmp_name']);
-if (!$imgInfo || $imgInfo[0] > 8000 || $imgInfo[1] > 8000) {
-    jsonResponse(['error' => 'Invalid image or dimensions too large (max 8000x8000)'], 400);
-}
-$filename = time() . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
-$destPath = UPLOADS_DIR . '/' . $filename;
+$destDir = UPLOADS_DIR . '/' . $projectId;
+if (!is_dir($destDir) && !@mkdir($destDir, 0775, true)) json_err('Cannot create upload dir');
 
-if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-    jsonResponse(['error' => 'Failed to save file'], 500);
-}
+$destPath = $destDir . '/' . $stored;
+if (!move_uploaded_file($file['tmp_name'], $destPath)) json_err('Failed to store file');
+@chmod($destPath, 0644);
 
-jsonResponse(['url' => UPLOADS_URL . '/' . $filename]);
+json_ok([
+    'filename' => $stored,
+    'url'      => '/uploads/projects/' . $projectId . '/' . rawurlencode($stored),
+]);

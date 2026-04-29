@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Επεξεργασία Χάρτη — Themeli Admin</title>
+  <link rel="stylesheet" href="../assets/vendor/leaflet/leaflet.css">
+  <style>
+    :root {
+      --bg: #1a1a1c;
+      --surface: #252526;
+      --border: #3a3a3c;
+      --text: #e5e5e7;
+      --muted: #8e8e93;
+      --accent: #ff731e;
+      --ok: #34c759;
+      --err: #ff453a;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; display: flex; flex-direction: column; overflow: hidden; }
+    header { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.25rem; background: var(--surface); border-bottom: 1px solid var(--border); flex: 0 0 auto; }
+    header h1 { margin: 0; font-size: 1rem; font-weight: 500; }
+    header .spacer { flex: 1; }
+    header .back-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 0.35rem 0.6rem; border-radius: 4px; transition: background 0.15s, color 0.15s; }
+    header .back-link:hover { background: var(--border); color: var(--text); }
+    button, select, input { font-family: inherit; font-size: 14px; }
+    button { background: var(--border); color: var(--text); border: 0; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #4a4a4c; }
+    button.primary { background: var(--accent); color: #fff; }
+    button.primary:hover { background: #e66614; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    input[type="text"], input[type="email"], input[type="password"], select {
+      background: var(--bg); color: var(--text); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.5rem 0.75rem; width: 100%;
+    }
+
+    /* Login panel (kept centered) */
+    .login-container { max-width: 420px; margin: 3rem auto; padding: 0 1rem; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; }
+    .row { margin-bottom: 1rem; }
+    .row label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 0.3rem; }
+    .status { padding: 0.5rem 0.75rem; border-radius: 4px; font-size: 13px; margin-top: 0.75rem; display: none; }
+    .status.ok { background: rgba(52, 199, 89, 0.15); color: var(--ok); display: block; }
+    .status.err { background: rgba(255, 69, 58, 0.15); color: var(--err); display: block; }
+    .actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+
+    /* Editor layout: side panel + full-height map */
+    .editor-wrap { flex: 1 1 auto; display: grid; grid-template-columns: 320px 1fr; min-height: 0; }
+    @media (max-width: 800px) { .editor-wrap { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } }
+
+    .side { background: var(--surface); border-right: 1px solid var(--border); padding: 1rem 1rem 1.25rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.9rem; }
+    .side h2 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0.25rem 0 0.3rem; font-weight: 600; }
+    .mode-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+    .mode-toggle button { background: transparent; border: 0; padding: 0.45rem 0.85rem; border-radius: 0; }
+    .mode-toggle button.is-active { background: var(--accent); color: #fff; }
+    .mode-toggle button + button { border-left: 1px solid var(--border); }
+    .btn-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .btn-row button { flex: 1 1 auto; padding: 0.45rem 0.6rem; font-size: 13px; }
+    .project-meta { font-size: 12px; color: var(--muted); }
+    .hint { font-size: 12px; color: var(--muted); line-height: 1.45; }
+
+    .map-wrap { position: relative; background: var(--bg); min-height: 0; }
+    #leafletMap { position: absolute; inset: 0; background: var(--bg); }
+    .leaflet-container { background: var(--bg); }
+    .leaflet-container .leaflet-control-attribution { display: none; }
+    .leaflet-control-zoom a { background: rgba(37, 37, 38, 0.92); color: var(--text); border-color: var(--border); }
+    .leaflet-control-zoom a:hover { background: rgba(74, 74, 76, 0.95); color: var(--text); }
+    .edit-pin { filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5)); }
+
+    .coord-hud {
+      position: absolute; bottom: 12px; left: 12px; z-index: 500;
+      padding: 6px 10px; font-family: 'SF Mono', Menlo, monospace; font-size: 11px;
+      background: rgba(37, 37, 38, 0.92); border: 1px solid var(--border); border-radius: 4px;
+      color: var(--muted); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      pointer-events: none;
+    }
+    .coord-hud .val { color: var(--text); }
+    .coord-hud .lbl { color: var(--muted); }
+
+    #login.hidden, #editor.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./" class="back-link">← Πίνακας Διαχείρισης</a>
+    <h1>Επεξεργασία Χάρτη</h1>
+    <span class="spacer"></span>
+    <button id="logoutBtn" style="display:none;">Αποσύνδεση</button>
+  </header>
+
+  <!-- Login panel -->
+  <div class="login-container" id="login">
+    <div class="panel">
+      <h2 style="margin-top:0;">Σύνδεση</h2>
+      <form id="loginForm">
+        <div class="row">
+          <label>Email</label>
+          <input type="email" id="email" required autocomplete="username">
+        </div>
+        <div class="row">
+          <label>Κωδικός</label>
+          <input type="password" id="password" required autocomplete="current-password">
+        </div>
+        <div class="actions">
+          <button type="submit" class="primary">Σύνδεση</button>
+        </div>
+        <div class="status" id="loginStatus"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor-wrap hidden" id="editor">
+    <aside class="side">
+      <div>
+        <h2>Έργο</h2>
+        <select id="projectSelect">
+          <option value="">— φόρτωση... —</option>
+        </select>
+        <div class="project-meta" id="projectMeta"></div>
+      </div>
+
+      <div>
+        <h2>Τύπος</h2>
+        <div class="mode-toggle" role="tablist" aria-label="Τύπος σημείου">
+          <button type="button" id="modePoint" class="is-active" aria-pressed="true">Σημείο</button>
+          <button type="button" id="modeSegment" aria-pressed="false">Πολυγραμμή</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>Ενέργειες</h2>
+        <div class="btn-row">
+          <button type="button" id="undoBtn">Αναίρεση</button>
+          <button type="button" id="clearBtn">Καθαρισμός</button>
+          <button type="button" id="flyBtn">Εστίαση</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>Κατάσταση</h2>
+        <div class="hint" id="hint">Διαλέξτε έργο για να ξεκινήσετε.</div>
+        <div class="status" id="saveStatus"></div>
+      </div>
+
+      <div style="margin-top:auto;">
+        <button type="button" class="primary" id="saveBtn" disabled style="width:100%;">Αποθήκευση</button>
+      </div>
+    </aside>
+
+    <div class="map-wrap">
+      <div id="leafletMap"></div>
+      <div class="coord-hud" id="coordHud">
+        <span class="lbl">cursor:</span> <span class="val" id="cursorCoord">—</span>
+        <span class="lbl" style="margin-left:12px;">selected:</span> <span class="val" id="selectedCoord">—</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/vendor/leaflet/leaflet.js"></script>
+  <script src="../assets/greece-prefectures.js"></script>
+  <script>
+    const API = '/api';
+    async function api(path, opts = {}) {
+      const init = Object.assign({ credentials: 'same-origin' }, opts);
+      if (init.body && typeof init.body !== 'string') {
+        init.headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers || {});
+        init.body = JSON.stringify(init.body);
+      }
+      const res = await fetch(API + path, init);
+      let json = null; try { json = await res.json(); } catch (_) {}
+      if (!res.ok || !json || json.ok === false) {
+        if (res.status === 401) showLogin();
+        throw new Error((json && json.error) || ('HTTP ' + res.status));
+      }
+      return json.data;
+    }
+
+    // DOM refs
+    const loginEl = document.getElementById('login');
+    const editorEl = document.getElementById('editor');
+    const loginForm = document.getElementById('loginForm');
+    const loginStatus = document.getElementById('loginStatus');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const projectSelect = document.getElementById('projectSelect');
+    const projectMeta = document.getElementById('projectMeta');
+    const modePointBtn = document.getElementById('modePoint');
+    const modeSegmentBtn = document.getElementById('modeSegment');
+    const clearBtn = document.getElementById('clearBtn');
+    const undoBtn = document.getElementById('undoBtn');
+    const flyBtn = document.getElementById('flyBtn');
+    const cursorCoordEl = document.getElementById('cursorCoord');
+    const selectedCoordEl = document.getElementById('selectedCoord');
+    const hintEl = document.getElementById('hint');
+    const saveBtn = document.getElementById('saveBtn');
+    const saveStatus = document.getElementById('saveStatus');
+
+    // State
+    let currentProject = null;
+    let mode = 'point';     // 'point' | 'segment'
+    let points = [];        // for segment mode: [[lat, lng], ...]
+    let singleLatLng = null; // for point mode: [lat, lng]
+
+    // ── Leaflet map ──
+    const map = L.map('leafletMap', {
+      zoomControl: true,
+      attributionControl: false,
+      minZoom: 5,
+      maxZoom: 14,
+      zoomSnap: 0.25,
+      zoomDelta: 0.5,
+      wheelPxPerZoomLevel: 100,
+      wheelDebounceTime: 30,
+      keyboard: true,
+      keyboardPanDelta: 120,
+      inertia: true
+    });
+
+    // Live cursor coords
+    map.on('mousemove', e => {
+      cursorCoordEl.textContent = `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+    });
+    map.on('mouseout', () => { cursorCoordEl.textContent = '—'; });
+
+    const regionLayer = L.geoJSON(window.GREECE_PREFECTURES, {
+      style: () => ({ fillColor: '#e7e7ea', color: '#2a2d34', weight: 0.6, fillOpacity: 0.94 }),
+      interactive: false
+    }).addTo(map);
+    const greeceBounds = regionLayer.getBounds();
+    function fitToGreece(animate) {
+      map.invalidateSize();
+      map.fitBounds(greeceBounds, { padding: [20, 20], animate: !!animate });
+    }
+    map.setMaxBounds(greeceBounds.pad(0.4));
+    // Defer initial fit — the editor starts hidden, so the container has zero size here.
+    const _mapEl = document.getElementById('leafletMap');
+    if (_mapEl && _mapEl.offsetWidth > 0 && _mapEl.offsetHeight > 0) fitToGreece(false);
+
+    function pinIcon(isPrimary) {
+      const size = isPrimary ? 16 : 12;
+      const r = (size / 2) - 1;
+      const fill = isPrimary ? '#ff731e' : '#4a9eff';
+      return L.divIcon({
+        className: 'edit-pin',
+        html: `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="${fill}" stroke="#0a0d13" stroke-width="1.2"/></svg>`,
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2]
+      });
+    }
+
+    const drawingLayer = L.layerGroup().addTo(map);
+
+    function redraw() {
+      drawingLayer.clearLayers();
+      if (mode === 'point' && singleLatLng) {
+        L.marker(singleLatLng, { icon: pinIcon(true), keyboard: false }).addTo(drawingLayer);
+      } else if (mode === 'segment' && points.length) {
+        if (points.length >= 2) {
+          L.polyline(points, { color: '#ff731e', weight: 2.5, opacity: 0.95 }).addTo(drawingLayer);
+        }
+        points.forEach((pt, i) => {
+          L.marker(pt, { icon: pinIcon(i === 0 || i === points.length - 1), keyboard: false }).addTo(drawingLayer);
+        });
+      }
+      updateCoords();
+    }
+
+    function updateCoords() {
+      if (mode === 'segment') {
+        selectedCoordEl.textContent = points.length ? `${points.length} waypoints` : '—';
+      } else {
+        selectedCoordEl.textContent = singleLatLng
+          ? `${singleLatLng[0].toFixed(4)}, ${singleLatLng[1].toFixed(4)}`
+          : '—';
+      }
+    }
+
+    map.on('click', (e) => {
+      if (!currentProject) return;
+      const lat = +e.latlng.lat.toFixed(5);
+      const lng = +e.latlng.lng.toFixed(5);
+      if (mode === 'segment') {
+        points.push([lat, lng]);
+      } else {
+        singleLatLng = [lat, lng];
+      }
+      redraw();
+    });
+
+    // ── Mode toggle ──
+    function setMode(next) {
+      if (mode === next) return;
+      mode = next;
+      modePointBtn.classList.toggle('is-active', mode === 'point');
+      modeSegmentBtn.classList.toggle('is-active', mode === 'segment');
+      modePointBtn.setAttribute('aria-pressed', mode === 'point');
+      modeSegmentBtn.setAttribute('aria-pressed', mode === 'segment');
+      // Convert between modes: seed segment with existing point; seed point with first of segment
+      if (mode === 'segment') {
+        if (points.length === 0 && singleLatLng) points = [singleLatLng.slice()];
+        singleLatLng = null;
+      } else {
+        if (!singleLatLng && points.length) singleLatLng = points[0].slice();
+        points = [];
+      }
+      hintEl.textContent = mode === 'segment'
+        ? 'Κάντε κλικ για κάθε waypoint της διαδρομής (πρώτο = αρχή, τελευταίο = τέλος).'
+        : 'Κάντε κλικ στον χάρτη για να τοποθετήσετε ένα σημείο.';
+      redraw();
+    }
+    modePointBtn.addEventListener('click', () => setMode('point'));
+    modeSegmentBtn.addEventListener('click', () => setMode('segment'));
+
+    clearBtn.addEventListener('click', () => {
+      points = [];
+      singleLatLng = null;
+      redraw();
+    });
+
+    undoBtn.addEventListener('click', () => {
+      if (mode === 'segment' && points.length) points.pop();
+      else if (mode === 'point') singleLatLng = null;
+      redraw();
+    });
+
+    flyBtn.addEventListener('click', () => {
+      if (mode === 'segment' && points.length) {
+        if (points.length >= 2) map.flyToBounds(L.latLngBounds(points).pad(0.3), { duration: 0.5 });
+        else map.flyTo(points[0], Math.max(map.getZoom(), 10), { duration: 0.5 });
+      } else if (mode === 'point' && singleLatLng) {
+        map.flyTo(singleLatLng, Math.max(map.getZoom(), 10), { duration: 0.5 });
+      } else {
+        map.flyToBounds(regionLayer.getBounds(), { padding: [30, 30], duration: 0.5 });
+      }
+    });
+
+    // ── Auth ──
+    function showLogin() { loginEl.classList.remove('hidden'); editorEl.classList.add('hidden'); logoutBtn.style.display = 'none'; }
+    function showEditor() { loginEl.classList.add('hidden'); editorEl.classList.remove('hidden'); logoutBtn.style.display = ''; loadProjects(); setTimeout(() => fitToGreece(false), 50); }
+
+    (async () => {
+      try {
+        const status = await api('/auth.php');
+        if (status.authenticated) showEditor(); else showLogin();
+      } catch (_) { showLogin(); }
+    })();
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginStatus.className = 'status';
+      try {
+        await api('/auth.php', { method: 'POST', body: {
+          email:    document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+        }});
+        showEditor();
+      } catch (err) {
+        loginStatus.textContent = err.message || 'Σφάλμα σύνδεσης';
+        loginStatus.className = 'status err';
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try { await api('/auth.php?action=logout', { method: 'POST' }); } catch (_) {}
+      showLogin();
+    });
+
+    // ── Project list ──
+    async function loadProjects() {
+      try {
+        const items = await api('/projects.php');
+        projectSelect.innerHTML = '<option value="">— διάλεξε έργο —</option>' +
+          items.map(p => {
+            const hasMap = (p.lat != null && p.lng != null && !(p.lat === 0 && p.lng === 0)) ||
+                           (Array.isArray(p.map_points) && p.map_points.length >= 2);
+            const marker = hasMap ? '●' : '○';
+            return `<option value="${p.id}">${marker} #${p.legacy_id} — ${escapeHtml(p.name)}</option>`;
+          }).join('');
+        projectSelect.addEventListener('change', () => selectProject(Number(projectSelect.value), items));
+
+        const params = new URLSearchParams(window.location.search);
+        const wantLegacy = params.get('project');
+        if (wantLegacy) {
+          const match = items.find(p => String(p.legacy_id) === String(wantLegacy));
+          if (match) {
+            projectSelect.value = match.id;
+            selectProject(match.id, items);
+          }
+        }
+      } catch (err) {
+        projectSelect.innerHTML = '<option>Σφάλμα φόρτωσης</option>';
+      }
+    }
+
+    function escapeHtml(s) {
+      return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    }
+
+    function selectProject(id, items) {
+      if (!id) { currentProject = null; resetState(); saveBtn.disabled = true; return; }
+      currentProject = items.find(p => p.id === Number(id));
+      projectMeta.textContent = `Τυπολογία: ${currentProject.typology || '—'}`;
+
+      // Load existing state
+      const hasSegment = Array.isArray(currentProject.map_points) && currentProject.map_points.length >= 2;
+      if (hasSegment) {
+        setMode('segment');
+        points = currentProject.map_points.map(p => [Number(p[0]), Number(p[1])]);
+        singleLatLng = null;
+      } else if (currentProject.lat != null && currentProject.lng != null &&
+                 !(currentProject.lat === 0 && currentProject.lng === 0)) {
+        setMode('point');
+        singleLatLng = [Number(currentProject.lat), Number(currentProject.lng)];
+        points = [];
+      } else {
+        resetState();
+      }
+      // Fly to existing location if any
+      if (hasSegment && points.length) {
+        map.flyToBounds(L.latLngBounds(points).pad(0.3), { duration: 0.4 });
+      } else if (singleLatLng) {
+        map.flyTo(singleLatLng, Math.max(map.getZoom(), 9), { duration: 0.4 });
+      }
+      redraw();
+      saveBtn.disabled = false;
+    }
+
+    function resetState() {
+      points = [];
+      singleLatLng = null;
+      hintEl.textContent = mode === 'segment'
+        ? 'Κάντε κλικ για κάθε waypoint της διαδρομής.'
+        : 'Κάντε κλικ στον χάρτη για να τοποθετήσετε ένα σημείο.';
+      redraw();
+    }
+
+    // ── Save ──
+    saveBtn.addEventListener('click', async () => {
+      if (!currentProject) return;
+      saveStatus.className = 'status';
+      saveBtn.disabled = true;
+      const payload = {
+        lat: 0,
+        lng: 0,
+        map_points: null
+      };
+      if (mode === 'segment' && points.length >= 2) {
+        payload.lat = points[0][0];
+        payload.lng = points[0][1];
+        payload.map_points = points;
+      } else if (mode === 'point' && singleLatLng) {
+        payload.lat = singleLatLng[0];
+        payload.lng = singleLatLng[1];
+        payload.map_points = null;
+      }
+      try {
+        await api('/projects.php?id=' + currentProject.id, { method: 'PATCH', body: payload });
+        saveStatus.textContent = `Αποθηκεύτηκε έργο #${currentProject.legacy_id}`;
+        saveStatus.className = 'status ok';
+        Object.assign(currentProject, payload);
+      } catch (err) {
+        saveStatus.textContent = err.message || 'Σφάλμα αποθήκευσης';
+        saveStatus.className = 'status err';
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

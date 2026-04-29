@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Αιτήματα Επικοινωνίας — Themeli Admin</title>
+  <style>
+    :root {
+      --bg: #1a1a1c;
+      --surface: #252526;
+      --border: #3a3a3c;
+      --text: #e5e5e7;
+      --muted: #8e8e93;
+      --accent: #ff731e;
+      --ok: #34c759;
+      --err: #ff453a;
+      --warn: #ff9f0a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; }
+    header { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+    header .back-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 0.35rem 0.6rem; border-radius: 4px; }
+    header .back-link:hover { background: var(--border); color: var(--text); }
+    header h1 { margin: 0; font-size: 1rem; font-weight: 500; }
+    header .spacer { flex: 1; }
+    button { background: var(--border); color: var(--text); border: 0; padding: 0.45rem 0.9rem; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 13px; }
+    button:hover { background: #4a4a4c; }
+    button.primary { background: var(--accent); color: #fff; }
+    button.primary:hover { background: #e66614; }
+    button.sm { padding: 0.3rem 0.6rem; font-size: 12px; }
+
+    #login.hidden, #list.hidden { display: none; }
+    #login { max-width: 400px; margin: 6rem auto; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+    #login input { width: 100%; padding: 0.5rem 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-family: inherit; font-size: 14px; margin-bottom: 1rem; }
+    #login button { width: 100%; padding: 0.7rem; }
+
+    .toolbar { display: flex; gap: 0.75rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); align-items: center; flex-wrap: wrap; }
+    .tab { padding: 0.4rem 0.85rem; border-radius: 4px; cursor: pointer; background: transparent; color: var(--muted); font-size: 13px; }
+    .tab.is-active { background: var(--border); color: var(--text); }
+    .count { color: var(--muted); font-size: 12px; margin-left: auto; }
+
+    .type-filter { margin-left: 0.5rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 0.3rem 0.5rem; font-family: inherit; font-size: 12px; }
+    .inquiries-wrap { padding: 1rem 1.5rem; }
+    .inq { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+    .inq.handled { border-left-color: var(--ok); opacity: 0.75; }
+    .inq-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .inq-who { font-weight: 500; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .inq-meta { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .inq-type { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    .inq-type--project    { background: rgba(255,115,30,0.15);  color: var(--accent); }
+    .inq-type--partnership{ background: rgba(10,132,255,0.15);  color: #0a84ff; }
+    .inq-type--press      { background: rgba(191,90,242,0.15);  color: #bf5af2; }
+    .inq-type--career     { background: rgba(52,199,89,0.15);   color: var(--ok); }
+    .inq-type--other      { background: rgba(255,255,255,0.08); color: var(--muted); }
+    .inq-contact { font-size: 13px; color: var(--muted); margin-bottom: 0.5rem; }
+    .inq-contact a { color: var(--text); text-decoration: none; border-bottom: 1px dotted var(--muted); }
+    .inq-subject { font-style: italic; color: var(--muted); margin-bottom: 0.4rem; }
+    .inq-msg { white-space: pre-wrap; line-height: 1.5; margin-bottom: 0.75rem; }
+    .inq-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .inq-empty { text-align: center; padding: 3rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./" class="back-link">← Πίνακας Διαχείρισης</a>
+    <h1>Αιτήματα Επικοινωνίας</h1>
+    <span class="spacer"></span>
+    <button id="refreshBtn">Ανανέωση</button>
+    <button id="logoutBtn">Αποσύνδεση</button>
+  </header>
+
+  <div id="login">
+    <h2 style="margin:0 0 1rem 0;">Σύνδεση</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required autocomplete="username">
+      <input type="password" id="password" placeholder="Κωδικός" required autocomplete="current-password">
+      <button type="submit" class="primary">Σύνδεση</button>
+      <div id="loginErr" style="color:var(--err);margin-top:0.75rem;font-size:13px;display:none;"></div>
+    </form>
+  </div>
+
+  <div id="list" class="hidden">
+    <div class="toolbar">
+      <button class="tab is-active" data-filter="pending">Εκκρεμή</button>
+      <button class="tab" data-filter="handled">Απαντημένα</button>
+      <button class="tab" data-filter="all">Όλα</button>
+      <select id="typeFilter" class="type-filter" aria-label="Φίλτρο τύπου">
+        <option value="">— Όλοι οι τύποι —</option>
+        <option value="project">Νέο Έργο</option>
+        <option value="partnership">Συνεργασία</option>
+        <option value="press">Δημοσιογραφία</option>
+        <option value="career">Καριέρα</option>
+        <option value="other">Άλλο</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="inquiries-wrap" id="inquiriesWrap"><div class="inq-empty">Φόρτωση...</div></div>
+  </div>
+
+  <script>
+    const API = '/api';
+    async function api(path, opts = {}) {
+      const init = Object.assign({ credentials: 'same-origin' }, opts);
+      if (init.body && typeof init.body !== 'string') {
+        init.headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers || {});
+        init.body = JSON.stringify(init.body);
+      }
+      const res = await fetch(API + path, init);
+      let json = null; try { json = await res.json(); } catch (_) {}
+      if (!res.ok || !json || json.ok === false) {
+        if (res.status === 401) show('login');
+        throw new Error((json && json.error) || ('HTTP ' + res.status));
+      }
+      return json.data;
+    }
+
+    const loginEl = document.getElementById('login');
+    const listEl = document.getElementById('list');
+    const loginForm = document.getElementById('loginForm');
+    const loginErr = document.getElementById('loginErr');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const wrap = document.getElementById('inquiriesWrap');
+    const count = document.getElementById('count');
+    const tabs = document.querySelectorAll('.tab');
+
+    const TYPE_LABELS = {
+      project: 'Νέο Έργο',
+      partnership: 'Συνεργασία',
+      press: 'Δημοσιογραφία',
+      career: 'Καριέρα',
+      other: 'Άλλο'
+    };
+
+    let allItems = [];
+    let filter = 'pending';
+    let typeFilter = '';
+
+    function show(view) {
+      if (view === 'login') { loginEl.classList.remove('hidden'); listEl.classList.add('hidden'); }
+      else { loginEl.classList.add('hidden'); listEl.classList.remove('hidden'); load(); }
+    }
+
+    (async () => {
+      try {
+        const status = await api('/auth.php');
+        show(status.authenticated ? 'dash' : 'login');
+      } catch (_) { show('login'); }
+    })();
+
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      loginErr.style.display = 'none';
+      try {
+        await api('/auth.php', { method: 'POST', body: {
+          email:    document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+        }});
+        show('dash');
+      } catch (err) {
+        loginErr.textContent = err.message || 'Σφάλμα';
+        loginErr.style.display = 'block';
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try { await api('/auth.php?action=logout', { method: 'POST' }); } catch (_) {}
+      show('login');
+    });
+    refreshBtn.addEventListener('click', load);
+
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('is-active'));
+      t.classList.add('is-active');
+      filter = t.dataset.filter;
+      render();
+    }));
+    document.getElementById('typeFilter').addEventListener('change', (e) => {
+      typeFilter = e.target.value;
+      render();
+    });
+
+    async function load() {
+      wrap.innerHTML = '<div class="inq-empty">Φόρτωση...</div>';
+      try {
+        allItems = await api('/inquiries.php');
+        render();
+      } catch (err) {
+        wrap.innerHTML = '<div class="inq-empty" style="color:var(--err);">Σφάλμα: ' + esc(err.message) + '</div>';
+      }
+    }
+
+    function render() {
+      const items = allItems.filter(i => {
+        if (filter === 'pending' && i.handled) return false;
+        if (filter === 'handled' && !i.handled) return false;
+        if (typeFilter && (i.inquiry_type || 'other') !== typeFilter) return false;
+        return true;
+      });
+      count.textContent = `${items.length} από ${allItems.length}`;
+      if (!items.length) { wrap.innerHTML = '<div class="inq-empty">Κανένα αίτημα.</div>'; return; }
+      wrap.innerHTML = items.map(i => {
+        const type = i.inquiry_type || 'other';
+        const typeLabel = TYPE_LABELS[type] || 'Άλλο';
+        return `
+        <div class="inq ${i.handled ? 'handled' : ''}" data-id="${i.id}">
+          <div class="inq-head">
+            <div class="inq-who">
+              ${esc(i.name)}
+              <span class="inq-type inq-type--${type}">${esc(typeLabel)}</span>
+            </div>
+            <div class="inq-meta">${fmtDate(i.created_at)}</div>
+          </div>
+          <div class="inq-contact">
+            <a href="mailto:${esc(i.email)}">${esc(i.email)}</a>
+            ${i.phone ? ` · <a href="tel:${esc(i.phone)}">${esc(i.phone)}</a>` : ''}
+          </div>
+          ${i.subject ? `<div class="inq-subject">${esc(i.subject)}</div>` : ''}
+          <div class="inq-msg">${esc(i.message)}</div>
+          <div class="inq-actions">
+            <button class="sm" data-act="reply">Απάντηση στο email</button>
+            ${i.handled
+              ? '<button class="sm" data-act="unhandle">Επαναφορά σε εκκρεμή</button>'
+              : '<button class="sm primary" data-act="handle">Σήμανση ως απαντημένο</button>'}
+            <button class="sm" data-act="delete" style="margin-left:auto;color:var(--err);">Διαγραφή</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+    function fmtDate(iso) { try { return new Date(iso).toLocaleString('el-GR'); } catch (_) { return iso; } }
+
+    wrap.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const row = btn.closest('.inq');
+      const id = Number(row.dataset.id);
+      const item = allItems.find(x => x.id === id);
+      if (!item) return;
+      const act = btn.dataset.act;
+
+      if (act === 'reply') {
+        const subject = item.subject ? `Re: ${item.subject}` : 'Re: Αίτημα επικοινωνίας THEMELI';
+        const body = `\n\n---\n${item.name} wrote on ${fmtDate(item.created_at)}:\n${item.message}`;
+        window.location.href = `mailto:${encodeURIComponent(item.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      } else if (act === 'handle' || act === 'unhandle') {
+        await api('/inquiries.php?id=' + id, { method: 'PATCH', body: { handled: act === 'handle' } });
+        await load();
+      } else if (act === 'delete') {
+        if (!confirm(`Διαγραφή του αιτήματος από "${item.name}";`)) return;
+        await api('/inquiries.php?id=' + id, { method: 'DELETE' });
+        await load();
+      }
+    });
+  </script>
+</body>
+</html>

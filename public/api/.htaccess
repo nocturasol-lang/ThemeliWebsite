@@ -1,4 +1,13 @@
-# Protect database and sensitive files from direct download
-<FilesMatch "\.(sqlite|db|hash)$">
-    Deny from all
+# Allow only .php inside this directory; deny direct access to anything else.
+<FilesMatch "\.(sqlite|sqlite-shm|sqlite-wal|hash|sql|env|md|log)$">
+    Require all denied
 </FilesMatch>
+
+# Disable directory listing
+Options -Indexes
+
+# Send a sane content type for PHP responses
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "same-origin"
+</IfModule>

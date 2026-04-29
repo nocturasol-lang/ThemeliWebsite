@@ -1,158 +1,149 @@
 <?php
-/**
- * THEMELI — Projects REST API
- *
- * GET              → list all projects (or single with ?id=N)
- * POST             → create project(s)
- * PUT              → update project (requires id in body)
- * DELETE ?id=N     → delete project
- */
-require_once __DIR__ . '/db.php';
+// Projects CRUD. All endpoints require admin session.
 
-requireAuth();
+require __DIR__ . '/common.php';
+require_admin();
 
-$method = $_SERVER['REQUEST_METHOD'];
-$db = getDb();
+$method = method();
+$id     = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Validate numeric fields in a project row
-function validateProjectRow($r) {
-    $year = (int)($r['year'] ?? 0);
-    if ($year !== 0 && ($year < 1900 || $year > 2100)) {
-        jsonResponse(['error' => 'Invalid year: must be between 1900 and 2100'], 400);
+// Columns the client can write. Everything else is server-managed.
+const WRITABLE_FIELDS = [
+    'name', 'name_en', 'description', 'description_en',
+    'year', 'year_start',
+    'typology', 'location', 'region', 'architect', 'size',
+    'status', 'date_completed', 'client', 'contractor', 'participation',
+    'budget', 'visibility',
+    'hero_image', 'gallery',
+    'lat', 'lng', 'map_points',
+];
+
+const SELECT_FIELDS = "id, legacy_id, name, name_en, description, description_en,
+    year, year_start, typology, location, region, architect, size,
+    status, date_completed, client, contractor, participation,
+    budget, hero_image, gallery, lat, lng, map_points, visibility,
+    created_at, updated_at";
+
+function row_to_api(array $r): array {
+    $r['gallery']    = json_decode_safe($r['gallery'], []);
+    $r['map_points'] = json_decode_safe($r['map_points'], null);
+    foreach (['year', 'year_start', 'legacy_id'] as $k) {
+        if ($r[$k] !== null) $r[$k] = (int)$r[$k];
     }
-    if (isset($r['year_start'])) {
-        $ys = (int)$r['year_start'];
-        if ($ys < 1900 || $ys > 2100) {
-            jsonResponse(['error' => 'Invalid year_start: must be between 1900 and 2100'], 400);
-        }
+    foreach (['budget', 'lat', 'lng'] as $k) {
+        if ($r[$k] !== null) $r[$k] = (float)$r[$k];
     }
-    if (isset($r['map_x']) && ($r['map_x'] < 0 || $r['map_x'] > 100)) {
-        jsonResponse(['error' => 'Invalid map_x: must be between 0 and 100'], 400);
-    }
-    if (isset($r['map_y']) && ($r['map_y'] < 0 || $r['map_y'] > 100)) {
-        jsonResponse(['error' => 'Invalid map_y: must be between 0 and 100'], 400);
-    }
-    if (isset($r['map_x2']) && ($r['map_x2'] < 0 || $r['map_x2'] > 100)) {
-        jsonResponse(['error' => 'Invalid map_x2: must be between 0 and 100'], 400);
-    }
-    if (isset($r['map_y2']) && ($r['map_y2'] < 0 || $r['map_y2'] > 100)) {
-        jsonResponse(['error' => 'Invalid map_y2: must be between 0 and 100'], 400);
-    }
+    return $r;
 }
 
-// GET — list or single
+// ── GET (list or single) ─────────────────────────────────────────────
 if ($method === 'GET') {
-    $id = $_GET['id'] ?? null;
-    if ($id !== null) {
-        $stmt = $db->prepare('SELECT * FROM projects WHERE id = ?');
-        $stmt->execute([(int)$id]);
-        $row = $stmt->fetch();
-        if (!$row) jsonResponse(['error' => 'Not found'], 404);
-        jsonResponse($row);
+    if ($id) {
+        $st = db()->prepare("SELECT " . SELECT_FIELDS . " FROM projects WHERE id = :id");
+        $st->execute([':id' => $id]);
+        $row = $st->fetch();
+        if (!$row) json_err('Not found', 404);
+        json_ok(row_to_api($row));
     }
-    $rows = $db->query('SELECT * FROM projects ORDER BY id')->fetchAll();
-    jsonResponse($rows);
+    $rows = db()->query("SELECT " . SELECT_FIELDS . " FROM projects ORDER BY legacy_id ASC")->fetchAll();
+    json_ok(array_map('row_to_api', $rows));
 }
 
-// POST — create (single object or array)
+$body = read_json_body();
+
+function build_payload(array $body): array {
+    $out = [];
+    foreach (WRITABLE_FIELDS as $f) {
+        if (!array_key_exists($f, $body)) continue;
+        $v = $body[$f];
+        if ($f === 'gallery') {
+            $v = is_array($v) ? json_encode(array_values($v), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '[]';
+        } elseif ($f === 'map_points') {
+            $v = is_array($v) && count($v) >= 2
+                ? json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+                : null;
+        } elseif (in_array($f, ['year', 'year_start'], true)) {
+            $v = ($v === '' || $v === null) ? null : (int)$v;
+        } elseif (in_array($f, ['budget', 'lat', 'lng'], true)) {
+            $v = ($v === '' || $v === null) ? null : (float)$v;
+        } elseif (is_string($v)) {
+            $v = trim($v);
+        }
+        $out[$f] = $v;
+    }
+    return $out;
+}
+
+// ── POST (create) ────────────────────────────────────────────────────
 if ($method === 'POST') {
-    $body = getJsonBody();
-    if (!$body) jsonResponse(['error' => 'Invalid JSON'], 400);
+    $payload = build_payload($body);
+    if (empty($payload['name'])) json_err('name is required');
 
-    // Normalize to array of rows
-    $rows = isset($body[0]) ? $body : [$body];
-
-    $sql = 'INSERT INTO projects (name, name_en, description, description_en, year, typology, location, region, architect, size, status, date_completed, image_url, images, map_x, map_y, map_x2, map_y2, map_points, client, contractor, participation, year_start, budget)
-            VALUES (:name, :name_en, :description, :description_en, :year, :typology, :location, :region, :architect, :size, :status, :date_completed, :image_url, :images, :map_x, :map_y, :map_x2, :map_y2, :map_points, :client, :contractor, :participation, :year_start, :budget)';
-    $stmt = $db->prepare($sql);
-
-    $ids = [];
-    foreach ($rows as $r) {
-        validateProjectRow($r);
-        $stmt->execute([
-            ':name'           => $r['name'] ?? '',
-            ':name_en'        => $r['name_en'] ?? '',
-            ':description'    => $r['description'] ?? '',
-            ':description_en' => $r['description_en'] ?? '',
-            ':year'           => (int)($r['year'] ?? 0),
-            ':typology'       => $r['typology'] ?? '',
-            ':location'       => $r['location'] ?? '',
-            ':region'         => $r['region'] ?? '',
-            ':architect'      => $r['architect'] ?? '',
-            ':size'           => $r['size'] ?? '',
-            ':status'         => $r['status'] ?? 'Completed',
-            ':date_completed' => $r['date_completed'] ?? '',
-            ':image_url'      => $r['image_url'] ?? '',
-            ':images'         => $r['images'] ?? '[]',
-            ':map_x'          => isset($r['map_x']) ? (float)$r['map_x'] : null,
-            ':map_y'          => isset($r['map_y']) ? (float)$r['map_y'] : null,
-            ':map_x2'         => isset($r['map_x2']) ? (float)$r['map_x2'] : null,
-            ':map_y2'         => isset($r['map_y2']) ? (float)$r['map_y2'] : null,
-            ':map_points'     => $r['map_points'] ?? null,
-            ':client'         => $r['client'] ?? '',
-            ':contractor'     => $r['contractor'] ?? '',
-            ':participation'  => $r['participation'] ?? '',
-            ':year_start'     => isset($r['year_start']) ? (int)$r['year_start'] : null,
-            ':budget'         => isset($r['budget']) ? (float)$r['budget'] : null,
-        ]);
-        $ids[] = (int)$db->lastInsertId();
+    // Auto-assign next legacy_id (admin can override).
+    $legacy = isset($body['legacy_id']) ? (int)$body['legacy_id'] : 0;
+    if ($legacy <= 0) {
+        $legacy = (int)db()->query("SELECT COALESCE(MAX(legacy_id), 0) + 1 FROM projects")->fetchColumn();
     }
+    $payload['legacy_id'] = $legacy;
+    $payload['updated_at'] = date('Y-m-d H:i:s');
 
-    jsonResponse(['ok' => true, 'ids' => $ids], 201);
+    $cols = array_keys($payload);
+    $sql  = 'INSERT INTO projects (' . implode(',', $cols) . ') VALUES (:' . implode(',:', $cols) . ')';
+    $st = db()->prepare($sql);
+    $bind = [];
+    foreach ($payload as $k => $v) $bind[':' . $k] = $v;
+    try {
+        $st->execute($bind);
+    } catch (PDOException $e) {
+        json_err('Insert failed: ' . $e->getMessage(), 400);
+    }
+    $newId = (int)db()->lastInsertId();
+    $row = db()->prepare("SELECT " . SELECT_FIELDS . " FROM projects WHERE id = :id");
+    $row->execute([':id' => $newId]);
+    json_ok(row_to_api($row->fetch()), 201);
 }
 
-// PUT — update
-if ($method === 'PUT') {
-    $body = getJsonBody();
-    if (!$body || !isset($body['id'])) jsonResponse(['error' => 'Missing id'], 400);
-    validateProjectRow($body);
+// ── PATCH (update) ───────────────────────────────────────────────────
+if ($method === 'PATCH') {
+    if (!$id) json_err('id is required');
+    $payload = build_payload($body);
+    if (!$payload) json_err('No fields to update');
+    $payload['updated_at'] = date('Y-m-d H:i:s');
 
-    $sql = 'UPDATE projects SET name=:name, name_en=:name_en, description=:description, description_en=:description_en, year=:year, typology=:typology,
-            location=:location, region=:region, architect=:architect, size=:size, status=:status,
-            date_completed=:date_completed, image_url=:image_url, images=:images, map_x=:map_x, map_y=:map_y, map_x2=:map_x2, map_y2=:map_y2, map_points=:map_points,
-            client=:client, contractor=:contractor, participation=:participation, year_start=:year_start, budget=:budget
-            WHERE id=:id';
-    $stmt = $db->prepare($sql);
-    $stmt->execute([
-        ':id'             => (int)$body['id'],
-        ':name'           => $body['name'] ?? '',
-        ':name_en'        => $body['name_en'] ?? '',
-        ':description'    => $body['description'] ?? '',
-        ':description_en' => $body['description_en'] ?? '',
-        ':year'           => (int)($body['year'] ?? 0),
-        ':typology'       => $body['typology'] ?? '',
-        ':location'       => $body['location'] ?? '',
-        ':region'         => $body['region'] ?? '',
-        ':architect'      => $body['architect'] ?? '',
-        ':size'           => $body['size'] ?? '',
-        ':status'         => $body['status'] ?? 'Completed',
-        ':date_completed' => $body['date_completed'] ?? '',
-        ':image_url'      => $body['image_url'] ?? '',
-        ':images'         => $body['images'] ?? '[]',
-        ':map_x'          => isset($body['map_x']) ? (float)$body['map_x'] : null,
-        ':map_y'          => isset($body['map_y']) ? (float)$body['map_y'] : null,
-        ':map_x2'         => isset($body['map_x2']) ? (float)$body['map_x2'] : null,
-        ':map_y2'         => isset($body['map_y2']) ? (float)$body['map_y2'] : null,
-        ':map_points'     => $body['map_points'] ?? null,
-        ':client'         => $body['client'] ?? '',
-        ':contractor'     => $body['contractor'] ?? '',
-        ':participation'  => $body['participation'] ?? '',
-        ':year_start'     => isset($body['year_start']) ? (int)$body['year_start'] : null,
-        ':budget'         => isset($body['budget']) ? (float)$body['budget'] : null,
-    ]);
+    $sets = [];
+    $bind = [':id' => $id];
+    foreach ($payload as $k => $v) {
+        $sets[] = "$k = :$k";
+        $bind[":$k"] = $v;
+    }
+    $sql = 'UPDATE projects SET ' . implode(', ', $sets) . ' WHERE id = :id';
+    db()->prepare($sql)->execute($bind);
 
-    jsonResponse(['ok' => true]);
+    $row = db()->prepare("SELECT " . SELECT_FIELDS . " FROM projects WHERE id = :id");
+    $row->execute([':id' => $id]);
+    $r = $row->fetch();
+    if (!$r) json_err('Not found', 404);
+    json_ok(row_to_api($r));
 }
 
-// DELETE
+// ── DELETE ───────────────────────────────────────────────────────────
 if ($method === 'DELETE') {
-    $id = $_GET['id'] ?? null;
-    if (!$id) jsonResponse(['error' => 'Missing id'], 400);
+    if (!$id) json_err('id is required');
+    // Find legacy_id so we can wipe its uploads dir
+    $st = db()->prepare("SELECT legacy_id FROM projects WHERE id = :id");
+    $st->execute([':id' => $id]);
+    $legacy = $st->fetchColumn();
+    if ($legacy === false) json_err('Not found', 404);
 
-    $stmt = $db->prepare('DELETE FROM projects WHERE id = ?');
-    $stmt->execute([(int)$id]);
+    db()->prepare("DELETE FROM projects WHERE id = :id")->execute([':id' => $id]);
 
-    jsonResponse(['ok' => true]);
+    // Best-effort cleanup of upload directory.
+    $dir = UPLOADS_DIR . '/' . (int)$legacy;
+    if (is_dir($dir)) {
+        foreach (glob($dir . '/*') ?: [] as $f) @unlink($f);
+        @rmdir($dir);
+    }
+    json_ok(['deleted' => $id]);
 }
 
-jsonResponse(['error' => 'Method not allowed'], 405);
+json_err('Method not allowed', 405);
