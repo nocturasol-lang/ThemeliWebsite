@@ -36,6 +36,7 @@ const LANGUAGES = ['en', 'el'];
 const PAGES = [
   'index.html', 'timeline.html', 'subsidiaries.html',
   'projects.html', 'project.html', 'about.html', 'contact.html',
+  '404.html',
 ];
 
 /* ── Helpers ──────────────────────────────────────────────────── */
@@ -74,11 +75,16 @@ function parseFrontmatter(raw) {
   return { meta, content: match[2] };
 }
 
+function cleanHref(file) {
+  if (file === 'index.html') return './';
+  return file.replace(/\.html$/, '');
+}
+
 function buildNav(lang, activeFile) {
   const items = NAV_ITEMS[lang];
   const lis = items.map(item => {
     const cls = item.file === activeFile ? ' class="active"' : '';
-    return `      <li><a href="${item.file}"${cls}>${item.label}</a></li>`;
+    return `      <li><a href="${cleanHref(item.file)}"${cls}>${item.label}</a></li>`;
   }).join('\n');
   return `  <nav class="nav-overlay" id="navOverlay">\n    <ul>\n${lis}\n    </ul>\n  </nav>`;
 }
@@ -143,24 +149,32 @@ function minifyJS(js) {
 function build() {
   const start = Date.now();
 
-  /* ── Clean dist ─────────────────────────────────────────── */
-  try {
-    fs.rmSync(DIST, { recursive: true, force: true });
-  } catch (e) {
-    // On Windows, font files may be locked — remove what we can
-    if (fs.existsSync(DIST)) {
-      const rimraf = (dir) => {
-        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-          const p = path.join(dir, entry.name);
-          try {
-            if (entry.isDirectory()) { rimraf(p); fs.rmdirSync(p); }
-            else fs.unlinkSync(p);
-          } catch (_) { /* skip locked files */ }
+  /* ── Clean dist (preserving runtime data: SQLite + uploaded images) ── */
+  // Anything inside dist/uploads or dist/api/data is written by the live PHP
+  // backend and must survive a rebuild. dist/projects-data.js is rewritten
+  // by /api/publish.php (admin "Δημοσίευση" action) and likewise must persist.
+  const PRESERVE = ['uploads', path.join('api', 'data'), 'projects-data.js'];
+  function isPreserved(rel) {
+    return PRESERVE.some(p => rel === p || rel.startsWith(p + path.sep));
+  }
+  function cleanExcept(dir, baseRel = '') {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rel = baseRel ? path.join(baseRel, entry.name) : entry.name;
+      const abs = path.join(dir, entry.name);
+      if (isPreserved(rel)) continue;
+      try {
+        if (entry.isDirectory()) {
+          cleanExcept(abs, rel);
+          // Only remove the dir itself if it is now empty
+          try { fs.rmdirSync(abs); } catch (_) { /* not empty (preserved child) */ }
+        } else {
+          fs.unlinkSync(abs);
         }
-      };
-      rimraf(DIST);
+      } catch (_) { /* skip locked files */ }
     }
   }
+  cleanExcept(DIST);
   fs.mkdirSync(DIST, { recursive: true });
 
   /* ── Copy static files from public/ → dist/ ─────────────── */
@@ -180,12 +194,23 @@ function build() {
   const jsFilename = PROD ? `script.${shortHash(js)}.js` : 'script.js';
   try { fs.writeFileSync(path.join(DIST, jsFilename), js); } catch (_) { console.warn('Warning: could not write ' + jsFilename); }
 
-  /* ── Copy data files → dist/ ────────────────────────────── */
+  /* ── Copy data files → dist/ ─────────────────────────────
+   * src/projects-data.js is only used as a SEED for the database. Once the
+   * PHP backend's publish.php has written dist/projects-data.js, leave it
+   * alone — it's the live artifact reflecting current admin edits. */
   for (const file of ['projects-data.js']) {
     const srcFile = path.join(SRC, file);
-    if (fs.existsSync(srcFile)) {
-      try { fs.copyFileSync(srcFile, path.join(DIST, file)); } catch (_) { console.warn('Warning: could not copy ' + file); }
+    const destFile = path.join(DIST, file);
+    if (fs.existsSync(srcFile) && !fs.existsSync(destFile)) {
+      try { fs.copyFileSync(srcFile, destFile); } catch (_) { console.warn('Warning: could not copy ' + file); }
     }
+  }
+
+  /* ── Emit i18n data bundle → dist/i18n-data.js ───────────── */
+  {
+    const stringsRaw = fs.readFileSync(path.join(SRC, 'i18n', 'strings.json'), 'utf8');
+    const i18nJS = `/* Generated from src/i18n/strings.json — do not edit. */\nwindow.I18N_STRINGS = ${stringsRaw.trim()};\n`;
+    fs.writeFileSync(path.join(DIST, 'i18n-data.js'), i18nJS);
   }
 
   /* ── Generate subsidiaries data → dist/ ─────────────────── */
@@ -229,8 +254,12 @@ function build() {
         .replace(/\{\{langCode\}\}/g, s.langCode || s.lang)
         .replace('{{ogLocale}}', s.ogLocale || 'en_US')
         .replace('{{langSwitch}}', s.langSwitch)
-        .replace('{{langSwitchHref}}', lang === 'en' ? '../el/' + pageName : '../en/' + pageName)
-        .replace('{{homeLink}}', 'index.html')
+        .replace('{{langSwitchHref}}', (() => {
+          const otherLang = lang === 'en' ? 'el' : 'en';
+          const slug = pageName === 'index.html' ? '' : pageName.replace(/\.html$/, '');
+          return `../${otherLang}/${slug}`;
+        })())
+        .replace(/\{\{homeLink\}\}/g, './')
         .replace('{{footerAddressLabel}}', s.footerAddressLabel)
         .replace('{{footerAddressBody}}', s.footerAddressBody)
         .replace('{{footerInfoLabel}}', s.footerInfoLabel)
@@ -242,7 +271,7 @@ function build() {
         .replace('{{footerCopyright}}', s.footerCopyright)
         .replace(/\{\{title\}\}/g, meta.title || '')
         .replace(/\{\{description\}\}/g, meta.description || '')
-        .replace(/\{\{pageName\}\}/g, pageName)
+        .replace(/\{\{pageName\}\}/g, pageName === 'index.html' ? '' : pageName.replace(/\.html$/, ''))
         .replace('{{nav}}', nav)
         .replace('{{mainAttrs}}', mainAttrs)
         .replace('{{content}}', content.replace(/\n$/, ''))
@@ -265,7 +294,7 @@ function build() {
   const REDIRECT_PAGES = ['index', 'about', 'contact', 'project', 'projects', 'subsidiaries', 'timeline'];
 
   for (const page of REDIRECT_PAGES) {
-    const target = `en/${page}.html`;
+    const target = page === 'index' ? 'en/' : `en/${page}`;
     const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${target}"><script>window.location.replace('${target}'+window.location.search)</script></head></html>\n`;
     fs.writeFileSync(path.join(DIST, `${page}.html`), html);
     count++;
@@ -273,15 +302,32 @@ function build() {
 
   /* ── Root .htaccess for 301 redirects (Apache/Hostinger) ──── */
   const htaccessRules = [
+    '# Custom error pages (default to English; localized via JS on the page)',
+    'ErrorDocument 404 /en/404.html',
+    'ErrorDocument 403 /en/404.html',
+    '',
     'RewriteEngine On',
     '',
+    '# Strip .html from extensionless friendly URLs (301) — only on the original request',
+    '# (THE_REQUEST is not modified by internal rewrites, so this won\'t loop)',
+    'RewriteCond %{THE_REQUEST} \\s/+(.+?)\\.html[\\s?] [NC]',
+    'RewriteRule ^ /%1 [R=301,L]',
+    '',
     '# Language redirect: root pages → /en/ (301)',
-    ...REDIRECT_PAGES.map(page =>
-      `RewriteRule ^${page}\\.html$ /en/${page}.html [R=301,L]`
+    'RewriteRule ^index/?$ /en/ [R=301,L]',
+    ...REDIRECT_PAGES.filter(p => p !== 'index').map(page =>
+      `RewriteRule ^${page}/?$ /en/${page} [R=301,L]`
     ),
     '',
     '# Bare domain → /en/',
-    'RewriteRule ^$ /en/index.html [R=301,L]',
+    'RewriteRule ^$ /en/ [R=301,L]',
+    '',
+    '# Serve file with .html extension when extensionless URL is requested',
+    '# (skip if URL already ends in .html to avoid name.html.html… loop on missing pages)',
+    'RewriteCond %{REQUEST_FILENAME} !-f',
+    'RewriteCond %{REQUEST_FILENAME} !-d',
+    'RewriteCond %{REQUEST_URI} !\\.html$',
+    'RewriteRule ^(.+?)/?$ $1.html [L]',
   ].join('\n') + '\n';
   fs.writeFileSync(path.join(DIST, '.htaccess'), htaccessRules);
   count++;
@@ -294,14 +340,15 @@ function build() {
 
   for (const pageName of PAGES) {
     if (pageName === 'project.html') continue;
+    const slug = pageName === 'index.html' ? '' : pageName.replace(/\.html$/, '');
     for (const lang of LANGUAGES) {
       sitemap += '  <url>\n';
-      sitemap += `    <loc>${SITE_URL}/${lang}/${pageName}</loc>\n`;
+      sitemap += `    <loc>${SITE_URL}/${lang}/${slug}</loc>\n`;
       sitemap += `    <lastmod>${today}</lastmod>\n`;
       const priority = pageName === 'index.html' ? '1.0' : '0.8';
       sitemap += `    <priority>${priority}</priority>\n`;
       for (const altLang of LANGUAGES) {
-        sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/${pageName}"/>\n`;
+        sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/${slug}"/>\n`;
       }
       sitemap += '  </url>\n';
     }
@@ -316,11 +363,11 @@ function build() {
       const id = m[1];
       for (const lang of LANGUAGES) {
         sitemap += '  <url>\n';
-        sitemap += `    <loc>${SITE_URL}/${lang}/project.html?id=${id}</loc>\n`;
+        sitemap += `    <loc>${SITE_URL}/${lang}/project?id=${id}</loc>\n`;
         sitemap += `    <lastmod>${today}</lastmod>\n`;
         sitemap += `    <priority>0.6</priority>\n`;
         for (const altLang of LANGUAGES) {
-          sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/project.html?id=${id}"/>\n`;
+          sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/project?id=${id}"/>\n`;
         }
         sitemap += '  </url>\n';
       }

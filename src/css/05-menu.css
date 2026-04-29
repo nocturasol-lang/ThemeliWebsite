@@ -6,7 +6,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 2000;
   height: var(--menu-height);
   display: flex;
   align-items: center;
@@ -51,7 +51,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 0;
-  z-index: 101;
+  z-index: 2001;
 }
 
 .hamburger span {
@@ -79,7 +79,7 @@
 .nav-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 1999;
   background: var(--gray-05);
   display: flex;
   align-items: center;

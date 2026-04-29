@@ -1,52 +1,113 @@
-/* THEMELI — Hero Section */
+/* THEMELI — Home portal (time-based welcome)
+   Single-viewport stage; the canvas particle logo animates on load. */
 
-/* ========== CANVAS BACKGROUND ========== */
 #terminal-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  display: block;
   pointer-events: none;
+  z-index: 1;
 }
 
-/* ========== HERO (Home — Canvas) ========== */
-.hero {
+.portal-stage {
   position: relative;
-  z-index: 2;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 0 var(--pad-x);
+  height: 100vh;
+  height: 100dvh;
+  background: var(--gray-01);
+}
+
+.portal-sticky {
+  position: relative;
+  height: 100%;
   overflow: hidden;
 }
 
-.hero-content {
-  width: 100%;
-  max-width: 900px;
-  padding-top: var(--menu-height);
+/* Blend the canvas colour into the footer's top gradient colour so
+   the sticky layer releases into the footer without a visible seam. */
+.portal-sticky::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 22vh;
+  background: linear-gradient(to bottom,
+    rgba(64, 64, 65, 0) 0%,
+    rgba(63, 63, 63, 0.55) 55%,
+    var(--gray-02) 100%);
+  pointer-events: none;
+  z-index: 2;
 }
 
-.hero-title {
+.portal-hint {
+  position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%);
+  z-index: 3;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: #8a857f;
+  pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.portal-chev {
+  width: 14px; height: 14px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  animation: portal-bob 1.8s ease-in-out infinite;
+}
+@keyframes portal-bob {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: .4; }
+  50%      { transform: rotate(45deg) translate(3px, 3px); opacity: 1; }
+}
+
+.portal-content {
+  position: absolute; inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.portal-content-inner {
+  position: absolute; top: 52%; left: 50%;
+  transform: translate(-50%, var(--portal-shift, 32px));
+  max-width: 640px; width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+  text-align: center;
+  opacity: 0;
+}
+.portal-content-inner.is-ready .portal-cta-row { pointer-events: auto; }
+
+.portal-headline {
   font-family: var(--font-display);
-  font-size: clamp(42px, 6vw, 72px);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  margin-bottom: 32px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  font-size: clamp(44px, 9vw, 92px);
+  margin: 0 0 16px;
+  color: var(--accent);
 }
-
-.hero-description {
-  font-size: clamp(15px, 1.2vw, 18px);
+.portal-sub {
+  margin: 0 0 28px;
   color: var(--gray-03);
-  max-width: 520px;
-  line-height: 1.8;
-  margin-bottom: 40px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.6;
+}
+.portal-cta-row {
+  display: flex; gap: 12px;
+  justify-content: center; align-items: center;
+  flex-wrap: wrap;
 }
 
-.hero-actions {
-  display: flex;
-  gap: 16px;
+@media (prefers-reduced-motion: reduce) {
+  .portal-chev { animation: none; }
 }
 
+/* ── Mobile tuning ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .portal-content-inner { top: 56%; padding: 0 20px; }
+  .portal-headline { font-size: clamp(40px, 12vw, 68px); }
+  .portal-hint { bottom: 22px; font-size: 9px; }
+}
+
+@media (max-width: 480px) {
+  .portal-cta-row { gap: 10px; width: 100%; }
+  .portal-cta-row .btn { flex: 1 1 auto; justify-content: center; }
+}

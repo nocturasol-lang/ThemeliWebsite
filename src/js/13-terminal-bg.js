@@ -1,204 +1,213 @@
-/* THEMELI — Canvas Terminal Background
-   3D block-fly logo assembly animation (homepage only) */
+/* THEMELI — Home portal (time-based particle logo)
+   Progress runs from 0 → 1 over ANIM_DURATION ms once particles spawn:
 
-(function initTerminalBackground() {
+     progress 0.00 – 0.55  formation: each particle lerps from a random
+                           scattered spawn point to its logo target
+     progress 0.40 – 0.75  ambient layer: per-particle wobble + whole-
+                           logo drift + subtle breathing scale ramp in
+     progress 0.55 – 0.85  logo lifts upward to clear room for copy
+     progress 0.62 – 0.94  headline + CTAs fade in
+*/
+
+(function initHomePortal() {
   const canvas = document.getElementById('terminal-bg');
-  if (!canvas) return;
+  const stage = document.querySelector('.portal-stage');
+  const contentInner = document.querySelector('.portal-content-inner');
+  const hintEl = document.querySelector('.portal-hint');
+  if (!canvas || !stage || !contentInner) return;
+
   const ctx = canvas.getContext('2d');
 
-  let width, height;
-
-  /* ── Logo block-fly assembly ── */
-  const logoSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 94" fill="none">' +
-    '<path d="M139.831 0H0V18.7278H139.831V0Z" fill="white"/>' +
-    '<path d="M104.012 93.668H139.831V74.7873H111.717L69.9588 32.7759L28.2832 74.7873H0V93.668H36.0783L70.0247 59.5446L104.012 93.668Z" fill="white"/>' +
+  const SVG_LOGO =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 94">' +
+    '<path d="M139.831 0H0V18.7278H139.831V0Z" fill="#fff"/>' +
+    '<path d="M104.012 93.668H139.831V74.7873H111.717L69.9588 32.7759L28.2832 74.7873H0V93.668H36.0783L70.0247 59.5446L104.012 93.668Z" fill="#fff"/>' +
     '</svg>';
-  const logoImg = new Image();
-  let logoBlocks = null;
-  const blockSize = 5;
-  let logoGridW = 0, logoGridH = 0;
-  const logoBuildDelay = 1500;
-  const logoBuildDuration = 5000;
-  let logoBuildStartTime = 0;
 
-  logoImg.onload = function () {
-    const offW = 280, offH = 188;
-    const offCanvas = document.createElement('canvas');
-    offCanvas.width = offW;
-    offCanvas.height = offH;
-    const offCtx = offCanvas.getContext('2d');
-    offCtx.drawImage(logoImg, 0, 0, offW, offH);
-    const imgData = offCtx.getImageData(0, 0, offW, offH);
+  const STRIDE = 3;
+  const SPRING_K = 0.018;
+  const DAMPING = 0.84;
+  const FLOW_STRENGTH = 0.35;
+  const WOBBLE_AMP = 1.6;
+  const DRIFT_X = 14;
+  const DRIFT_Y = 8;
+  const DRIFT_FREQ_X = 0.18;
+  const DRIFT_FREQ_Y = 0.13;
+  const BREATHE_AMT = 0.015;
+  const BREATHE_FREQ = 0.22;
+  const ANIM_DURATION = 4000;  // ms from spawn to fully-formed + copy in
 
-    logoGridW = Math.floor(offW / blockSize);
-    logoGridH = Math.floor(offH / blockSize);
-    logoBlocks = [];
-
-    for (let row = 0; row < logoGridH; row++) {
-      for (let col = 0; col < logoGridW; col++) {
-        const px = Math.floor(col * blockSize + blockSize / 2);
-        const py = Math.floor(row * blockSize + blockSize / 2);
-        const idx = (py * offW + px) * 4;
-        if (imgData.data[idx + 3] <= 128) continue;
-
-        var rowFromBottom = logoGridH - 1 - row;
-        var baseDelay = (rowFromBottom / logoGridH) * 0.3;
-        var randomSpread = Math.random() * 0.35;
-        var startTime = baseDelay + randomSpread;
-
-        var angle = Math.random() * Math.PI * 2;
-        var dist = 300 + Math.random() * 500;
-        var originOffX = Math.cos(angle) * dist;
-        var originOffY = Math.sin(angle) * dist + 200;
-
-        logoBlocks.push({
-          row: row, col: col,
-          startTime: startTime,
-          travelDuration: 0.2 + Math.random() * 0.15,
-          originOffX: originOffX,
-          originOffY: originOffY,
-          rotation: (Math.random() - 0.5) * Math.PI * 2
-        });
-      }
-    }
-
-    logoBuildStartTime = performance.now() + logoBuildDelay;
-  };
-  logoImg.src = 'data:image/svg+xml;base64,' + btoa(logoSvg);
+  let W, H, dpr;
+  let particles = [];
+  let logoCx = 0, logoCy = 0;
+  let startT = 0;
 
   function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth || window.innerWidth;
+    H = canvas.clientHeight || window.innerHeight;
+    canvas.width = Math.max(1, Math.round(W * dpr));
+    canvas.height = Math.max(1, Math.round(H * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    logoCx = W / 2;
+    logoCy = H * 0.42;
   }
   resize();
-  window.addEventListener('resize', resize);
+
+  window.addEventListener('resize', function () {
+    const prevCx = logoCx, prevCy = logoCy;
+    resize();
+    const ddx = logoCx - prevCx, ddy = logoCy - prevCy;
+    for (let i = 0; i < particles.length; i++) {
+      particles[i].tx += ddx;
+      particles[i].ty += ddy;
+    }
+  });
+
+  function flow(x, y, t) {
+    return {
+      x: Math.sin(x * 0.005 + t * 0.3) + Math.cos(y * 0.006 - t * 0.2),
+      y: Math.cos(x * 0.004 - t * 0.25) + Math.sin(y * 0.005 + t * 0.3)
+    };
+  }
+
+  function smoothstep(x) {
+    const t = Math.max(0, Math.min(1, x));
+    return t * t * (3 - 2 * t);
+  }
+
+  function getProgress() {
+    if (!startT) return 0;
+    return Math.max(0, Math.min(1, (performance.now() - startT) / ANIM_DURATION));
+  }
+
+  function spawn() {
+    const targetW = Math.min(W * 0.82, H * 0.62);
+    const targetH = targetW * (94 / 140);
+    const offW = Math.ceil(targetW);
+    const offH = Math.ceil(targetH);
+
+    const off = document.createElement('canvas');
+    off.width = offW;
+    off.height = offH;
+    const octx = off.getContext('2d');
+
+    const img = new Image();
+    img.onload = function () {
+      octx.drawImage(img, 0, 0, offW, offH);
+      const data = octx.getImageData(0, 0, offW, offH).data;
+
+      const baseX = logoCx - offW / 2;
+      const baseY = logoCy - offH / 2;
+      particles = [];
+
+      for (let y = 0; y < offH; y += STRIDE) {
+        for (let x = 0; x < offW; x += STRIDE) {
+          const idx = (y * offW + x) * 4;
+          if (data[idx + 3] < 128) continue;
+
+          const tx = baseX + x, ty = baseY + y;
+          const ang = Math.random() * Math.PI * 2;
+          const dist = Math.max(W, H) * (0.45 + Math.random() * 0.4);
+          const spawnX = W / 2 + Math.cos(ang) * dist;
+          const spawnY = H / 2 + Math.sin(ang) * dist;
+
+          particles.push({
+            tx: tx, ty: ty,
+            spawnX: spawnX, spawnY: spawnY,
+            x: spawnX, y: spawnY,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6,
+            phase: Math.random() * Math.PI * 2,
+            freq: 0.4 + Math.random() * 0.6,
+            radius: 0.5 + Math.random() * 0.8,
+            hue: Math.random() < 0.2
+          });
+        }
+      }
+
+      startT = performance.now();
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(SVG_LOGO);
+  }
 
   function draw() {
-    ctx.fillStyle = 'rgba(64, 64, 65, 1)';
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = 'rgba(64, 64, 65, 0.35)';
+    ctx.fillRect(0, 0, W, H);
 
-    if (logoBlocks && performance.now() > logoBuildStartTime) {
-      var elapsed = performance.now() - logoBuildStartTime;
-      var globalProgress = Math.min(elapsed / logoBuildDuration, 1);
-
-      var logoDrawW = logoGridW * blockSize;
-      var logoDrawH = logoGridH * blockSize;
-      var scale = Math.min(width * 0.7 / logoDrawW, height * 0.65 / logoDrawH, 3.5);
-      var offsetX = (width - logoDrawW * scale) / 2;
-      var offsetY = (height - logoDrawH * scale) / 2;
-      var bSize = blockSize * scale;
-      var gap = scale * 0.8;
-      var halfBlock = (bSize - gap * 2) / 2;
-
-      var extrudeDepth = 12;
-      var exStepX = 1.2;
-      var exStepY = -1.0;
-
-      /* Pre-compute block states */
-      var blockStates = [];
-      for (var i = 0; i < logoBlocks.length; i++) {
-        var b = logoBlocks[i];
-        if (globalProgress < b.startTime) {
-          blockStates.push(null);
-          continue;
-        }
-
-        var localRaw = Math.min((globalProgress - b.startTime) / b.travelDuration, 1);
-        var t = 1 - Math.pow(1 - localRaw, 3);
-        var landed = localRaw >= 1;
-
-        var finalX = offsetX + b.col * bSize;
-        var finalY = offsetY + b.row * bSize;
-        var currentX = finalX + b.originOffX * (1 - t);
-        var currentY = finalY + b.originOffY * (1 - t);
-        var currentRot = b.rotation * (1 - t);
-        var alpha = Math.min(t * 1.5, 1) * 0.35;
-
-        blockStates.push({
-          currentX: currentX, currentY: currentY,
-          currentRot: currentRot, alpha: alpha,
-          landed: landed, t: t
-        });
-      }
-
-      /* Pass 1: Extrusion layers for landed blocks */
-      for (var layer = extrudeDepth; layer >= 1; layer--) {
-        var lx = layer * exStepX;
-        var ly = layer * exStepY;
-        var layerBrightness = 1 - (layer / extrudeDepth) * 0.7;
-        var r = Math.floor(160 * layerBrightness);
-        var g = Math.floor(65 * layerBrightness);
-        var b2 = Math.floor(10 * layerBrightness);
-
-        for (var j = 0; j < logoBlocks.length; j++) {
-          var s = blockStates[j];
-          if (!s || !s.landed) continue;
-
-          var x = s.currentX + gap + halfBlock + lx;
-          var y = s.currentY + gap + halfBlock + ly;
-
-          ctx.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b2 + ', ' + (s.alpha * 0.9).toFixed(3) + ')';
-          ctx.fillRect(x - halfBlock, y - halfBlock, halfBlock * 2, halfBlock * 2);
-        }
-      }
-
-      /* Pass 2: Front face for landed blocks */
-      for (var k = 0; k < logoBlocks.length; k++) {
-        var s2 = blockStates[k];
-        if (!s2 || !s2.landed) continue;
-
-        var cx = s2.currentX + gap + halfBlock;
-        var cy = s2.currentY + gap + halfBlock;
-
-        var rowN = logoBlocks[k].row;
-        var colN = logoBlocks[k].col;
-        var highlight = 1 + (1 - rowN / logoGridH) * 0.2 + (1 - colN / logoGridW) * 0.1;
-        var fr = Math.min(Math.floor(255 * highlight), 255);
-        var fg = Math.min(Math.floor(115 * highlight), 170);
-        var fb = Math.min(Math.floor(30 * highlight), 70);
-
-        ctx.fillStyle = 'rgba(' + fr + ', ' + fg + ', ' + fb + ', ' + s2.alpha.toFixed(3) + ')';
-        ctx.fillRect(cx - halfBlock, cy - halfBlock, halfBlock * 2, halfBlock * 2);
-      }
-
-      /* Pass 3: In-flight blocks */
-      for (var m = 0; m < logoBlocks.length; m++) {
-        var s3 = blockStates[m];
-        if (!s3 || s3.landed) continue;
-
-        var depth = halfBlock * 0.5;
-
-        ctx.save();
-        ctx.translate(s3.currentX + gap + halfBlock, s3.currentY + gap + halfBlock);
-        ctx.rotate(s3.currentRot);
-
-        ctx.fillStyle = 'rgba(160, 70, 15, ' + s3.alpha.toFixed(3) + ')';
-        ctx.beginPath();
-        ctx.moveTo(halfBlock, -halfBlock);
-        ctx.lineTo(halfBlock + depth * 0.5, -halfBlock - depth * 0.4);
-        ctx.lineTo(halfBlock + depth * 0.5, halfBlock - depth * 0.4);
-        ctx.lineTo(halfBlock, halfBlock);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = 'rgba(255, 150, 60, ' + (s3.alpha * 0.8).toFixed(3) + ')';
-        ctx.beginPath();
-        ctx.moveTo(-halfBlock, -halfBlock);
-        ctx.lineTo(-halfBlock + depth * 0.5, -halfBlock - depth * 0.4);
-        ctx.lineTo(halfBlock + depth * 0.5, -halfBlock - depth * 0.4);
-        ctx.lineTo(halfBlock, -halfBlock);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = 'rgba(255, 115, 30, ' + s3.alpha.toFixed(3) + ')';
-        ctx.fillRect(-halfBlock, -halfBlock, halfBlock * 2, halfBlock * 2);
-
-        ctx.restore();
-      }
+    if (!particles.length) {
+      requestAnimationFrame(draw);
+      return;
     }
+
+    const t = (performance.now() - startT) / 1000;
+    const p = getProgress();
+
+    const formProg  = smoothstep(p / 0.55);
+    const flowScale = Math.max(0, 1 - p / 0.4);
+    const wobbleSc  = smoothstep((p - 0.40) / 0.35);
+    const driftSc   = smoothstep((p - 0.45) / 0.3);
+    const shiftSc   = smoothstep((p - 0.55) / 0.30);
+    const contentSc = smoothstep((p - 0.62) / 0.32);
+    const hintSc    = 1 - smoothstep((p - 0.10) / 0.20);
+
+    const driftX   = Math.sin(t * DRIFT_FREQ_X) * DRIFT_X * driftSc;
+    const driftY   = Math.cos(t * DRIFT_FREQ_Y) * DRIFT_Y * driftSc;
+    const breathe  = 1 + Math.sin(t * BREATHE_FREQ) * BREATHE_AMT * driftSc;
+    const LOGO_LIFT = H * 0.13;
+    const liftY    = -LOGO_LIFT * shiftSc;
+
+    for (let i = 0; i < particles.length; i++) {
+      const pt = particles[i];
+      const baseLogoX = logoCx + (pt.tx - logoCx) * breathe + driftX;
+      const baseLogoY = logoCy + (pt.ty - logoCy) * breathe + driftY + liftY;
+
+      let tgtX = pt.spawnX + (baseLogoX - pt.spawnX) * formProg;
+      let tgtY = pt.spawnY + (baseLogoY - pt.spawnY) * formProg;
+
+      if (wobbleSc > 0) {
+        tgtX += Math.sin(t * pt.freq + pt.phase) * WOBBLE_AMP * pt.radius * wobbleSc;
+        tgtY += Math.cos(t * pt.freq * 1.15 + pt.phase * 0.8) * WOBBLE_AMP * pt.radius * wobbleSc;
+      }
+
+      const dx = tgtX - pt.x;
+      const dy = tgtY - pt.y;
+      const dist2 = dx * dx + dy * dy;
+
+      pt.vx += dx * SPRING_K;
+      pt.vy += dy * SPRING_K;
+
+      if (flowScale > 0 && dist2 > 400) {
+        const f = flow(pt.x, pt.y, t);
+        pt.vx += f.x * FLOW_STRENGTH * flowScale;
+        pt.vy += f.y * FLOW_STRENGTH * flowScale;
+      }
+
+      pt.vx *= DAMPING;
+      pt.vy *= DAMPING;
+      pt.x += pt.vx;
+      pt.y += pt.vy;
+
+      const v = Math.min(Math.sqrt(pt.vx * pt.vx + pt.vy * pt.vy) / 5, 1);
+      if (pt.hue) {
+        ctx.fillStyle = 'rgba(255, 220, 180, ' + (0.6 + v * 0.4) + ')';
+      } else {
+        const g = Math.floor(115 + v * 60);
+        const b = Math.floor(30 + v * 40);
+        ctx.fillStyle = 'rgba(255, ' + g + ', ' + b + ', ' + (0.7 + v * 0.3) + ')';
+      }
+      ctx.fillRect(pt.x, pt.y, 2, 2);
+    }
+
+    if (hintEl) hintEl.style.opacity = hintSc.toFixed(3);
+    contentInner.style.opacity = contentSc.toFixed(3);
+    contentInner.style.setProperty('--portal-shift', (28 - 28 * contentSc).toFixed(1) + 'px');
+    if (contentSc > 0.7) contentInner.classList.add('is-ready');
+    else contentInner.classList.remove('is-ready');
 
     requestAnimationFrame(draw);
   }
 
+  spawn();
   draw();
 })();

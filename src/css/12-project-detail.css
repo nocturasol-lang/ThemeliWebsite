@@ -2,6 +2,7 @@
 
 /* ========== PROJECT DETAIL PAGE ========== */
 .pdet {
+  position: relative;
   padding: var(--menu-height) 0 0;
   opacity: 0;
   transition: opacity 0.6s var(--ease-out);
@@ -11,19 +12,23 @@
   opacity: 1;
 }
 
-/* Back link */
+/* Back link — floats over the hero image */
 .pdet-back {
+  position: absolute;
+  top: calc(var(--menu-height) + 20px);
+  left: var(--pad-x);
+  z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 28px var(--pad-x);
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--gray-04);
+  color: var(--white);
   text-decoration: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   transition: color 0.3s;
 }
 
@@ -66,7 +71,9 @@
 .pdet-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, var(--gray-01) 0%, transparent 50%);
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, transparent 28%),
+    linear-gradient(to top, var(--gray-01) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -410,4 +417,11 @@
   text-align: right;
   align-items: flex-end;
   margin-left: auto;
+}
+
+/* Not-found state */
+.pdet-missing {
+  padding: 6rem 1rem;
+  text-align: center;
+  color: var(--gray-04);
 }

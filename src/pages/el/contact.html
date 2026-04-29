@@ -1,21 +1,22 @@
 <!--
 title: THEMELI — Επικοινωνία
-description: ΘΕΜΕΛΗ Α.Ε. — Επικοινωνήστε μαζί μας. Επισκεφθείτε τα γραφεία μας στην Αθήνα, Νέα Ιωνία, ή καλέστε μας.
+description: ΘΕΜΕΛΗ Α.Ε. — Επικοινωνήστε μαζί μας για νέα έργα, συνεργασίες, καριέρα ή δημοσιογραφικά θέματα.
 mainClass:
 mainId:
 scripts:
 -->
     <div class="page-header">
-      <h1 class="contact-title">επικοινωνία</h1>
+      <h1 class="contact-title">Επικοινωνία</h1>
     </div>
 
     <div class="contact-page">
       <div class="contact-content">
-        <div class="contact-col contact-col--info">
+        <aside class="contact-col contact-col--info">
           <div class="info-group reveal">
             <h3>Διεύθυνση</h3>
             <p><a href="https://www.google.com/maps?q=38.03279391343416,23.774540665648086" target="_blank" rel="noopener">Καποδιστρίου 104,<br>142 35 Νέα Ιωνία, Αθήνα</a></p>
           </div>
+
           <div class="info-group reveal reveal-delay-1">
             <h3>Τηλέφωνο</h3>
             <div class="phone-wrapper">
@@ -25,23 +26,97 @@ scripts:
                 <button class="email-popup-option phone-copy" data-phone="+30 2102717720">Αντιγραφή Αριθμού</button>
               </div>
             </div>
-            <p>F: +30 2102717723</p>
+            <p><a href="tel:+302102717723">F: +30 2102717723</a></p>
           </div>
-        </div>
 
-        <div class="contact-col contact-col--socials">
-          <div class="contact-socials reveal reveal-delay-2">
+          <div class="info-group reveal reveal-delay-2">
+            <h3>Email</h3>
+            <div class="email-wrapper">
+              <a href="#" class="email-trigger" data-email="INFO@THEMELI.GR">INFO@THEMELI.GR</a>
+              <div class="email-popup">
+                <a href="mailto:INFO@THEMELI.GR" class="email-popup-option">Αποστολή Email</a>
+                <button class="email-popup-option email-copy" data-email="INFO@THEMELI.GR">Αντιγραφή Διεύθυνσης</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-group reveal reveal-delay-3">
             <h3>Κοινωνικά</h3>
-            <a href="#">Linkedin</a>
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
+            <div class="contact-socials">
+              <a href="https://www.linkedin.com" target="_blank" rel="nofollow noopener">Linkedin</a>
+              <a href="https://www.facebook.com" target="_blank" rel="nofollow noopener">Facebook</a>
+              <a href="https://www.instagram.com" target="_blank" rel="nofollow noopener">Instagram</a>
+            </div>
           </div>
-        </div>
+        </aside>
 
-        <div class="contact-col contact-col--map">
-          <div class="contact-map reveal reveal-delay-3">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d259.16930120811514!2d23.774330437485602!3d38.03269161401471!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a19885436134c3%3A0xde1bf0f9f97992c3!2zzpjOlc6czpXOm86XIC6RLs6VLg!5e0!3m2!1sel!2sgr!4v1773348692721!5m2!1sel!2sgr" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="THEMELI Location"></iframe>
+        <section class="contact-col contact-col--form reveal reveal-delay-1" aria-labelledby="cfTitle">
+          <div class="cf-view" id="cfFormView">
+            <h2 id="cfTitle" class="cf-title">Επικοινωνήστε μαζί μας</h2>
+
+            <form id="contactForm" novalidate>
+              <fieldset class="cf-categories">
+                <legend class="cf-label">Τύπος αιτήματος</legend>
+                <div class="cf-pills" role="radiogroup">
+                  <label class="cf-pill"><input type="radio" name="inquiry_type" value="project" checked><span>Νέο Έργο</span></label>
+                  <label class="cf-pill"><input type="radio" name="inquiry_type" value="partnership"><span>Συνεργασία</span></label>
+                  <label class="cf-pill"><input type="radio" name="inquiry_type" value="career"><span>Καριέρα</span></label>
+                  <label class="cf-pill"><input type="radio" name="inquiry_type" value="other"><span>Άλλο</span></label>
+                </div>
+              </fieldset>
+
+              <div class="cf-grid">
+                <div class="cf-field">
+                  <label class="cf-label" for="cfName">Ονοματεπώνυμο</label>
+                  <input type="text" id="cfName" name="name" required autocomplete="name">
+                </div>
+                <div class="cf-field">
+                  <label class="cf-label" for="cfEmail">Email</label>
+                  <input type="email" id="cfEmail" name="email" required autocomplete="email">
+                </div>
+                <div class="cf-field">
+                  <label class="cf-label" for="cfPhone">Τηλέφωνο <span class="cf-optional">προαιρετικό</span></label>
+                  <input type="tel" id="cfPhone" name="phone" autocomplete="tel">
+                </div>
+                <div class="cf-field">
+                  <label class="cf-label" for="cfSubject">Θέμα <span class="cf-optional">προαιρετικό</span></label>
+                  <input type="text" id="cfSubject" name="subject">
+                </div>
+              </div>
+
+              <div class="cf-field">
+                <label class="cf-label" for="cfMessage">Μήνυμα</label>
+                <textarea id="cfMessage" name="message" required minlength="10" rows="5" placeholder="Πείτε μας τι έχετε στο μυαλό σας..."></textarea>
+              </div>
+
+              <div class="cf-honeypot" aria-hidden="true">
+                <label for="cfWebsite">Website</label>
+                <input type="text" id="cfWebsite" name="website" tabindex="-1" autocomplete="off">
+              </div>
+
+              <div class="cf-submit-row">
+                <button type="submit" class="cf-submit">Αποστολή Μηνύματος</button>
+              </div>
+              <p class="cf-trust">
+                <span>Απαντάμε εντός 48 ωρών</span>
+                <span class="cf-dot" aria-hidden="true">·</span>
+                <span>Τα στοιχεία σας παραμένουν εμπιστευτικά</span>
+              </p>
+              <div class="cf-error" id="cfError" role="alert" aria-live="polite"></div>
+            </form>
           </div>
-        </div>
+
+          <div class="cf-view cf-view--success hidden" id="cfSuccessView" aria-live="polite">
+            <div class="cf-success-mark" aria-hidden="true"></div>
+            <h2 class="cf-success-title">Ευχαριστούμε</h2>
+            <p class="cf-success-lead">Το μήνυμά σας καταχωρήθηκε επιτυχώς.<br>Θα επικοινωνήσουμε μαζί σας εντός 48 ωρών.</p>
+            <p class="cf-success-hint">Αν είναι επείγον, καλέστε μας στο <a href="tel:+302102717720">+30 210 271 7720</a>.</p>
+            <button type="button" class="cf-new-msg" id="cfNewMsg">Νέο μήνυμα</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="contact-map reveal reveal-delay-2">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d259.16930120811514!2d23.774330437485602!3d38.03269161401471!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a19885436134c3%3A0xde1bf0f9f97992c3!2zzpjOlc6czpXOm86XIC6RLs6VLg!5e0!3m2!1sel!2sgr!4v1773348692721!5m2!1sel!2sgr" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="THEMELI Location"></iframe>
       </div>
     </div>

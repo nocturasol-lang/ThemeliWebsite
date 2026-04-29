@@ -552,6 +552,12 @@
     aspect-ratio: 16 / 9;
   }
 
+  .pdet-back {
+    top: calc(var(--menu-height) + 8px);
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
   .pdet-meta {
     flex-wrap: wrap;
     gap: 20px;
@@ -602,26 +608,6 @@
 
   .timeline-nav-track {
     min-width: 600px;
-  }
-
-  /* Lightbox touch-friendly */
-  .lightbox-arrow {
-    width: 48px;
-    height: 48px;
-    font-size: 40px;
-  }
-
-  .lightbox-prev {
-    left: 8px;
-  }
-
-  .lightbox-next {
-    right: 8px;
-  }
-
-  .lightbox-img {
-    max-width: 95vw;
-    max-height: 80vh;
   }
 
   /* Subsidiary detail */

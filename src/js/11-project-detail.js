@@ -10,7 +10,7 @@ if (pdetDetail) {
 
   // Normalize hash-based URLs to query params for SEO
   if (hashId && !params.get('id')) {
-    window.history.replaceState(null, '', `project.html?id=${hashId}`);
+    window.history.replaceState(null, '', `project?id=${hashId}`);
   }
 
   const projectId = parseInt(params.get('id'), 10) || parseInt(hashId, 10);
@@ -22,7 +22,12 @@ if (pdetDetail) {
 
   // Load project data
   (async function() {
-  const allProjects = await fetchProjects();
+  const allProjects = (await fetchProjects()).sort((a, b) => {
+    const aIP = a.status === 'In Progress' ? 1 : 0;
+    const bIP = b.status === 'In Progress' ? 1 : 0;
+    if (aIP !== bIP) return bIP - aIP;
+    return Math.max(b.year || 0, b.yearStart || 0) - Math.max(a.year || 0, a.yearStart || 0);
+  });
   const currentIdx = allProjects.findIndex(p => Number(p.id) === projectId);
   const project = currentIdx !== -1 ? allProjects[currentIdx] : null;
 
@@ -57,10 +62,9 @@ if (pdetDetail) {
 
     // Hero image
     const heroImg = document.getElementById('pdetHeroImg');
-    if (project.image) {
-      heroImg.style.backgroundImage = `url('${cssUrl(project.image)}')`;
-      heroImg.classList.add('has-image');
-    }
+    const PLACEHOLDER = '/assets/placeholder.svg';
+    heroImg.style.backgroundImage = `url('${cssUrl(project.image || PLACEHOLDER)}')`;
+    if (project.image) heroImg.classList.add('has-image');
     document.getElementById('pdetTag').textContent = tTyp(project.typology);
     document.getElementById('pdetTitle').textContent = pName;
     document.getElementById('pdetYear').textContent = project.year;
@@ -103,9 +107,15 @@ if (pdetDetail) {
     if (!project.architect) document.getElementById('pdetInfoArchitect').style.display = 'none';
     if (!project.size) document.getElementById('pdetInfoSize').style.display = 'none';
 
-    // Related projects — same typology, excluding current
+    // Related projects — excluding current, sorted: in-progress first then newest
     const related = allProjects
-      .filter(p => p.typology === project.typology && p.id !== project.id)
+      .filter(p => p.id !== project.id)
+      .sort((a, b) => {
+        const aIP = a.status === 'In Progress' ? 1 : 0;
+        const bIP = b.status === 'In Progress' ? 1 : 0;
+        if (aIP !== bIP) return bIP - aIP;
+        return Math.max(b.year || 0, b.yearStart || 0) - Math.max(a.year || 0, a.yearStart || 0);
+      })
       .slice(0, 4);
 
     const relatedGrid = document.getElementById('pdetRelatedGrid');
@@ -113,9 +123,9 @@ if (pdetDetail) {
 
     if (related.length > 0 && relatedGrid) {
       related.forEach(p => {
-        const imgStyle = p.image ? `background-image:url('${cssUrl(p.image)}')` : '';
+        const imgStyle = `background-image:url('${cssUrl(p.image || PLACEHOLDER)}')`;
         relatedGrid.insertAdjacentHTML('beforeend',
-          `<a class="pdet-related-card" href="project.html?id=${p.id}">
+          `<a class="pdet-related-card" href="project?id=${p.id}">
             <div class="pdet-related-card-img" style="${imgStyle}"></div>
             <div class="pdet-related-card-body">
               <span class="pdet-related-card-name">${LANG === 'el' ? p.name : (p.name_en || p.name)}</span>
@@ -137,10 +147,10 @@ if (pdetDetail) {
     const prevName = document.getElementById('pdetPrevName');
     const nextName = document.getElementById('pdetNextName');
 
-    prevLink.href = `project.html?id=${prevProject.id}`;
+    prevLink.href = `project?id=${prevProject.id}`;
     prevName.textContent = LANG === 'el' ? prevProject.name : (prevProject.name_en || prevProject.name);
 
-    nextLink.href = `project.html?id=${nextProject.id}`;
+    nextLink.href = `project?id=${nextProject.id}`;
     nextName.textContent = LANG === 'el' ? nextProject.name : (nextProject.name_en || nextProject.name);
 
     // Staggered reveal animation
@@ -148,55 +158,18 @@ if (pdetDetail) {
       pdetDetail.classList.add('is-loaded');
     });
   } else {
-    // Project not found — redirect back
-    window.location.href = 'projects.html';
+    // Project not found — surface a brief message, then redirect back to the list.
+    const msg = (T && T.projectNotFound) || 'Project not found.';
+    pdetDetail.innerHTML = `<div class="pdet-missing"><p>${msg}</p></div>`;
+    pdetDetail.classList.add('is-loaded');
+    setTimeout(() => { window.location.href = 'projects'; }, 1200);
   }
   })();
 }
 
-// ========== GALLERY LIGHTBOX ==========
+// ========== GALLERY LIGHTBOX (delegates to shared PhotoSwipe helper) ==========
 function openGalleryLightbox(images, startIndex) {
-  let idx = startIndex;
-  const overlay = document.createElement('div');
-  overlay.className = 'lightbox';
-  overlay.innerHTML = `
-    <button class="lightbox-close">&times;</button>
-    ${images.length > 1 ? '<button class="lightbox-arrow lightbox-prev">&#8249;</button>' : ''}
-    <img class="lightbox-img" src="${images[idx]}" alt="">
-    ${images.length > 1 ? '<button class="lightbox-arrow lightbox-next">&#8250;</button>' : ''}
-    ${images.length > 1 ? '<div class="lightbox-counter">' + (idx + 1) + ' / ' + images.length + '</div>' : ''}
-  `;
-  document.body.appendChild(overlay);
-  document.body.style.overflow = 'hidden';
-  requestAnimationFrame(() => overlay.classList.add('is-visible'));
-
-  const img = overlay.querySelector('.lightbox-img');
-  const counter = overlay.querySelector('.lightbox-counter');
-
-  function show(i) {
-    idx = (i + images.length) % images.length;
-    img.src = images[idx];
-    if (counter) counter.textContent = (idx + 1) + ' / ' + images.length;
+  if (typeof window.openGallery === 'function') {
+    window.openGallery(images, startIndex || 0);
   }
-
-  function handler(e) {
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft' && prev) show(idx - 1);
-    if (e.key === 'ArrowRight' && next) show(idx + 1);
-  }
-
-  function close() {
-    document.removeEventListener('keydown', handler);
-    document.body.style.overflow = '';
-    overlay.classList.remove('is-visible');
-    setTimeout(() => overlay.remove(), 300);
-  }
-
-  overlay.querySelector('.lightbox-close').addEventListener('click', close);
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-  const prev = overlay.querySelector('.lightbox-prev');
-  const next = overlay.querySelector('.lightbox-next');
-  if (prev) prev.addEventListener('click', () => show(idx - 1));
-  if (next) next.addEventListener('click', () => show(idx + 1));
-  document.addEventListener('keydown', handler);
 }

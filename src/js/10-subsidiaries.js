@@ -13,62 +13,8 @@ const subLogo = document.getElementById('subLogo');
 
 if (subsGrid && subDetail) {
 
-  // Gallery lightbox function
-  const openGallery = (images, startIndex) => {
-    let idx = startIndex || 0;
-    const lb = document.createElement('div');
-    lb.className = 'lightbox';
-    lb.innerHTML = `
-      <button class="lightbox-close" aria-label="Close">&times;</button>
-      <button class="lightbox-arrow lightbox-prev" aria-label="Previous">&lsaquo;</button>
-      <img class="lightbox-img" src="${images[idx]}" alt="">
-      <button class="lightbox-arrow lightbox-next" aria-label="Next">&rsaquo;</button>
-      <div class="lightbox-counter">${idx + 1} / ${images.length}</div>`;
-    document.body.appendChild(lb);
-    document.body.style.overflow = 'hidden';
-
-    const img = lb.querySelector('.lightbox-img');
-    const counter = lb.querySelector('.lightbox-counter');
-    const updateArrows = () => {
-      lb.querySelector('.lightbox-prev').style.visibility = images.length > 1 ? 'visible' : 'hidden';
-      lb.querySelector('.lightbox-next').style.visibility = images.length > 1 ? 'visible' : 'hidden';
-    };
-    const show = () => {
-      img.src = images[idx];
-      counter.textContent = (idx + 1) + ' / ' + images.length;
-    };
-    updateArrows();
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => lb.classList.add('is-visible'));
-    });
-
-    function handler(e) {
-      if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') { idx = (idx - 1 + images.length) % images.length; show(); }
-      if (e.key === 'ArrowRight') { idx = (idx + 1) % images.length; show(); }
-    }
-
-    const close = () => {
-      document.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
-      lb.classList.remove('is-visible');
-      setTimeout(() => lb.remove(), 300);
-    };
-    lb.querySelector('.lightbox-close').addEventListener('click', close);
-    lb.querySelector('.lightbox-prev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      idx = (idx - 1 + images.length) % images.length;
-      show();
-    });
-    lb.querySelector('.lightbox-next').addEventListener('click', (e) => {
-      e.stopPropagation();
-      idx = (idx + 1) % images.length;
-      show();
-    });
-    lb.addEventListener('click', e => { if (e.target === lb) close(); });
-    document.addEventListener('keydown', handler);
-  };
+  // Gallery viewer is provided by src/js/09a-photoswipe.js as window.openGallery.
+  const openGallery = (images, startIndex) => window.openGallery(images, startIndex || 0);
 
   // Show subsidiary detail view
   function showSubDetail(key, pushHistory) {

@@ -3,7 +3,7 @@ title: THEMELI — Έργα
 description: ΘΕΜΕΛΙ Α.Ε. Έργα — Περιηγηθείτε στο χαρτοφυλάκιο μεγάλων έργων υποδομών, μεταφορών, ενέργειας και κτιριακών κατασκευών σε όλη την Ελλάδα.
 mainClass: projects-page
 mainId:
-scripts:
+scripts: ../assets/vendor/leaflet/leaflet.js, ../assets/greece-prefectures.js
 -->
     <div class="page-header">
       <h1>Έργα</h1>
@@ -90,20 +90,30 @@ scripts:
       </div>
     </div>
 
-    <!-- ===== MAP VIEW ===== -->
+    <!-- ===== PAGINATION ===== -->
+    <nav class="proj-pagination" id="projPagination" aria-label="Σελιδοποίηση έργων"></nav>
+
+    <!-- ===== MAP VIEW (Leaflet) ===== -->
     <div class="proj-map" id="projMapView" style="display:none">
-      <div class="proj-map-controls">
-        <button class="proj-map-zoom" id="mapZoomIn" aria-label="Zoom in">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
-        </button>
-        <button class="proj-map-zoom" id="mapZoomOut" aria-label="Zoom out">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="8" x2="13" y2="8"/></svg>
-        </button>
-      </div>
-      <div class="proj-map-viewport" id="mapViewport">
-        <div class="proj-map-inner" id="mapInner">
-          <img src="../assets/greece-map.png" alt="Greece" class="proj-map-img" loading="lazy" width="2000" height="2000">
-          <!-- dots rendered by JS -->
+      <div class="proj-map-leaflet" id="projLeafletMap"></div>
+
+      <aside class="proj-map-card" id="projMapCard" aria-hidden="true">
+        <button class="proj-map-card-close" id="projMapCardClose" aria-label="Κλείσιμο">&times;</button>
+        <div class="proj-map-card-photo" id="projMapCardPhoto">
+          <span class="proj-map-card-kind" id="projMapCardKind">●</span>
         </div>
-      </div>
+        <div class="proj-map-card-body">
+          <span class="proj-map-card-tag" id="projMapCardTag">Τυπολογία</span>
+          <h2 class="proj-map-card-title" id="projMapCardTitle">Τίτλος έργου</h2>
+          <div class="proj-map-card-meta">
+            <span class="k" id="projMapCardYear">—</span>
+            <span>·</span>
+            <span id="projMapCardLocation">—</span>
+          </div>
+          <p class="proj-map-card-desc" id="projMapCardDesc"></p>
+          <a class="proj-map-card-cta" id="projMapCardCta" href="#">Δείτε το έργο &rarr;</a>
+        </div>
+      </aside>
+
+      <div class="proj-map-hint">Πατήστε ένα σημείο για προβολή &middot; κλικ εκτός για κλείσιμο &middot; <kbd>Esc</kbd></div>
     </div>

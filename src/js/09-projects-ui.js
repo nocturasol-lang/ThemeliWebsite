@@ -17,10 +17,11 @@ if (projViewToggles && projGridView) {
       });
       if (window._resetMapZoom) window._resetMapZoom();
 
-      // Hide filters/chips on map view
+      // Hide filters/chips/pagination on map view
       const filterToggle = document.getElementById('projFilterToggle');
       const chips = document.getElementById('projChips');
       const filters = document.getElementById('projFilters');
+      const pagination = document.getElementById('projPagination');
       const isMap = target === 'map';
       const projCount = document.getElementById('projCount');
       if (filterToggle) filterToggle.style.display = isMap ? 'none' : '';
@@ -28,217 +29,132 @@ if (projViewToggles && projGridView) {
       if (chips) chips.style.display = isMap ? 'none' : '';
       if (filters && isMap) { filters.classList.remove('is-open'); filters.style.display = 'none'; }
       if (filters && !isMap) filters.style.display = '';
+      if (pagination) pagination.style.display = isMap ? 'none' : '';
     });
   });
 }
 
-// ========== MAP ZOOM & PAN ==========
-const mapViewport = document.getElementById('mapViewport');
-const mapZoomIn = document.getElementById('mapZoomIn');
-const mapZoomOut = document.getElementById('mapZoomOut');
+// ========== PROJECTS PAGINATION (20 per page) ==========
+const projPagination = document.getElementById('projPagination');
+const PAGE_SIZE = 20;
+let currentPage = 1;
 
-if (mapViewport && mapInner) {
-  const MIN_SCALE = 1;
-  const MAX_SCALE = 3;
-  const ZOOM_STEP = 0.5;
-  let scale = 1;
-  let panX = 0;
-  let panY = 0;
-  let isDragging = false;
-  let startX = 0;
-  let startY = 0;
-  let touchMoved = false;
-  let lastTouchEnd = 0;
+function applyPagination() {
+  if (!projGridView) return;
 
-  // Pinch state
-  let initialPinchDist = 0;
-  let initialPinchScale = 1;
+  const cards = Array.from(projGridView.querySelectorAll('.proj-card'));
+  const rows = projListView ? Array.from(projListView.querySelectorAll('.proj-row:not(.proj-row-header)')) : [];
 
-  function applyTransform(smooth) {
-    mapInner.style.transition = smooth ? 'transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
-    mapInner.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-    mapViewport.classList.toggle('is-zoomed', scale > 1);
-    // Counter-scale dots so they don't grow with zoom, but keep them tappable
-    const cs = Math.max(0.5, 1 / scale);
-    mapViewport.style.setProperty('--map-counter-scale', cs);
-    // Tooltip must undo BOTH dot counter-scale AND parent map zoom
-    // Effective inherited scale on tooltip = scale * cs
-    // To get tooltip back to 1.0: multiply by 1 / (scale * cs)
-    mapViewport.style.setProperty('--map-tooltip-restore', 1 / (scale * cs));
-  }
+  const visibleCards = cards.filter(c => !c.classList.contains('is-hidden'));
+  const visibleRows = rows.filter(r => !r.classList.contains('is-hidden'));
 
-  function clampPan() {
-    if (scale <= 1) { panX = 0; panY = 0; return; }
-    const rect = mapViewport.getBoundingClientRect();
-    const maxPanX = (rect.width * (scale - 1)) / 2;
-    const maxPanY = (rect.height * (scale - 1)) / 2;
-    panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
-    panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
-  }
+  const totalItems = visibleCards.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
 
-  function zoomTo(newScale, centerX, centerY, smooth) {
-    const prev = scale;
-    scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
-    if (centerX !== undefined && centerY !== undefined) {
-      const rect = mapViewport.getBoundingClientRect();
-      const cx = centerX - rect.left - rect.width / 2;
-      const cy = centerY - rect.top - rect.height / 2;
-      panX = panX - cx * (scale / prev - 1);
-      panY = panY - cy * (scale / prev - 1);
-    }
-    if (scale <= 1) { panX = 0; panY = 0; }
-    clampPan();
-    applyTransform(smooth !== false);
-  }
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
 
-  // Button zoom
-  mapZoomIn.addEventListener('click', () => { zoomTo(scale + ZOOM_STEP); });
-  mapZoomOut.addEventListener('click', () => { zoomTo(scale - ZOOM_STEP); });
+  // Grid: show only items in current page window
+  visibleCards.forEach((el, i) => el.classList.toggle('is-paged-out', i < start || i >= end));
+  cards.filter(c => c.classList.contains('is-hidden')).forEach(el => el.classList.remove('is-paged-out'));
 
-  // Double-click zoom
-  mapViewport.addEventListener('dblclick', (e) => {
-    if (scale > 1) {
-      zoomTo(1);
-    } else {
-      zoomTo(2, e.clientX, e.clientY);
-    }
-  });
+  // List: same
+  visibleRows.forEach((el, i) => el.classList.toggle('is-paged-out', i < start || i >= end));
+  rows.filter(r => r.classList.contains('is-hidden')).forEach(el => el.classList.remove('is-paged-out'));
 
-  // Expose reset
-  window._resetMapZoom = function() {
-    if (scale > 1) { scale = 1; panX = 0; panY = 0; applyTransform(true); }
-  };
-
-  // ── Mouse pan ──
-  mapViewport.addEventListener('mousedown', (e) => {
-    if (scale <= 1) return;
-    isDragging = true;
-    startX = e.clientX - panX;
-    startY = e.clientY - panY;
-    e.preventDefault();
-  });
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    panX = e.clientX - startX;
-    panY = e.clientY - startY;
-    clampPan();
-    applyTransform(false);
-  });
-  window.addEventListener('mouseup', () => { isDragging = false; });
-
-  // ── Touch pan + pinch zoom ──
-  function getTouchDist(e) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    return Math.hypot(dx, dy);
-  }
-
-  mapViewport.addEventListener('touchstart', (e) => {
-    touchMoved = false;
-    if (e.touches.length === 2) {
-      // Pinch start
-      isDragging = false;
-      initialPinchDist = getTouchDist(e);
-      initialPinchScale = scale;
-    } else if (e.touches.length === 1 && scale > 1) {
-      // Single-finger pan (only when zoomed)
-      isDragging = true;
-      startX = e.touches[0].clientX - panX;
-      startY = e.touches[0].clientY - panY;
-    }
-  }, { passive: true });
-
-  mapViewport.addEventListener('touchmove', (e) => {
-    touchMoved = true;
-    if (e.touches.length === 2 && initialPinchDist) {
-      // Pinch zoom
-      const dist = getTouchDist(e);
-      const ratio = dist / initialPinchDist;
-      const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-      const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-      zoomTo(initialPinchScale * ratio, midX, midY, false);
-      e.preventDefault();
-    } else if (isDragging && e.touches.length === 1) {
-      // Pan
-      panX = e.touches[0].clientX - startX;
-      panY = e.touches[0].clientY - startY;
-      clampPan();
-      applyTransform(false);
-      e.preventDefault();
-    }
-  }, { passive: false });
-
-  mapViewport.addEventListener('touchend', (e) => {
-    if (e.touches.length < 2) initialPinchDist = 0;
-    if (e.touches.length === 0) isDragging = false;
-    lastTouchEnd = Date.now();
-  }, { passive: true });
-
-  // ── Focus + line visibility helpers ──
-  function showLineForDot(dot) {
-    if (!dot) return;
-    mapInner.classList.add('has-focus');
-    const id = dot.dataset.id;
-    if (id) {
-      // Show the line
-      const line = mapInner.querySelector(`.proj-map-line[data-project="${id}"]`);
-      if (line) line.classList.add('is-active');
-      // Activate ALL dots for this project (both endpoints)
-      mapInner.querySelectorAll(`.proj-map-dot[data-id="${id}"]`).forEach(d => d.classList.add('is-active'));
-    }
-  }
-  function hideAllLines() {
-    mapInner.classList.remove('has-focus');
-    mapInner.querySelectorAll('.proj-map-line.is-active').forEach(l => l.classList.remove('is-active'));
-    mapInner.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
-  }
-
-  // ── Desktop click → toggle focus + line ──
-  mapViewport.addEventListener('click', (e) => {
-    if (Date.now() - lastTouchEnd < 300) return; // handled by touch
-    const dot = e.target.closest('.proj-map-dot');
-    if (!dot) {
-      mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
-      hideAllLines();
-      return;
-    }
-    if (dot.classList.contains('is-active')) {
-      window.location.href = dot.href;
-      return;
-    }
-    e.preventDefault();
-    mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
-    hideAllLines();
-    dot.classList.add('is-active');
-    showLineForDot(dot);
-  });
-
-  // ── Touch dot interaction (tap-to-preview) ──
-  mapViewport.addEventListener('touchend', (e) => {
-    if (touchMoved || e.touches.length > 0) return;
-    const dot = e.target.closest('.proj-map-dot');
-    if (!dot) {
-      mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
-      hideAllLines();
-      return;
-    }
-    if (dot.classList.contains('is-active')) {
-      window.location.href = dot.href;
-      return;
-    }
-    e.preventDefault();
-    mapViewport.querySelectorAll('.proj-map-dot.is-active').forEach(d => d.classList.remove('is-active'));
-    hideAllLines();
-    dot.classList.add('is-active');
-    showLineForDot(dot);
-  });
-
-  // Block click on touch devices (touchend handles dots)
-  mapViewport.addEventListener('click', (e) => {
-    const dot = e.target.closest('.proj-map-dot');
-    if (dot && Date.now() - lastTouchEnd < 300) e.preventDefault();
-  });
+  renderPagination(totalPages);
 }
+
+function renderPagination(totalPages) {
+  if (!projPagination) return;
+  projPagination.innerHTML = '';
+  if (totalPages <= 1) return;
+
+  const prevLabel = (typeof T !== 'undefined' && T.prev) || '‹';
+  const nextLabel = (typeof T !== 'undefined' && T.next) || '›';
+
+  function makeBtn(label, page, { active = false, disabled = false, aria = '' } = {}) {
+    const b = document.createElement('button');
+    b.className = 'proj-page-btn' + (active ? ' is-active' : '');
+    b.textContent = label;
+    if (aria) b.setAttribute('aria-label', aria);
+    if (active) b.setAttribute('aria-current', 'page');
+    if (disabled) { b.disabled = true; return b; }
+    b.addEventListener('click', () => {
+      currentPage = page;
+      applyPagination();
+      // Scroll the new page's first card into view, leaving the toolbar
+      // (filter + view toggles) visible above. Must also clear the fixed
+      // site header (`--menu-height`, default 100px) so content isn't
+      // tucked underneath the logo/nav.
+      const visible = (el) => el && window.getComputedStyle(el).display !== 'none';
+      const activeView = [projGridView, projListView].find(visible);
+      if (activeView) {
+        const toolbar = document.querySelector('.proj-toolbar');
+        const toolbarH = toolbar ? toolbar.getBoundingClientRect().height : 0;
+        const menuH = parseInt(getComputedStyle(document.documentElement)
+          .getPropertyValue('--menu-height')) || 100;
+        const gridTop = activeView.getBoundingClientRect().top + window.scrollY;
+        const targetY = Math.max(0, gridTop - menuH - toolbarH - 24);
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      }
+    });
+    return b;
+  }
+
+  // Prev
+  projPagination.appendChild(makeBtn(prevLabel, currentPage - 1, { disabled: currentPage === 1, aria: 'Previous page' }));
+
+  // Page numbers (with ellipsis when many)
+  const pages = [];
+  const add = n => pages.push(n);
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) add(i);
+  } else {
+    add(1);
+    if (currentPage > 3) add('…');
+    const from = Math.max(2, currentPage - 1);
+    const to = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = from; i <= to; i++) add(i);
+    if (currentPage < totalPages - 2) add('…');
+    add(totalPages);
+  }
+  pages.forEach(p => {
+    if (p === '…') {
+      const s = document.createElement('span');
+      s.className = 'proj-page-ellipsis';
+      s.textContent = '…';
+      projPagination.appendChild(s);
+    } else {
+      projPagination.appendChild(makeBtn(String(p), p, { active: p === currentPage }));
+    }
+  });
+
+  // Next
+  projPagination.appendChild(makeBtn(nextLabel, currentPage + 1, { disabled: currentPage === totalPages, aria: 'Next page' }));
+}
+
+// Run pagination after initial render + whenever filters change.
+// 08-projects-render.js appends cards asynchronously; wait for them.
+function waitForCardsThenPaginate() {
+  if (!projGridView) return;
+  if (projGridView.querySelector('.proj-card')) {
+    applyPagination();
+  } else {
+    const obs = new MutationObserver(() => {
+      if (projGridView.querySelector('.proj-card')) {
+        obs.disconnect();
+        applyPagination();
+      }
+    });
+    obs.observe(projGridView, { childList: true });
+  }
+}
+waitForCardsThenPaginate();
+window._projApplyPagination = applyPagination;
+window._projResetPage = () => { currentPage = 1; };
+
 
 // ========== PROJECTS FILTER (multi-category with chips) ==========
 const projFilterToggle = document.getElementById('projFilterToggle');
@@ -331,6 +247,10 @@ if (projFilterToggle && projFilters) {
     projFilterToggle.classList.toggle('is-active', hasFilters || projFilters.classList.contains('is-open'));
 
     renderChips();
+
+    // Reset to page 1 and re-paginate
+    currentPage = 1;
+    applyPagination();
   }
 
   // Render chips
@@ -433,5 +353,9 @@ if (projListView) {
 
     // Re-append rows in sorted order
     rows.forEach(row => projListView.appendChild(row));
+
+    // Reset to page 1 after sort
+    currentPage = 1;
+    applyPagination();
   });
 }
