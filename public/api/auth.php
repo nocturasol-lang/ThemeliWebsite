@@ -30,7 +30,11 @@ if ($action === 'setup') {
     $hash = password_hash($pass, PASSWORD_DEFAULT);
     $st = db()->prepare("INSERT INTO settings (key, value) VALUES ('admin_email', :e), ('admin_password_hash', :h)");
     $st->execute([':e' => $email, ':h' => $hash]);
-    $_SESSION['admin_email'] = $email;
+    $token = bin2hex(random_bytes(32));
+    db()->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('admin_active_session', :t)")
+        ->execute([':t' => $token]);
+    $_SESSION['admin_email']   = $email;
+    $_SESSION['session_token'] = $token;
     $_SESSION['last_activity'] = time();
     json_ok(['email' => $email]);
 }
@@ -65,6 +69,11 @@ if (strcasecmp($email, $cfg['admin_email']) !== 0 || !password_verify($pass, $cf
     json_err('Invalid credentials', 401);
 }
 
-$_SESSION['admin_email'] = $cfg['admin_email'];
+// Single-session: bump the active token so any other session is invalidated.
+$token = bin2hex(random_bytes(32));
+db()->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('admin_active_session', :t)")
+    ->execute([':t' => $token]);
+$_SESSION['admin_email']   = $cfg['admin_email'];
+$_SESSION['session_token'] = $token;
 $_SESSION['last_activity'] = time();
 json_ok(['email' => $cfg['admin_email']]);

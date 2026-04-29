@@ -105,18 +105,35 @@ function start_session(): void {
 // Auto-logout after this many seconds of inactivity.
 const ADMIN_IDLE_TIMEOUT = 30 * 60;
 
+function destroy_admin_session(): void {
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $p = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+    }
+    session_destroy();
+}
+
+function active_session_token(): string {
+    $row = db()->query("SELECT value FROM settings WHERE key = 'admin_active_session'")->fetch();
+    return $row['value'] ?? '';
+}
+
 function is_admin(): bool {
     start_session();
     if (empty($_SESSION['admin_email'])) return false;
+    // Single-session: only the most recent login is valid; older sessions
+    // get logged out as soon as they make a request.
+    $myToken     = $_SESSION['session_token'] ?? '';
+    $activeToken = active_session_token();
+    if (!$myToken || !$activeToken || !hash_equals($activeToken, $myToken)) {
+        destroy_admin_session();
+        return false;
+    }
     $last = $_SESSION['last_activity'] ?? 0;
     if ($last && (time() - $last) > ADMIN_IDLE_TIMEOUT) {
-        $_SESSION = [];
-        if (ini_get('session.use_cookies')) {
-            $p = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $p['path'], $p['domain'], $p['secure'], $p['httponly']);
-        }
-        session_destroy();
+        destroy_admin_session();
         return false;
     }
     $_SESSION['last_activity'] = time();
