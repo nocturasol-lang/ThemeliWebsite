@@ -9,11 +9,24 @@ $action = $_GET['action'] ?? '';
 
 // ── GET: status check ────────────────────────────────────────────────
 if (method() === 'GET') {
-    json_ok([
+    // Detect "displaced" sessions (someone else logged in and superseded
+    // this one) before is_admin() destroys the session, so the client
+    // can show an informative popup instead of a silent re-login.
+    $displaced = false;
+    if (!empty($_SESSION['admin_email'])) {
+        $myToken = $_SESSION['session_token'] ?? '';
+        $active  = active_session_token();
+        if ($myToken && $active && !hash_equals($active, $myToken)) {
+            $displaced = true;
+        }
+    }
+    $resp = [
         'authenticated' => is_admin(),
         'admin_exists'  => admin_exists(),
         'email'         => $_SESSION['admin_email'] ?? null,
-    ]);
+    ];
+    if ($displaced) $resp['reason'] = 'displaced';
+    json_ok($resp);
 }
 
 if (method() !== 'POST') json_err('Method not allowed', 405);

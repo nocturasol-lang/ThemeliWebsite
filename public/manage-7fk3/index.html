@@ -403,11 +403,26 @@
       idleTimer = setInterval(async () => {
         try {
           const status = await api('/auth.php');
-          if (!status.authenticated) showLogin();
+          if (!status.authenticated) {
+            if (status.reason === 'displaced') notifyDisplaced();
+            showLogin();
+          }
         } catch (_) { /* api() already calls showLogin on 401 */ }
       }, 60000);
     }
     function stopIdleCheck() { if (idleTimer) { clearInterval(idleTimer); idleTimer = null; } }
+
+    // Show a one-shot alert when the session is replaced by another login.
+    function notifyDisplaced() {
+      if (loginError) {
+        loginError.textContent = 'Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή. Η συνεδρία σας τερματίστηκε. Συνδεθείτε ξανά αν χρειάζεται.';
+        loginError.style.display = 'block';
+      }
+      // Modal-style popup so the user notices even before seeing the login form.
+      try {
+        alert('Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή. Η συνεδρία σας τερματίστηκε.');
+      } catch (_) {}
+    }
 
     (async () => {
       try {
