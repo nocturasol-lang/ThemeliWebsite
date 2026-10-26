@@ -4,7 +4,8 @@
 
 require __DIR__ . '/common.php';
 
-start_session();
+// Only resume an existing session; anonymous status checks never create one.
+if (has_session_cookie()) start_session();
 $action = $_GET['action'] ?? '';
 
 // ── GET: status check ────────────────────────────────────────────────
@@ -13,7 +14,7 @@ if (method() === 'GET') {
     // this one) before is_admin() destroys the session, so the client
     // can show an informative popup instead of a silent re-login.
     $displaced = false;
-    if (!empty($_SESSION['admin_email'])) {
+    if (session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['admin_email'])) {
         $myToken = $_SESSION['session_token'] ?? '';
         $active  = active_session_token();
         if ($myToken && $active && !hash_equals($active, $myToken)) {
@@ -43,28 +44,24 @@ if ($action === 'setup') {
     $hash = password_hash($pass, PASSWORD_DEFAULT);
     $st = db()->prepare("INSERT INTO settings (key, value) VALUES ('admin_email', :e), ('admin_password_hash', :h)");
     $st->execute([':e' => $email, ':h' => $hash]);
-    $token = bin2hex(random_bytes(32));
-    db()->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('admin_active_session', :t)")
-        ->execute([':t' => $token]);
-    $_SESSION['admin_email']   = $email;
-    $_SESSION['session_token'] = $token;
-    $_SESSION['last_activity'] = time();
+    begin_admin_session($email);
     json_ok(['email' => $email]);
 }
 
 // ── Logout ───────────────────────────────────────────────────────────
 if ($action === 'logout') {
-    $_SESSION = [];
-    if (ini_get('session.use_cookies')) {
-        $p = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000,
-            $p['path'], $p['domain'], $p['secure'], $p['httponly']);
-    }
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) destroy_admin_session();
     json_ok(['ok' => true]);
 }
 
 // ── Login ────────────────────────────────────────────────────────────
+// Brute-force guard: max LOGIN_MAX_FAILS failed attempts per IP per window.
+const LOGIN_MAX_FAILS = 5;
+const LOGIN_WINDOW    = 15 * 60;
+if (rate_limited('login', LOGIN_MAX_FAILS, LOGIN_WINDOW)) {
+    json_err('Too many failed attempts. Try again in 15 minutes.', 429);
+}
+
 $email = trim((string)($body['email']    ?? ''));
 $pass  = (string)($body['password'] ?? '');
 if ($email === '' || $pass === '') json_err('Email and password required');
@@ -74,19 +71,15 @@ $cfg = [];
 foreach ($rows as $r) $cfg[$r['key']] = $r['value'];
 
 if (empty($cfg['admin_email']) || empty($cfg['admin_password_hash'])) {
-    json_err('Admin not configured. Visit /api/setup-admin first.', 403);
+    json_err('Admin not configured.', 403);
 }
 if (strcasecmp($email, $cfg['admin_email']) !== 0 || !password_verify($pass, $cfg['admin_password_hash'])) {
-    // Tiny delay to discourage brute force on shared hosting.
+    rate_hit('login');
     usleep(300000);
     json_err('Invalid credentials', 401);
 }
 
-// Single-session: bump the active token so any other session is invalidated.
-$token = bin2hex(random_bytes(32));
-db()->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('admin_active_session', :t)")
-    ->execute([':t' => $token]);
-$_SESSION['admin_email']   = $cfg['admin_email'];
-$_SESSION['session_token'] = $token;
-$_SESSION['last_activity'] = time();
+rate_clear('login');
+// Single-session: bumps the active token so any other session is invalidated.
+begin_admin_session($cfg['admin_email']);
 json_ok(['email' => $cfg['admin_email']]);

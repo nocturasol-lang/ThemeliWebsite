@@ -61,8 +61,8 @@ echo "  (preserving remote uploads/ and api/data/)"
 # `--exclude-glob` keeps the runtime dirs intact on the remote
 # `--parallel=4` modest concurrency
 lftp -u "$FTP_USER","$FTP_PASS" "$URL" <<EOF
-set sftp:auto-confirm yes
-set ssl:verify-certificate no
+set sftp:auto-confirm no
+set ssl:verify-certificate yes
 set net:max-retries 2
 set net:reconnect-interval-base 4
 set mirror:use-pget-n 0

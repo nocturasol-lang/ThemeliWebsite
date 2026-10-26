@@ -95,7 +95,9 @@ if ($method === 'POST') {
     try {
         $st->execute($bind);
     } catch (PDOException $e) {
-        json_err('Insert failed: ' . $e->getMessage(), 400);
+        error_log('projects insert failed: ' . $e->getMessage());
+        $msg = str_contains($e->getMessage(), 'UNIQUE') ? 'Insert failed: legacy_id already in use' : 'Insert failed';
+        json_err($msg, 400);
     }
     $newId = (int)db()->lastInsertId();
     $row = db()->prepare("SELECT " . SELECT_FIELDS . " FROM projects WHERE id = :id");

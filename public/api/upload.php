@@ -29,7 +29,6 @@ $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime  = $finfo ? finfo_file($finfo, $file['tmp_name']) : ($file['type'] ?? '');
 if ($finfo) finfo_close($finfo);
 
-$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 $allowed = [
     'image/jpeg' => 'jpg',
     'image/png'  => 'png',
@@ -37,7 +36,9 @@ $allowed = [
     'image/avif' => 'avif',
 ];
 if (!isset($allowed[$mime])) json_err('Unsupported image type: ' . $mime, 415);
-if ($ext === '' || $ext === 'jpeg') $ext = $allowed[$mime];
+// Extension always comes from the sniffed type, never the client filename,
+// so a polyglot named "x.php" can't land on disk as an executable script.
+$ext = $allowed[$mime];
 
 $base   = pathinfo($file['name'], PATHINFO_FILENAME);
 $base   = safe_filename($base);

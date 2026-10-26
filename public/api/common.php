@@ -85,12 +85,80 @@ function ensure_schema(PDO $pdo): void {
         );
         CREATE INDEX IF NOT EXISTS idx_inquiries_handled ON inquiries(handled);
         CREATE INDEX IF NOT EXISTS idx_inquiries_created ON inquiries(created_at);
+
+        CREATE TABLE IF NOT EXISTS rate_limits (
+            bucket      TEXT NOT NULL,
+            client      TEXT NOT NULL,
+            created_at  INTEGER NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_rate_limits ON rate_limits(bucket, client, created_at);
     ");
 }
 
+// ─── Request origin (CSRF) ───────────────────────────────────────────
+// Browsers attach Sec-Fetch-Site / Origin to every state-changing fetch.
+// Reject anything a browser reports as coming from another site; requests
+// without either header (curl, server-side scripts) can't carry the admin
+// cookie cross-site, so they're allowed through.
+function require_same_origin(): void {
+    if (in_array(method(), ['GET', 'HEAD', 'OPTIONS'], true)) return;
+    $site = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
+    if ($site !== '' && $site !== 'same-origin' && $site !== 'none') {
+        json_err('Cross-site request blocked', 403);
+    }
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if ($origin !== '') {
+        $host = parse_url($origin, PHP_URL_HOST);
+        $port = parse_url($origin, PHP_URL_PORT);
+        if ($port) $host .= ':' . $port;
+        if (!is_string($host) || strcasecmp($host, $_SERVER['HTTP_HOST'] ?? '') !== 0) {
+            json_err('Cross-site request blocked', 403);
+        }
+    }
+}
+require_same_origin();
+
+// ─── Rate limiting ───────────────────────────────────────────────────
+// Sliding window per client IP (stored hashed). rate_hit() records an
+// attempt; rate_limited() checks whether the window is already full.
+function rate_client(): string {
+    return hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? '') . '|' . DB_FILE);
+}
+
+function rate_limited(string $bucket, int $max, int $window): bool {
+    $st = db()->prepare("SELECT COUNT(*) FROM rate_limits WHERE bucket = :b AND client = :c AND created_at > :t");
+    $st->execute([':b' => $bucket, ':c' => rate_client(), ':t' => time() - $window]);
+    return (int)$st->fetchColumn() >= $max;
+}
+
+function rate_hit(string $bucket): void {
+    db()->prepare("INSERT INTO rate_limits (bucket, client, created_at) VALUES (:b, :c, :t)")
+        ->execute([':b' => $bucket, ':c' => rate_client(), ':t' => time()]);
+    // Occasional cleanup of anything older than a day.
+    if (random_int(1, 50) === 1) {
+        db()->prepare("DELETE FROM rate_limits WHERE created_at < :t")->execute([':t' => time() - 86400]);
+    }
+}
+
+function rate_clear(string $bucket): void {
+    db()->prepare("DELETE FROM rate_limits WHERE bucket = :b AND client = :c")
+        ->execute([':b' => $bucket, ':c' => rate_client()]);
+}
+
 // ─── Session / auth ──────────────────────────────────────────────────
+const SESSION_NAME = 'themeli_admin';
+
+// Anonymous visitors never get a session: only resume one when the
+// browser already holds our cookie (i.e. after a login).
+function has_session_cookie(): bool {
+    return !empty($_COOKIE[SESSION_NAME]);
+}
+
 function start_session(): void {
     if (session_status() === PHP_SESSION_ACTIVE) return;
+    // Refuse session IDs the server didn't issue (blocks session fixation).
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
     session_set_cookie_params([
         'lifetime' => 0,
         'path'     => '/',
@@ -98,8 +166,21 @@ function start_session(): void {
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
-    session_name('themeli_admin');
+    session_name(SESSION_NAME);
     session_start();
+}
+
+// Called right after a successful login/setup: issue a fresh session ID
+// so any ID that existed before authentication becomes worthless.
+function begin_admin_session(string $email): void {
+    start_session();
+    session_regenerate_id(true);
+    $token = bin2hex(random_bytes(32));
+    db()->prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('admin_active_session', :t)")
+        ->execute([':t' => $token]);
+    $_SESSION['admin_email']   = $email;
+    $_SESSION['session_token'] = $token;
+    $_SESSION['last_activity'] = time();
 }
 
 // Auto-logout after this many seconds of inactivity.
@@ -121,6 +202,7 @@ function active_session_token(): string {
 }
 
 function is_admin(): bool {
+    if (!has_session_cookie()) return false;
     start_session();
     if (empty($_SESSION['admin_email'])) return false;
     // Single-session: only the most recent login is valid; older sessions

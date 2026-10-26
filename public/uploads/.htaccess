@@ -1,0 +1,14 @@
+# Uploaded files are images only — never execute anything in here.
+<FilesMatch "(?i)\.(php\d*|phtml|pht|phar|phps|cgi|pl|py|sh|shtml|htaccess)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_mime.c>
+    RemoveHandler .php .php5 .php7 .php8 .phtml .phar
+    RemoveType .php .php5 .php7 .php8 .phtml .phar
+</IfModule>
+
+Options -Indexes
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -11,6 +11,8 @@ $method = method();
 
 // ── PUBLIC POST: submit inquiry ──────────────────────────────────────
 if ($method === 'POST' && !isset($_GET['action'])) {
+    // Flood guard: a handful of messages per IP per hour is plenty for humans.
+    if (rate_limited('inquiry', 5, 3600)) json_err('Too many messages. Please try again later.', 429);
     $body = read_json_body();
 
     // Honeypot — bots fill the hidden `website` field.
@@ -30,7 +32,7 @@ if ($method === 'POST' && !isset($_GET['action'])) {
     if ($name === '')    json_err('Name is required', 422);
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_err('Valid email is required', 422);
     if (strlen($message) < 10) json_err('Message must be at least 10 characters', 422);
-    if (strlen($name) > 200 || strlen($email) > 200 || strlen($subject) > 200 || strlen($message) > 5000) {
+    if (strlen($name) > 200 || strlen($email) > 200 || strlen($phone) > 50 || strlen($subject) > 200 || strlen($message) > 5000) {
         json_err('Field too long', 422);
     }
 
@@ -43,6 +45,7 @@ if ($method === 'POST' && !isset($_GET['action'])) {
         ':subject' => $subject, ':message' => $message, ':type' => $type,
     ]);
     $newId = (int)db()->lastInsertId();
+    rate_hit('inquiry');
 
     json_ok(['id' => $newId], 201);
 }
