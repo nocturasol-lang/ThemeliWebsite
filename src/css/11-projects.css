@@ -503,12 +503,15 @@
 }
 
 /* ===== MAP VIEW (Leaflet) ===== */
+/* Leaflet's own stylesheet (assets/vendor/leaflet/leaflet.css) is loaded
+   lazily by 10-leaflet-map.js together with the library. */
 .proj-map {
   width: 100%;
   position: relative;
   height: calc(100dvh - var(--menu-height) - 160px);
   min-height: 360px;
   overflow: hidden;
+  isolation: isolate; /* keep Leaflet panes (z 400+) and the card (500) in their own stacking context */
 }
 .proj-map-leaflet {
   position: absolute;
@@ -516,21 +519,19 @@
   width: 100%;
   height: 100%;
   background: var(--gray-01);
-  outline: none;
 }
+/* The parent clips overflow, so pull the global focus ring inside the box
+   (keyboard users only — :focus-visible). */
+.proj-map-leaflet:focus-visible { outline-offset: -2px; }
 
-.proj-map-leaflet .leaflet-container {
+/* Same element as .proj-map-leaflet: must out-rank leaflet.css, which is
+   appended to <head> after this bundle. */
+.proj-map-leaflet.leaflet-container {
   background: var(--gray-01);
   font: inherit;
-  outline: none;
 }
 .proj-map-leaflet .leaflet-container a.leaflet-popup-close-button { display: none; }
-.proj-map-leaflet .leaflet-interactive:focus { outline: none; }
 .proj-map-leaflet .leaflet-control-attribution { display: none; }
-
-.proj-leaflet-pin {
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
-}
 
 /* ===== MAP CARD (project preview) ===== */
 .proj-map-card {
@@ -760,9 +761,8 @@
   .proj-map-card-cta   { margin-top: 0.85rem; padding: 0.7rem 1rem; width: 100%; justify-content: center; }
 
   .proj-map-hint { display: none; }
-  /* Leave room above for the map — 80vh map + 55vh sheet can overlap, and
-     that's intentional (map is above sheet, sheet floats over its bottom). */
-  .proj-map-leaflet { height: 80vh; }
+  /* The map fills the .proj-map box (inset: 0) so Leaflet's centring matches
+     what is visible; the fixed 55dvh sheet floats over its bottom. */
 }
 
 /* While the sheet is open, lock PAGE scroll but NOT map interaction.

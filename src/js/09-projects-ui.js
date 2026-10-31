@@ -104,7 +104,7 @@ function renderPagination(totalPages) {
   }
 
   // Prev
-  projPagination.appendChild(makeBtn(prevLabel, currentPage - 1, { disabled: currentPage === 1, aria: 'Previous page' }));
+  projPagination.appendChild(makeBtn(prevLabel, currentPage - 1, { disabled: currentPage === 1, aria: (typeof T !== 'undefined' && T.prevPage) || 'Previous page' }));
 
   // Page numbers (with ellipsis when many)
   const pages = [];
@@ -132,7 +132,7 @@ function renderPagination(totalPages) {
   });
 
   // Next
-  projPagination.appendChild(makeBtn(nextLabel, currentPage + 1, { disabled: currentPage === totalPages, aria: 'Next page' }));
+  projPagination.appendChild(makeBtn(nextLabel, currentPage + 1, { disabled: currentPage === totalPages, aria: (typeof T !== 'undefined' && T.nextPage) || 'Next page' }));
 }
 
 // Run pagination after initial render + whenever filters change.
@@ -223,18 +223,6 @@ if (projFilterToggle && projFilters) {
     // Filter list rows
     document.querySelectorAll('.proj-row:not(.proj-row-header)').forEach(row => {
       row.classList.toggle('is-hidden', !matchesFilters(row));
-    });
-
-    // Filter map dots (clear active tooltips on hidden dots)
-    document.querySelectorAll('.proj-map-dot').forEach(dot => {
-      const hidden = !matchesFilters(dot);
-      dot.classList.toggle('is-hidden', hidden);
-      if (hidden) dot.classList.remove('is-active');
-    });
-
-    // Filter map lines
-    document.querySelectorAll('.proj-map-line').forEach(line => {
-      line.classList.toggle('is-hidden', !matchesFilters(line));
     });
 
     // Update count

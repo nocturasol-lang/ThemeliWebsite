@@ -3,7 +3,7 @@ title: THEMELI — Projects
 description: THEMELI S.A. Projects — Browse our portfolio of major infrastructure, transportation, energy, and building construction projects across Greece.
 mainClass: projects-page
 mainId:
-scripts: ../assets/vendor/leaflet/leaflet.js, ../assets/greece-prefectures.js
+scripts:
 -->
     <div class="page-header">
       <h1>Projects</h1>
@@ -95,9 +95,9 @@ scripts: ../assets/vendor/leaflet/leaflet.js, ../assets/greece-prefectures.js
 
     <!-- ===== MAP VIEW (Leaflet) ===== -->
     <div class="proj-map" id="projMapView" style="display:none">
-      <div class="proj-map-leaflet" id="projLeafletMap"></div>
+      <div class="proj-map-leaflet" id="projLeafletMap" role="region" aria-label="Projects map"></div>
 
-      <aside class="proj-map-card" id="projMapCard" aria-hidden="true">
+      <aside class="proj-map-card" id="projMapCard" aria-hidden="true" inert>
         <button class="proj-map-card-close" id="projMapCardClose" aria-label="Close">&times;</button>
         <div class="proj-map-card-photo" id="projMapCardPhoto">
           <span class="proj-map-card-kind" id="projMapCardKind">●</span>

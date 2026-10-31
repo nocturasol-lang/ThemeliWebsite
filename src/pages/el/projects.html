@@ -3,7 +3,7 @@ title: THEMELI — Έργα
 description: ΘΕΜΕΛΙ Α.Ε. Έργα — Περιηγηθείτε στο χαρτοφυλάκιο μεγάλων έργων υποδομών, μεταφορών, ενέργειας και κτιριακών κατασκευών σε όλη την Ελλάδα.
 mainClass: projects-page
 mainId:
-scripts: ../assets/vendor/leaflet/leaflet.js, ../assets/greece-prefectures.js
+scripts:
 -->
     <div class="page-header">
       <h1>Έργα</h1>
@@ -12,20 +12,20 @@ scripts: ../assets/vendor/leaflet/leaflet.js, ../assets/greece-prefectures.js
     <!-- Toolbar: filter + view toggles + count -->
     <div class="proj-toolbar reveal">
       <div class="proj-toolbar-left">
-        <button class="proj-filter-toggle" id="projFilterToggle" aria-label="Toggle filters">
+        <button class="proj-filter-toggle" id="projFilterToggle" aria-label="Εμφάνιση/απόκρυψη φίλτρων">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="4" x2="17" y2="4"/><line x1="1" y1="9" x2="17" y2="9"/><line x1="1" y1="14" x2="17" y2="14"/><circle cx="5" cy="4" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="8" cy="14" r="1.5" fill="currentColor"/></svg>
           <span>Φίλτρα</span>
         </button>
         <span class="proj-count" id="projCount">26 Έργα</span>
       </div>
       <div class="proj-view-toggles" id="projViewToggles">
-        <button class="proj-view-btn is-active" data-view="grid" aria-label="Grid view">
+        <button class="proj-view-btn is-active" data-view="grid" aria-label="Προβολή πλέγματος">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="0" width="8" height="8" rx="1"/><rect x="10" y="0" width="8" height="8" rx="1"/><rect x="0" y="10" width="8" height="8" rx="1"/><rect x="10" y="10" width="8" height="8" rx="1"/></svg>
         </button>
-        <button class="proj-view-btn" data-view="list" aria-label="List view">
+        <button class="proj-view-btn" data-view="list" aria-label="Προβολή λίστας">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="1" width="18" height="2" rx="1"/><rect x="0" y="5.5" width="18" height="2" rx="1"/><rect x="0" y="10" width="18" height="2" rx="1"/><rect x="0" y="14.5" width="18" height="2" rx="1"/></svg>
         </button>
-        <button class="proj-view-btn" data-view="map" aria-label="Map view">
+        <button class="proj-view-btn" data-view="map" aria-label="Προβολή χάρτη">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 16s-6-5.7-6-9.2A6 6 0 0 1 15 6.8C15 10.3 9 16 9 16z"/><circle cx="9" cy="7" r="2" fill="currentColor"/></svg>
         </button>
       </div>
@@ -95,9 +95,9 @@ scripts: ../assets/vendor/leaflet/leaflet.js, ../assets/greece-prefectures.js
 
     <!-- ===== MAP VIEW (Leaflet) ===== -->
     <div class="proj-map" id="projMapView" style="display:none">
-      <div class="proj-map-leaflet" id="projLeafletMap"></div>
+      <div class="proj-map-leaflet" id="projLeafletMap" role="region" aria-label="Χάρτης έργων"></div>
 
-      <aside class="proj-map-card" id="projMapCard" aria-hidden="true">
+      <aside class="proj-map-card" id="projMapCard" aria-hidden="true" inert>
         <button class="proj-map-card-close" id="projMapCardClose" aria-label="Κλείσιμο">&times;</button>
         <div class="proj-map-card-photo" id="projMapCardPhoto">
           <span class="proj-map-card-kind" id="projMapCardKind">●</span>
