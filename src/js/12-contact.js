@@ -94,6 +94,7 @@ document.addEventListener('keydown', (e) => {
   var formView   = document.getElementById('cfFormView');
   var successView = document.getElementById('cfSuccessView');
   var errorBox   = document.getElementById('cfError');
+  var errorHome  = errorBox && { parent: errorBox.parentNode, next: errorBox.nextSibling };
   var submit     = form.querySelector('.cf-submit');
   var newMsgBtn  = document.getElementById('cfNewMsg');
   var originalLabel = submit.textContent;
@@ -101,11 +102,25 @@ document.addEventListener('keydown', (e) => {
   // `field` (optional) is the control the message is about: it is marked
   // invalid and described by the error box so screen readers hear why.
   function showError(msg, field) {
+    // Sit right under the field in question, so it is on screen beside the
+    // focused control; messages not about a field stay in their original place.
+    var fieldWrap = field && field.closest('.cf-field');
+    if (fieldWrap) fieldWrap.appendChild(errorBox);
+    else if (errorHome) errorHome.parent.insertBefore(errorBox, errorHome.next);
     errorBox.textContent = msg;
     errorBox.classList.add('is-shown');
     if (field) {
       field.setAttribute('aria-invalid', 'true');
       field.setAttribute('aria-describedby', 'cfError');
+      // Bring the field and its message on screen, clear of the fixed header.
+      field.focus({ preventScroll: true });
+      var wrap = (fieldWrap || field).getBoundingClientRect();
+      var box = errorBox.getBoundingClientRect();
+      var menu = document.querySelector('.menu');
+      var topLimit = (menu ? menu.offsetHeight : 0) + 16;
+      if (wrap.top < topLimit || box.bottom > window.innerHeight - 16) {
+        window.scrollBy({ top: wrap.top - topLimit, behavior: themeliScrollBehavior() });
+      }
     }
   }
   function clearError() {
@@ -163,9 +178,9 @@ document.addEventListener('keydown', (e) => {
       website:      form.website.value.trim()  // honeypot — should be empty
     };
 
-    if (!data.name) { showError(T.formValidName, form.name); form.name.focus(); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { showError(T.formValidEmail, form.email); form.email.focus(); return; }
-    if (data.message.length < 10) { showError(T.formValidMessage, form.message); form.message.focus(); return; }
+    if (!data.name) { showError(T.formValidName, form.name); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { showError(T.formValidEmail, form.email); return; }
+    if (data.message.length < 10) { showError(T.formValidMessage, form.message); return; }
 
     submit.disabled = true;
     submit.textContent = T.formSending;

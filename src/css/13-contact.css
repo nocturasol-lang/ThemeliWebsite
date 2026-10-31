@@ -304,6 +304,10 @@
   border-radius: 2px;
 }
 .cf-error.is-shown { display: block; }
+.cf-field .cf-error { margin-top: 10px; }
+/* A focused field must not land under the fixed header. */
+.cf-field input,
+.cf-field textarea { scroll-margin-top: calc(var(--menu-height) + 48px); }
 
 /* ========== SUCCESS STATE ========== */
 .cf-view.hidden { display: none; }

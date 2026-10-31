@@ -5,6 +5,8 @@ const timelineNav = document.getElementById('timelineNav');
 if (timelineNav) {
   const navButtons = timelineNav.querySelectorAll('.timeline-nav-year');
   const progressBar = document.getElementById('timelineNavProgress');
+  const stickyTop = () => parseFloat(getComputedStyle(timelineNav).top) || 0;
+  const stuckBottom = () => stickyTop() + timelineNav.offsetHeight;
 
   // Click to scroll
   navButtons.forEach(btn => {
@@ -12,7 +14,8 @@ if (timelineNav) {
       const targetId = btn.getAttribute('data-target');
       const target = document.getElementById(targetId);
       if (target) {
-        const offset = 120;
+        // Land below the fixed header and this sticky bar.
+        const offset = stuckBottom() + 24;
         const top = target.getBoundingClientRect().top + window.scrollY - offset;
         // Hand keyboard focus to the era so the next Tab continues from there;
         // the scroll below takes care of positioning.
@@ -29,7 +32,12 @@ if (timelineNav) {
   let activeIndex = -1;
 
   function updateActiveYear() {
-    const scrollY = window.scrollY + 200;
+    // Solid background above the bar only once it is stuck under the header.
+    timelineNav.classList.toggle('is-stuck',
+      timelineNav.getBoundingClientRect().top <= stickyTop() + 0.5);
+
+    // The active era is the one that has reached the bottom of the sticky bar.
+    const scrollY = window.scrollY + stuckBottom() + 32;
     let index = 0;
 
     eraElements.forEach((el, i) => {
@@ -47,6 +55,15 @@ if (timelineNav) {
       if (active) btn.setAttribute('aria-current', 'true');
       else btn.removeAttribute('aria-current');
     });
+
+    // Phones: the bar scrolls sideways; keep the active year in view.
+    if (timelineNav.scrollWidth > timelineNav.clientWidth) {
+      const btn = navButtons[index];
+      timelineNav.scrollTo({
+        left: btn.offsetLeft - (timelineNav.clientWidth - btn.offsetWidth) / 2,
+        behavior: themeliScrollBehavior()
+      });
+    }
 
     // Update progress bar
     if (progressBar && navButtons.length > 1) {

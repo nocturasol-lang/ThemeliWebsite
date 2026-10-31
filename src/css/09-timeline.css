@@ -86,16 +86,28 @@
 
 /* Interactive year nav */
 .timeline-nav {
-  margin-bottom: 100px;
-  padding: 20px 0;
-  position: relative;
+  /* Stays under the header for the whole timeline. Full-bleed so content
+     scrolling beneath it is covered edge to edge; the padding keeps the years
+     on the page's own edges. */
+  position: sticky;
+  top: var(--menu-height);
+  z-index: 15;
+  margin: 0 calc(-1 * var(--pad-x)) 100px;
+  padding: 20px var(--pad-x);
+  background: var(--gray-01);
+}
+
+/* Stuck: also cover the band behind the transparent header, so page text does
+   not show there. A shadow, because the phone bar's overflow clips pseudo-elements. */
+.timeline-nav.is-stuck {
+  box-shadow: 0 calc(-1 * var(--menu-height)) 0 24px var(--gray-01);
 }
 
 .timeline-nav-track {
   position: absolute;
   top: 50%;
-  left: 0;
-  right: 0;
+  left: var(--pad-x);
+  right: var(--pad-x);
   height: 4px;
   transform: translateY(-50%);
   border-radius: 2px;
