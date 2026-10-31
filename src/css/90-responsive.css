@@ -336,6 +336,16 @@
     display: none;
   }
 
+  /* Keep each photo's space before it loads: a collapsed <picture> moves the
+     page while the year nav is scrolling, and it stops short of the year. */
+  .frame-layout-05 picture {
+    width: 100%;
+  }
+
+  .frame-layout-07 .frame-bottom-row picture {
+    width: min(100%, 538px); /* the photo's own width, so loaded size is unchanged */
+  }
+
   .frame-layout-04,
   .frame-layout-07 {
     grid-template-columns: 1fr;
