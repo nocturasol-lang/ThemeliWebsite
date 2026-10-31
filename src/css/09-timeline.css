@@ -249,6 +249,14 @@
   margin-top: 16px;
 }
 
+/* Lighter reading text for the recent project years. The font's lightest cut
+   is already in use, so the lighter look comes from size and colour. */
+.timeline-era-body .era-text--light {
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.75);
+}
+
 .timeline-frame + .era-text,
 .era-text-full {
   grid-column: 1 / -1;

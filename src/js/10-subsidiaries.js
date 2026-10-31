@@ -16,6 +16,79 @@ if (subsGrid && subDetail) {
   // Gallery viewer is provided by src/js/09a-photoswipe.js as window.openGallery.
   const openGallery = (images, startIndex) => window.openGallery(images, startIndex || 0);
 
+  // Where each subsidiary's photos sit inside its text, in the manner of the
+  // Timeline. "before" counts the top-level blocks of the description (same
+  // structure in both languages), or of a text column when "column" is set.
+  // "size" is s, m or wide; "duo" pairs two photos of unequal width.
+  const SUB_PHOTO_LAYOUT = {
+    themos: [
+      { before: 0, size: 'm', side: 'right', photo: 0 },
+      { before: 3, size: 'wide', photo: 1 },
+      { before: 6, size: 's', side: 'left', photo: 2 },
+      { before: 10, size: 'm', side: 'right', photo: 3 },
+    ],
+    thermis: [
+      { column: 0, before: 1, size: 'wide', photo: 0 },
+      { column: 0, before: 2, size: 's', side: 'right', photo: 1 },
+      { column: 1, before: 1, size: 's', side: 'left', photo: 2 },
+      { column: 1, before: 2, size: 'wide', photo: 3 },
+    ],
+    tetrapolis: [
+      { before: 0, size: 'm', side: 'right', photo: 0 },
+      { before: 3, duo: [2, 3] },
+      { before: 3, size: 's', side: 'left', photo: 1 },
+    ],
+  };
+
+  // A flat photo list; grouped subsidiaries keep each group's full gallery.
+  function subPhotos(data) {
+    if (data.featuredGroups) {
+      return data.featuredGroups.flatMap(group => {
+        const gallery = group.gallery || group.items.filter(f => f.img).map(f => f.img);
+        return group.items.map(f => ({ ...f, gallery }));
+      });
+    }
+    const gallery = (data.featured || []).filter(f => f.img).map(f => f.img);
+    return (data.featured || []).map(f => ({ ...f, gallery }));
+  }
+
+  function subPhotoFigure(photo, className) {
+    const figure = document.createElement('figure');
+    figure.className = className;
+    // A real <button> so the gallery is keyboard-operable; the visible caption
+    // names the photo.
+    figure.innerHTML = `<button type="button" class="sub-photo-open" aria-label="${photo.name}"><img src="${photo.img}" alt="" loading="lazy"></button>
+      <figcaption class="sub-photo-caption">${photo.name}</figcaption>`;
+    figure.querySelector('button').addEventListener('click', () => {
+      openGallery(photo.gallery, Math.max(0, photo.gallery.indexOf(photo.img)));
+    });
+    return figure;
+  }
+
+  function placeSubPhotos(key, data) {
+    const photos = subPhotos(data);
+    const columns = subDesc.querySelectorAll('.sub-desc-col');
+    // Resolve every anchor first: inserted photos must not shift the counts.
+    const placements = (SUB_PHOTO_LAYOUT[key] || []).map(place => {
+      const parent = place.column === undefined ? subDesc : columns[place.column];
+      return { ...place, parent, anchor: parent ? parent.children[place.before] : null };
+    });
+    placements.forEach(({ parent, anchor, size, side, photo, duo }) => {
+      if (!parent) return;
+      let node;
+      if (duo) {
+        node = document.createElement('div');
+        node.className = 'sub-photo-duo';
+        duo.forEach(i => { if (photos[i] && photos[i].img) node.appendChild(subPhotoFigure(photos[i], 'sub-photo')); });
+      } else {
+        if (!photos[photo] || !photos[photo].img) return;
+        const sideClass = side ? ` sub-photo--${side}` : '';
+        node = subPhotoFigure(photos[photo], `sub-photo sub-photo--${size}${sideClass}`);
+      }
+      parent.insertBefore(node, anchor || null);
+    });
+  }
+
   // The logo button that opened the current detail view; focus returns to it
   // when the grid comes back (the button is display:none while the detail is
   // open, so focus would otherwise be lost).
@@ -34,80 +107,7 @@ if (subsGrid && subDetail) {
     // Decorative here: the adjacent <h1> already carries the name.
     subLogo.innerHTML = `<img src="${data.logo}" alt="">`;
 
-    // Populate featured grid
-    const subFeatured = document.getElementById('subFeatured');
-    if (subFeatured) {
-      // Cards with an image open the lightbox, so they are real <button>s
-      // (keyboard-operable); cards without an image stay inert <div>s.
-      // alt="": the visible name already names the button.
-      const renderCard = (f) => {
-        const hasImg = f.img && f.img !== '';
-        const imgTag = hasImg
-          ? `<img class="sub-featured-img" src="${f.img}" alt="" loading="lazy">`
-          : `<div class="sub-featured-img sub-featured-img--empty"></div>`;
-        const tag = hasImg ? 'button' : 'div';
-        const attrs = hasImg ? ` type="button" data-lightbox="${f.img}"` : '';
-        return `<${tag} class="sub-featured-card"${attrs}>
-          ${imgTag}
-          <div class="sub-featured-info">
-            <span class="sub-featured-name">${f.name}</span>
-          </div>
-        </${tag}>`;
-      };
-
-      if (data.featuredGroups && data.featuredGroups.length) {
-        subFeatured.innerHTML = data.featuredGroups.map((group, i) => {
-          const divider = i > 0 ? '<div class="sub-featured-divider"></div>' : '';
-          return `${divider}<div class="sub-featured-group">
-            <div class="sub-featured-group-header">
-              <h3 class="sub-featured-group-title">${group.title}</h3>
-              <span class="sub-featured-group-subtitle">${group.subtitle}</span>
-            </div>
-            <div class="sub-featured-group-cards">
-              ${group.items.map(renderCard).join('')}
-            </div>
-          </div>`;
-        }).join('');
-        subFeatured.classList.add('sub-featured-grid--grouped');
-        subFeatured.classList.remove('sub-featured-grid');
-      } else if (data.featured && data.featured.length) {
-        subFeatured.innerHTML = data.featured.map(renderCard).join('');
-        subFeatured.classList.add('sub-featured-grid');
-        subFeatured.classList.remove('sub-featured-grid--grouped');
-      } else {
-        subFeatured.innerHTML = '';
-        subFeatured.classList.remove('sub-featured-grid', 'sub-featured-grid--grouped');
-      }
-
-      // Attach lightbox to grouped cards (with gallery)
-      if (data.featuredGroups) {
-        data.featuredGroups.forEach((group, gi) => {
-          const gallery = group.gallery || group.items.filter(f => f.img).map(f => f.img);
-          const groupEl = subFeatured.querySelectorAll('.sub-featured-group')[gi];
-          if (groupEl) {
-            groupEl.querySelectorAll('[data-lightbox]').forEach(card => {
-              card.addEventListener('click', () => {
-                const src = card.getAttribute('data-lightbox');
-                const startIdx = gallery.indexOf(src);
-                openGallery(gallery, startIdx >= 0 ? startIdx : 0);
-              });
-            });
-          }
-        });
-      }
-
-      // Attach lightbox to simple featured cards
-      if (data.featured) {
-        const allImgs = data.featured.filter(f => f.img).map(f => f.img);
-        subFeatured.querySelectorAll('[data-lightbox]').forEach(card => {
-          card.addEventListener('click', () => {
-            const src = card.getAttribute('data-lightbox');
-            const startIdx = allImgs.indexOf(src);
-            openGallery(allImgs, startIdx >= 0 ? startIdx : 0);
-          });
-        });
-      }
-    }
+    placeSubPhotos(key, data);
 
     // Transition: hide grid, show detail
     subsGrid.classList.add('is-hidden');

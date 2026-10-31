@@ -346,12 +346,6 @@
   background-color: var(--gray-02);
   background-size: cover;
   background-position: center;
-  filter: grayscale(100%);
-  transition: filter 0.3s var(--ease-out);
-}
-
-.pdet-related-card:hover .pdet-related-card-img {
-  filter: grayscale(0%);
 }
 
 .pdet-related-card-body {
@@ -371,7 +365,7 @@
 }
 
 .pdet-related-card:hover .pdet-related-card-name {
-  color: var(--accent);
+  color: var(--white);
 }
 
 .pdet-related-card-meta {
