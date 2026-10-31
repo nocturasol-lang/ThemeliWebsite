@@ -30,7 +30,7 @@ if ($method === 'POST' && !isset($_GET['action'])) {
     if (!in_array($type, ['project','partnership','press','career','other'], true)) $type = 'other';
 
     if ($name === '')    json_err('Name is required', 422);
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_err('Valid email is required', 422);
+    if (!is_safe_email($email)) json_err('Valid email is required', 422);
     if (strlen($message) < 10) json_err('Message must be at least 10 characters', 422);
     if (strlen($name) > 200 || strlen($email) > 200 || strlen($phone) > 50 || strlen($subject) > 200 || strlen($message) > 5000) {
         json_err('Field too long', 422);

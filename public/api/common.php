@@ -261,8 +261,15 @@ const MAIL_FROM_ADDRESS  = 'noreply@themeli.gr';
 const INQUIRY_NOTIFY_MAX = 20;
 const INQUIRY_ADMIN_URL  = 'https://themeli.gr/manage-7fk3/inquiries.html';
 
+// FILTER_VALIDATE_EMAIL alone is not enough for mail headers: it accepts quoted
+// local parts holding a backslash-escaped newline, which would inject headers.
+function is_safe_email(string $email): bool {
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false
+        && !preg_match('/[\x00-\x20\x7F"\\\\]/', $email);
+}
+
 // Returns whether the mail server accepted the message, not whether it arrived.
-// $replyTo must already be validated; everything else is safe for visitor text.
+// Subject and body are safe for visitor text; an unsafe $replyTo is left out.
 function send_utf8_mail(string $to, string $subject, string $body, string $replyTo = ''): bool {
     $subject = trim(preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $subject) ?? '');
     $encoded = function_exists('mb_encode_mimeheader')
@@ -276,7 +283,7 @@ function send_utf8_mail(string $to, string $subject, string $body, string $reply
         'Content-Type: text/plain; charset=UTF-8',
         'Content-Transfer-Encoding: base64',
     ];
-    if ($replyTo !== '' && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+    if (is_safe_email($replyTo)) {
         $headers[] = 'Reply-To: ' . $replyTo;
     }
     $ok = @mail($to, $encoded, chunk_split(base64_encode($body)), implode("\r\n", $headers), '-f' . MAIL_FROM_ADDRESS);
