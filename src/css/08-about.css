@@ -251,6 +251,7 @@
 }
 
 .equip-num-lg {
+  color: var(--accent);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(28px, 2.5vw, 36px);
@@ -287,6 +288,7 @@
 }
 
 .equip-num {
+  color: var(--accent);
   font-weight: 600;
   font-size: 16px;
 }
@@ -309,6 +311,7 @@
 }
 
 .equip-sub-num {
+  color: var(--accent);
   min-width: 20px;
   text-align: left;
   font-weight: 400;
