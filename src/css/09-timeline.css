@@ -91,7 +91,7 @@
      on the page's own edges. */
   position: sticky;
   top: var(--menu-height);
-  z-index: 15;
+  z-index: 9; /* under the grain overlay (10), or the bar reads as a different grey */
   margin: 0 calc(-1 * var(--pad-x)) 100px;
   padding: 20px var(--pad-x);
   background: var(--gray-01);
