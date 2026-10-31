@@ -27,3 +27,7 @@ _*
 !_archive/
 .mcp.json
 prototypes/
+
+# Bulky regenerable perf traces and client deliverables
+audit/**/traces/
+presentations/
