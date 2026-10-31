@@ -29,7 +29,7 @@ const NAV_ITEMS = {
     { file: 'timeline.html', label: 'Χρονολόγιο' },
     { file: 'subsidiaries.html', label: 'Θυγατρικές' },
     { file: 'projects.html', label: 'Έργα' },
-    { file: 'about.html', label: 'Σχετικά' },
+    { file: 'about.html', label: 'Η Εταιρεία' },
     { file: 'contact.html', label: 'Επικοινωνία' },
   ],
 };
