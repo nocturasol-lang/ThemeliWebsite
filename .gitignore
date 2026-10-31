@@ -31,3 +31,6 @@ prototypes/
 # Bulky regenerable perf traces and client deliverables
 audit/**/traces/
 presentations/
+
+# Client source archive (PDFs live in public/assets/policies)
+/ΠΟΛΙΤΙΚΕΣ*/

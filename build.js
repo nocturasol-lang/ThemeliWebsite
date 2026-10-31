@@ -37,7 +37,7 @@ const NAV_ITEMS = {
 const LANGUAGES = ['en', 'el'];
 const PAGES = [
   'index.html', 'timeline.html', 'subsidiaries.html',
-  'projects.html', 'project.html', 'about.html', 'contact.html',
+  'projects.html', 'project.html', 'about.html', 'contact.html', 'policies.html',
   '404.html',
 ];
 
