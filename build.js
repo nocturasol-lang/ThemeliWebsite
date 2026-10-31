@@ -37,7 +37,7 @@ const NAV_ITEMS = {
 const LANGUAGES = ['en', 'el'];
 const PAGES = [
   'index.html', 'timeline.html', 'subsidiaries.html',
-  'projects.html', 'project.html', 'about.html', 'contact.html', 'policies.html',
+  'projects.html', 'project.html', 'about.html', 'contact.html',
   '404.html',
 ];
 
@@ -89,6 +89,25 @@ function buildNav(lang, activeFile) {
     return `      <li><a href="${cleanHref(item.file)}"${cls}>${item.label}</a></li>`;
   }).join('\n');
   return `  <nav class="nav-overlay" id="navOverlay">\n    <ul>\n${lis}\n    </ul>\n  </nav>`;
+}
+
+/* ── Company policy PDFs, listed in the footer bottom row ─────── */
+const POLICIES_LABEL = { en: 'Company Policies (in Greek)', el: 'Πολιτικές Εταιρείας' };
+const POLICIES = [
+  ['quality-environment-ohs-iso-9001-14001', 'Quality, Environment and Health &amp; Safety', 'Ποιότητα, Περιβάλλον και ΥΑΕ'],
+  ['occupational-health-safety-iso-45001', 'Occupational Health &amp; Safety', 'Υγεία και Ασφάλεια στην Εργασία'],
+  ['energy-management-iso-50001', 'Energy Management', 'Διαχείριση Ενέργειας'],
+  ['business-continuity-iso-22301', 'Business Continuity', 'Επιχειρησιακή Συνέχεια'],
+  ['road-safety-iso-39001', 'Road Safety', 'Οδική Ασφάλεια'],
+  ['corporate-social-responsibility-iso-26000', 'Corporate Social Responsibility', 'Εταιρική Κοινωνική Ευθύνη'],
+  ['anti-bribery', 'Anti-Bribery', 'Κατά της Δωροδοκίας'],
+  ['violence-harassment-2024', 'Violence and Harassment at Work', 'Κατά της Βίας και Παρενόχλησης'],
+];
+function buildFooterPolicies(lang) {
+  const links = POLICIES.map(([file, en, el]) =>
+    `<a href="../assets/policies/${file}.pdf" target="_blank" rel="noopener" hreflang="el">${lang === 'el' ? el : en}</a>`
+  ).join('');
+  return `<nav class="footer-policies" aria-label="${POLICIES_LABEL[lang]}"><span>${POLICIES_LABEL[lang]}</span>${links}</nav>`;
 }
 
 function buildMainAttrs(meta) {
@@ -278,6 +297,7 @@ function build() {
         .replace('{{footerCopyNumber}}', s.footerCopyNumber)
         .replace('{{footerSocialsLabel}}', s.footerSocialsLabel)
         .replace('{{footerCopyright}}', s.footerCopyright.replace('{{year}}', BUILD_YEAR))
+        .replace('{{footerPolicies}}', buildFooterPolicies(lang))
         .replace(/\{\{title\}\}/g, meta.title || '')
         .replace(/\{\{description\}\}/g, meta.description || '')
         .replace(/\{\{pageName\}\}/g, pageName === 'index.html' ? '' : pageName.replace(/\.html$/, ''))
