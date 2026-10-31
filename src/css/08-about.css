@@ -108,7 +108,7 @@
 
 .about-inner {
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 0; /* left-aligned with the Equipment section (was centred, which pushed the text column right on wide screens) */
 }
 
 .about-inner > p,
@@ -206,7 +206,7 @@
   font-size: clamp(36px, 4vw, 52px);
   letter-spacing: -1px;
   margin-bottom: 36px;
-  padding: 40px 24px 0;
+  padding: 40px 0 0; /* same left edge as the History title */
   color: var(--white);
 }
 
