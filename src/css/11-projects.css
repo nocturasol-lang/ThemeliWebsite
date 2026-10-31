@@ -445,7 +445,7 @@
 }
 
 .proj-card:hover .proj-card-img {
-  filter: grayscale(40%);
+  filter: grayscale(0%);
 }
 
 .proj-card-info > :first-child {

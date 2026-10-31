@@ -65,7 +65,7 @@
 }
 
 .pdet-hero-img.has-image {
-  filter: grayscale(40%);
+  filter: grayscale(0%);
 }
 
 .pdet-hero-overlay {
@@ -247,7 +247,7 @@
   aspect-ratio: 3 / 2;
   object-fit: cover;
   cursor: pointer;
-  filter: grayscale(30%);
+  filter: grayscale(0%);
   transition: filter 0.3s var(--ease-out), transform 0.3s var(--ease-out);
 }
 
@@ -351,7 +351,7 @@
 }
 
 .pdet-related-card:hover .pdet-related-card-img {
-  filter: grayscale(40%);
+  filter: grayscale(0%);
 }
 
 .pdet-related-card-body {

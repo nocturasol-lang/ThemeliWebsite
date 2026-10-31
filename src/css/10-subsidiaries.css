@@ -344,7 +344,7 @@ button.sub-featured-card {
 }
 
 .sub-featured-card:hover .sub-featured-img {
-  filter: grayscale(40%);
+  filter: grayscale(0%);
 }
 
 .sub-featured-info {
