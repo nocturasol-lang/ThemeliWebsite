@@ -226,6 +226,22 @@
   display: none;
 }
 
+/* Each gallery image sits in a <button> (keyboard-operable lightbox trigger);
+   the button is reset to a plain block so the grid cell is unchanged. */
+.pdet-gallery-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .pdet-gallery-img {
   width: 100%;
   aspect-ratio: 3 / 2;

@@ -8,6 +8,10 @@ if (hamburger && navOverlay) {
   const mainContent = document.querySelector('main');
   const footer = document.querySelector('footer');
 
+  // The closed overlay is only clipped away (clip-path), so without `inert`
+  // its links would stay in the tab order and be exposed to assistive tech.
+  navOverlay.inert = true;
+
   function openMenu() {
     hamburger.classList.add('is-active');
     navOverlay.classList.add('is-open');
@@ -16,6 +20,9 @@ if (hamburger && navOverlay) {
     // Focus trap: make main/footer inert
     if (mainContent) mainContent.setAttribute('inert', '');
     if (footer) footer.setAttribute('inert', '');
+    navOverlay.inert = false;
+    const firstLink = navOverlay.querySelector('a');
+    if (firstLink) firstLink.focus({ preventScroll: true });
   }
 
   function closeMenu() {
@@ -26,6 +33,7 @@ if (hamburger && navOverlay) {
     // Remove focus trap
     if (mainContent) mainContent.removeAttribute('inert');
     if (footer) footer.removeAttribute('inert');
+    navOverlay.inert = true;
     hamburger.focus();
   }
 

@@ -117,7 +117,10 @@
 .proj-filters {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.5s var(--ease-out), opacity 0.4s;
+  /* visibility keeps the collapsed panel's buttons out of the tab order; the
+     0.5s delay lets max-height/opacity finish closing first (same look). */
+  visibility: hidden;
+  transition: max-height 0.5s var(--ease-out), opacity 0.4s, visibility 0s linear 0.5s;
   position: relative;
   z-index: 40;
   opacity: 0;
@@ -126,6 +129,8 @@
 .proj-filters.is-open {
   max-height: 600px;
   opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 .proj-filters-inner {

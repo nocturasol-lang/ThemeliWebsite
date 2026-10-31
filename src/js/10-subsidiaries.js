@@ -16,31 +16,43 @@ if (subsGrid && subDetail) {
   // Gallery viewer is provided by src/js/09a-photoswipe.js as window.openGallery.
   const openGallery = (images, startIndex) => window.openGallery(images, startIndex || 0);
 
+  // The logo button that opened the current detail view; focus returns to it
+  // when the grid comes back (the button is display:none while the detail is
+  // open, so focus would otherwise be lost).
+  let lastLogoTrigger = null;
+
   // Show subsidiary detail view
-  function showSubDetail(key, pushHistory) {
+  function showSubDetail(key, pushHistory, moveFocus) {
     const data = subsData[key];
     if (!data) return;
+    lastLogoTrigger = subsGrid.querySelector(`[data-sub="${key}"]`);
 
     subName.textContent = data.name;
     subSubtitle.textContent = data.subtitle;
     subDesc.innerHTML = data.desc;
     subLogo.setAttribute('data-sub', key);
-    subLogo.innerHTML = `<img src="${data.logo}" alt="${data.name}">`;
+    // Decorative here: the adjacent <h1> already carries the name.
+    subLogo.innerHTML = `<img src="${data.logo}" alt="">`;
 
     // Populate featured grid
     const subFeatured = document.getElementById('subFeatured');
     if (subFeatured) {
+      // Cards with an image open the lightbox, so they are real <button>s
+      // (keyboard-operable); cards without an image stay inert <div>s.
+      // alt="": the visible name already names the button.
       const renderCard = (f) => {
         const hasImg = f.img && f.img !== '';
         const imgTag = hasImg
-          ? `<img class="sub-featured-img" src="${f.img}" alt="${f.name}" loading="lazy">`
+          ? `<img class="sub-featured-img" src="${f.img}" alt="" loading="lazy">`
           : `<div class="sub-featured-img sub-featured-img--empty"></div>`;
-        return `<div class="sub-featured-card"${hasImg ? ` data-lightbox="${f.img}"` : ''}>
+        const tag = hasImg ? 'button' : 'div';
+        const attrs = hasImg ? ` type="button" data-lightbox="${f.img}"` : '';
+        return `<${tag} class="sub-featured-card"${attrs}>
           ${imgTag}
           <div class="sub-featured-info">
             <span class="sub-featured-name">${f.name}</span>
           </div>
-        </div>`;
+        </${tag}>`;
       };
 
       if (data.featuredGroups && data.featuredGroups.length) {
@@ -106,7 +118,12 @@ if (subsGrid && subDetail) {
       });
     });
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: themeliScrollBehavior() });
+
+    // Move focus to the detail heading (tabindex="-1") so keyboard and screen
+    // reader users continue from the new content; the page scroll above
+    // handles the viewport, so do not scroll again here.
+    if (moveFocus) subName.focus({ preventScroll: true });
 
     // Update URL hash
     if (pushHistory) {
@@ -120,14 +137,18 @@ if (subsGrid && subDetail) {
     setTimeout(() => {
       subDetail.classList.remove('is-active');
       subsGrid.classList.remove('is-hidden');
+      // Return focus to the logo that opened the detail view
+      if (lastLogoTrigger && subsGrid.contains(lastLogoTrigger)) {
+        lastLogoTrigger.focus({ preventScroll: true });
+      }
     }, 400);
   }
 
   // Click on a subsidiary logo
-  document.querySelectorAll('[data-sub]').forEach(el => {
+  subsGrid.querySelectorAll('[data-sub]').forEach(el => {
     el.addEventListener('click', () => {
       const key = el.getAttribute('data-sub');
-      showSubDetail(key, true);
+      showSubDetail(key, true, true);
     });
   });
 
@@ -142,7 +163,7 @@ if (subsGrid && subDetail) {
   window.addEventListener('popstate', () => {
     const hash = window.location.hash.slice(1);
     if (hash && subsData[hash]) {
-      showSubDetail(hash, false);
+      showSubDetail(hash, false, true);
     } else {
       showSubGrid();
     }
@@ -152,7 +173,7 @@ if (subsGrid && subDetail) {
   if (window.location.hash) {
     const key = window.location.hash.slice(1);
     if (subsData[key]) {
-      showSubDetail(key, false);
+      showSubDetail(key, false, false);
     }
   }
 }

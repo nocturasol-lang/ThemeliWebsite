@@ -31,8 +31,7 @@
 .contact-col--info .info-group { margin-bottom: 44px; }
 .contact-col--info .info-group:last-child { margin-bottom: 0; }
 
-.contact-col--info .info-group h3,
-.contact-socials h3 {
+.info-group-title {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
@@ -48,6 +47,14 @@
   line-height: 1.75;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
+}
+
+/* The phone/email disclosure triggers are <button>s with the footer reset
+   (06-footer.css: block, font/colour inherited); here they were inline links,
+   so keep the box to the text width. */
+.info-group .email-trigger,
+.info-group .phone-trigger {
+  width: fit-content;
 }
 
 .contact-socials { display: flex; flex-direction: column; }

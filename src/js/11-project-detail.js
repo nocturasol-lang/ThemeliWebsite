@@ -92,8 +92,14 @@ if (pdetDetail) {
         img.className = 'pdet-gallery-img';
         img.alt = pName + ' — ' + (i + 1);
         img.loading = 'lazy';
-        img.addEventListener('click', () => openGalleryLightbox(galleryImgs, i));
-        galleryEl.appendChild(img);
+        // Real <button> so the lightbox is keyboard-operable (the image alone
+        // cannot take focus); PhotoSwipe returns focus to it on close.
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pdet-gallery-btn';
+        btn.appendChild(img);
+        btn.addEventListener('click', () => openGalleryLightbox(galleryImgs, i));
+        galleryEl.appendChild(btn);
       });
     }
 

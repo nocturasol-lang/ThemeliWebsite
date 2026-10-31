@@ -85,11 +85,16 @@
   align-items: center;
   justify-content: center;
   clip-path: circle(0% at calc(100% - 78px) 50px);
-  transition: clip-path 0.45s var(--ease-in-out);
+  /* Closed: also visibility-hidden (keeps the 6 links out of the tab order and
+     away from AT without JS); the 0.45s delay lets the clip-path close first. */
+  visibility: hidden;
+  transition: clip-path 0.45s var(--ease-in-out), visibility 0s linear 0.45s;
 }
 
 .nav-overlay.is-open {
   clip-path: circle(150% at calc(100% - 78px) 50px);
+  visibility: visible;
+  transition-delay: 0s;
 }
 
 .nav-overlay ul {

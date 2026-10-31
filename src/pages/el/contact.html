@@ -13,15 +13,15 @@ scripts:
       <div class="contact-content">
         <aside class="contact-col contact-col--info">
           <div class="info-group reveal">
-            <h3>Διεύθυνση</h3>
+            <h2 class="info-group-title">Διεύθυνση</h2>
             <p><a href="https://www.google.com/maps?q=38.03279391343416,23.774540665648086" target="_blank" rel="noopener">Καποδιστρίου 104,<br>142 35 Νέα Ιωνία, Αθήνα</a></p>
           </div>
 
           <div class="info-group reveal reveal-delay-1">
-            <h3>Τηλέφωνο</h3>
+            <h2 class="info-group-title">Τηλέφωνο</h2>
             <div class="phone-wrapper">
-              <a href="#" class="phone-trigger">T: +30 2102717720</a>
-              <div class="email-popup">
+              <button type="button" class="phone-trigger" aria-expanded="false" aria-controls="contactPhonePopup">T: +30 2102717720</button>
+              <div class="email-popup" id="contactPhonePopup">
                 <a href="tel:+302102717720" class="email-popup-option">Κλήση</a>
                 <button class="email-popup-option phone-copy" data-phone="+30 2102717720">Αντιγραφή Αριθμού</button>
               </div>
@@ -30,10 +30,10 @@ scripts:
           </div>
 
           <div class="info-group reveal reveal-delay-2">
-            <h3>Email</h3>
+            <h2 class="info-group-title">Email</h2>
             <div class="email-wrapper">
-              <a href="#" class="email-trigger" data-email="sendinfo@themeli.gr">sendinfo@themeli.gr</a>
-              <div class="email-popup">
+              <button type="button" class="email-trigger" data-email="sendinfo@themeli.gr" aria-expanded="false" aria-controls="contactEmailPopup">sendinfo@themeli.gr</button>
+              <div class="email-popup" id="contactEmailPopup">
                 <a href="mailto:sendinfo@themeli.gr" class="email-popup-option">Αποστολή Email</a>
                 <button class="email-popup-option email-copy" data-email="sendinfo@themeli.gr">Αντιγραφή Διεύθυνσης</button>
               </div>
@@ -49,7 +49,7 @@ scripts:
             <form id="contactForm" novalidate>
               <fieldset class="cf-categories">
                 <legend class="cf-label">Τύπος αιτήματος</legend>
-                <div class="cf-pills" role="radiogroup">
+                <div class="cf-pills">
                   <label class="cf-pill"><input type="radio" name="inquiry_type" value="project" checked><span>Νέο Έργο</span></label>
                   <label class="cf-pill"><input type="radio" name="inquiry_type" value="partnership"><span>Συνεργασία</span></label>
                   <label class="cf-pill"><input type="radio" name="inquiry_type" value="career"><span>Καριέρα</span></label>
@@ -94,13 +94,13 @@ scripts:
                 <span class="cf-dot" aria-hidden="true">·</span>
                 <span>Τα στοιχεία σας παραμένουν εμπιστευτικά</span>
               </p>
-              <div class="cf-error" id="cfError" role="alert" aria-live="polite"></div>
+              <div class="cf-error" id="cfError" role="alert"></div>
             </form>
           </div>
 
           <div class="cf-view cf-view--success hidden" id="cfSuccessView" aria-live="polite">
             <div class="cf-success-mark" aria-hidden="true"></div>
-            <h2 class="cf-success-title">Ευχαριστούμε</h2>
+            <h2 class="cf-success-title" tabindex="-1">Ευχαριστούμε</h2>
             <p class="cf-success-lead">Το μήνυμά σας καταχωρήθηκε επιτυχώς.<br>Θα επικοινωνήσουμε μαζί σας εντός 48 ωρών.</p>
             <p class="cf-success-hint">Αν είναι επείγον, καλέστε μας στο <a href="tel:+302102717720">+30 210 271 7720</a>.</p>
             <button type="button" class="cf-new-msg" id="cfNewMsg">Νέο μήνυμα</button>

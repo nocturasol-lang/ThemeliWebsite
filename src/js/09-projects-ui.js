@@ -10,8 +10,9 @@ if (projViewToggles && projGridView) {
   viewBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const target = btn.getAttribute('data-view');
-      viewBtns.forEach(b => b.classList.remove('is-active'));
+      viewBtns.forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
       btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
       Object.entries(views).forEach(([key, el]) => {
         if (el) el.style.display = key === target ? '' : 'none';
       });
@@ -27,7 +28,11 @@ if (projViewToggles && projGridView) {
       if (filterToggle) filterToggle.style.display = isMap ? 'none' : '';
       if (projCount) projCount.style.display = isMap ? 'none' : '';
       if (chips) chips.style.display = isMap ? 'none' : '';
-      if (filters && isMap) { filters.classList.remove('is-open'); filters.style.display = 'none'; }
+      if (filters && isMap) {
+        filters.classList.remove('is-open');
+        filters.style.display = 'none';
+        if (filterToggle) filterToggle.setAttribute('aria-expanded', 'false');
+      }
       if (filters && !isMap) filters.style.display = '';
       if (pagination) pagination.style.display = isMap ? 'none' : '';
     });
@@ -84,6 +89,11 @@ function renderPagination(totalPages) {
     b.addEventListener('click', () => {
       currentPage = page;
       applyPagination();
+      // renderPagination() replaced every button, including the one that had
+      // focus; put focus on the new button for the current page so keyboard
+      // users do not fall back to <body>.
+      const current = projPagination.querySelector('[aria-current="page"]');
+      if (current) current.focus({ preventScroll: true });
       // Scroll the new page's first card into view, leaving the toolbar
       // (filter + view toggles) visible above. Must also clear the fixed
       // site header (`--menu-height`, default 100px) so content isn't
@@ -97,7 +107,7 @@ function renderPagination(totalPages) {
           .getPropertyValue('--menu-height')) || 100;
         const gridTop = activeView.getBoundingClientRect().top + window.scrollY;
         const targetY = Math.max(0, gridTop - menuH - toolbarH - 24);
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
+        window.scrollTo({ top: targetY, behavior: themeliScrollBehavior() });
       }
     });
     return b;
@@ -167,9 +177,16 @@ if (projFilterToggle && projFilters) {
   // Active filters: { status: Set, typology: Set, region: Set }
   const activeFilters = { status: new Set(), typology: new Set(), region: new Set() };
 
+  // Open/close the filter panel; aria-expanded on the toggle follows the state
+  function setFilterPanel(open) {
+    projFilters.classList.toggle('is-open', open);
+    projFilterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  projFilterToggle.setAttribute('aria-expanded', projFilters.classList.contains('is-open') ? 'true' : 'false');
+
   // Toggle filter panel (reset zoom to avoid overlap)
   projFilterToggle.addEventListener('click', () => {
-    projFilters.classList.toggle('is-open');
+    setFilterPanel(!projFilters.classList.contains('is-open'));
     projFilterToggle.classList.toggle('is-active');
     if (window._resetMapZoom) window._resetMapZoom();
   });
@@ -177,8 +194,17 @@ if (projFilterToggle && projFilters) {
   // Close filter panel when clicking outside
   document.addEventListener('click', (e) => {
     if (!projFilters.contains(e.target) && !projFilterToggle.contains(e.target) && projFilters.classList.contains('is-open')) {
-      projFilters.classList.remove('is-open');
+      setFilterPanel(false);
       projFilterToggle.classList.remove('is-active');
+    }
+  });
+
+  // Escape closes the panel and returns focus to the toggle
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && projFilters.classList.contains('is-open')) {
+      setFilterPanel(false);
+      projFilterToggle.classList.remove('is-active');
+      projFilterToggle.focus();
     }
   });
 
@@ -196,6 +222,9 @@ if (projFilterToggle && projFilters) {
     activeFilters.status.clear();
     activeFilters.typology.clear();
     activeFilters.region.clear();
+    projFilters.querySelectorAll('.proj-filter-btn').forEach(btn => {
+      btn.setAttribute('aria-pressed', btn.classList.contains('is-active') ? 'true' : 'false');
+    });
     projFilters.querySelectorAll('.proj-filter-btn.is-active').forEach(btn => {
       const cat = btn.getAttribute('data-category');
       const val = btn.getAttribute('data-filter');
@@ -256,11 +285,17 @@ if (projFilterToggle && projFilters) {
         const label = btn ? btn.textContent : val;
         const chip = document.createElement('button');
         chip.className = 'proj-chip';
-        chip.innerHTML = `<span class="proj-chip-x">&times;</span> ${label}`;
+        chip.innerHTML = `<span class="proj-chip-x" aria-hidden="true">&times;</span> ${label}`;
+        chip.setAttribute('aria-label', ((T.removeFilter) || 'Remove filter: {x}').replace('{x}', label.trim()));
         chip.addEventListener('click', () => {
           activeFilters[cat].delete(val);
           if (btn) btn.classList.remove('is-active');
+          // The chips are re-rendered: keep focus on the chip now at this
+          // position, or on the filter toggle when none are left.
+          const index = Array.from(projChips.children).indexOf(chip);
           applyFilters();
+          const next = projChips.children[Math.min(index, projChips.children.length - 1)];
+          (next || projFilterToggle).focus({ preventScroll: true });
         });
         projChips.appendChild(chip);
       });
@@ -269,8 +304,13 @@ if (projFilterToggle && projFilters) {
     // Clear All chip
     const clearBtn = document.createElement('button');
     clearBtn.className = 'proj-chips-clear';
-    clearBtn.textContent = '\u2014 ' + (T.clearAll || 'Clear All');
-    clearBtn.addEventListener('click', clearAllFilters);
+    // Leading em dash is decorative: keep it out of the accessible name.
+    clearBtn.innerHTML = '<span aria-hidden="true">\u2014 </span>';
+    clearBtn.appendChild(document.createTextNode(T.clearAll || 'Clear All'));
+    clearBtn.addEventListener('click', () => {
+      clearAllFilters();
+      projFilterToggle.focus({ preventScroll: true });
+    });
     projChips.appendChild(clearBtn);
   }
 
@@ -318,9 +358,14 @@ if (projListView) {
     // Update button states
     projListView.querySelectorAll('.proj-sort-btn').forEach(b => {
       b.classList.remove('is-sorted', 'is-desc');
+      b.setAttribute('aria-pressed', 'false');
+      b.removeAttribute('aria-label');
     });
     btn.classList.add('is-sorted');
     if (sortDesc) btn.classList.add('is-desc');
+    // The ▲/▼ is a CSS pseudo-element; expose the sorted state and direction.
+    btn.setAttribute('aria-pressed', 'true');
+    btn.setAttribute('aria-label', btn.textContent.trim() + ', ' + (sortDesc ? (T.sortedDesc || 'sorted descending') : (T.sortedAsc || 'sorted ascending')));
 
     // Get all data rows (not the header)
     const rows = Array.from(projListView.querySelectorAll('.proj-row:not(.proj-row-header)'));

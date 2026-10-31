@@ -8,6 +8,8 @@
     "langSwitchLabel": "Ελληνικά",
     "skipLink": "Skip to content",
     "menuToggle": "Toggle menu",
+    "navLabel": "Main menu",
+    "logoAlt": "Themeli",
     "backToTop": "Back to top",
     "footerAddressLabel": "Address",
     "footerAddressBody": "ATHENS<br>104 Kapodistriou str.,<br>142 35 Nea Ionia",
@@ -18,6 +20,7 @@
     "footerCopyNumber": "Copy Number",
     "footerSocialsLabel": "Socials",
     "footerCopyright": "&copy; {{year}} THEMELI S.A. All rights reserved.",
+    "footerPoliciesLabel": "Company Policies",
 
     "ui": {
       "projects": "Projects",
@@ -46,7 +49,10 @@
       "projectsEmpty": "No projects to show right now.",
       "projectNotFound": "Project not found.",
       "prevPage": "Previous page",
-      "nextPage": "Next page"
+      "nextPage": "Next page",
+      "removeFilter": "Remove filter: {x}",
+      "sortedAsc": "sorted ascending",
+      "sortedDesc": "sorted descending"
     },
 
     "typology": {},
@@ -96,6 +102,8 @@
     "langSwitchLabel": "English",
     "skipLink": "Μετάβαση στο περιεχόμενο",
     "menuToggle": "Εναλλαγή μενού",
+    "navLabel": "Κύριο μενού",
+    "logoAlt": "ΘΕΜΕΛΗ",
     "backToTop": "Επιστροφή στην κορυφή",
     "footerAddressLabel": "Διεύθυνση",
     "footerAddressBody": "ΑΘΗΝΑ<br>Καποδιστρίου 104,<br>142 35 Νέα Ιωνία",
@@ -106,6 +114,7 @@
     "footerCopyNumber": "Αντιγραφή Αριθμού",
     "footerSocialsLabel": "Κοινωνικά",
     "footerCopyright": "&copy; {{year}} THEMELI Α.Ε. Με επιφύλαξη παντός δικαιώματος.",
+    "footerPoliciesLabel": "Πολιτικές Εταιρείας",
 
     "ui": {
       "projects": "Έργα",
@@ -134,7 +143,10 @@
       "projectsEmpty": "Δεν υπάρχουν έργα προς εμφάνιση αυτή τη στιγμή.",
       "projectNotFound": "Το έργο δεν βρέθηκε.",
       "prevPage": "Προηγούμενη σελίδα",
-      "nextPage": "Επόμενη σελίδα"
+      "nextPage": "Επόμενη σελίδα",
+      "removeFilter": "Αφαίρεση φίλτρου: {x}",
+      "sortedAsc": "αύξουσα ταξινόμηση",
+      "sortedDesc": "φθίνουσα ταξινόμηση"
     },
 
     "typology": {

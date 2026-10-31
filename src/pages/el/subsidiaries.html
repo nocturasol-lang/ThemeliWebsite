@@ -12,18 +12,18 @@ scripts:
     <div class="subsidiaries-page">
     <!-- Logo Grid (initial state) -->
     <div class="subs-grid" id="subsGrid">
-      <div class="sub-logo reveal" data-sub="themos">
-        <img src="../assets/themos.svg" alt="Themos" width="274" height="275">
+      <button type="button" class="sub-logo reveal" data-sub="themos">
+        <img src="../assets/themos.svg" alt="" width="274" height="275">
         <span class="sub-name">ΘΕΜΟΣ</span>
-      </div>
-      <div class="sub-logo reveal reveal-delay-1" data-sub="thermis">
-        <img src="../assets/thermis.svg" alt="Thermis" width="274" height="274">
+      </button>
+      <button type="button" class="sub-logo reveal reveal-delay-1" data-sub="thermis">
+        <img src="../assets/thermis.svg" alt="" width="274" height="274">
         <span class="sub-name">ΘΕΡΜΙΣ</span>
-      </div>
-      <div class="sub-logo reveal reveal-delay-2" data-sub="tetrapolis">
-        <img src="../assets/tetrapolis.svg" alt="Tetrapolis" width="274" height="274">
+      </button>
+      <button type="button" class="sub-logo reveal reveal-delay-2" data-sub="tetrapolis">
+        <img src="../assets/tetrapolis.svg" alt="" width="274" height="274">
         <span class="sub-name">ΤΕΤΡΑΠΟΛΙΣ</span>
-      </div>
+      </button>
     </div>
 
     <!-- Detail Views (hidden by default) -->
@@ -34,7 +34,7 @@ scripts:
           <div class="sub-detail-header">
             <div class="sub-detail-logo" id="subLogo"></div>
             <div>
-              <h1 class="sub-detail-name" id="subName"></h1>
+              <h1 class="sub-detail-name" id="subName" tabindex="-1"></h1>
               <p class="sub-detail-subtitle" id="subSubtitle"></p>
             </div>
           </div>

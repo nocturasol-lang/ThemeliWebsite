@@ -12,20 +12,20 @@ scripts:
     <!-- Toolbar: filter + view toggles + count -->
     <div class="proj-toolbar reveal">
       <div class="proj-toolbar-left">
-        <button class="proj-filter-toggle" id="projFilterToggle" aria-label="Toggle filters">
+        <button class="proj-filter-toggle" id="projFilterToggle" aria-label="Toggle filters" aria-expanded="false" aria-controls="projFilters">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="1" y1="4" x2="17" y2="4"/><line x1="1" y1="9" x2="17" y2="9"/><line x1="1" y1="14" x2="17" y2="14"/><circle cx="5" cy="4" r="1.5" fill="currentColor"/><circle cx="12" cy="9" r="1.5" fill="currentColor"/><circle cx="8" cy="14" r="1.5" fill="currentColor"/></svg>
           <span>Filters</span>
         </button>
-        <span class="proj-count" id="projCount">26 Projects</span>
+        <span class="proj-count" id="projCount" role="status">26 Projects</span>
       </div>
       <div class="proj-view-toggles" id="projViewToggles">
-        <button class="proj-view-btn is-active" data-view="grid" aria-label="Grid view">
+        <button class="proj-view-btn is-active" data-view="grid" aria-pressed="true" aria-label="Grid view">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="0" width="8" height="8" rx="1"/><rect x="10" y="0" width="8" height="8" rx="1"/><rect x="0" y="10" width="8" height="8" rx="1"/><rect x="10" y="10" width="8" height="8" rx="1"/></svg>
         </button>
-        <button class="proj-view-btn" data-view="list" aria-label="List view">
+        <button class="proj-view-btn" data-view="list" aria-pressed="false" aria-label="List view">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="0" y="1" width="18" height="2" rx="1"/><rect x="0" y="5.5" width="18" height="2" rx="1"/><rect x="0" y="10" width="18" height="2" rx="1"/><rect x="0" y="14.5" width="18" height="2" rx="1"/></svg>
         </button>
-        <button class="proj-view-btn" data-view="map" aria-label="Map view">
+        <button class="proj-view-btn" data-view="map" aria-pressed="false" aria-label="Map view">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 16s-6-5.7-6-9.2A6 6 0 0 1 15 6.8C15 10.3 9 16 9 16z"/><circle cx="9" cy="7" r="2" fill="currentColor"/></svg>
         </button>
       </div>
@@ -40,39 +40,39 @@ scripts:
         <div class="proj-filters-col">
           <span class="proj-filters-label">Status</span>
           <div class="proj-filters-list">
-            <button class="proj-filter-btn" data-category="status" data-filter="Completed">Completed</button>
-            <button class="proj-filter-btn" data-category="status" data-filter="In Progress">In Progress</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="status" data-filter="Completed">Completed</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="status" data-filter="In Progress">In Progress</button>
           </div>
         </div>
         <div class="proj-filters-col">
           <span class="proj-filters-label">Typology</span>
           <div class="proj-filters-list">
-            <button class="proj-filter-btn" data-category="typology" data-filter="Buildings">Buildings</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Utility Networks">Utility Networks</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Industrial &amp; Energy">Industrial &amp; Energy</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Roadworks">Roadworks</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Urban Redevelopment">Urban Redevelopment</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Ports &amp; Marine">Ports &amp; Marine</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Railways">Railways</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Dams">Dams</button>
-            <button class="proj-filter-btn" data-category="typology" data-filter="Tunnels">Tunnels</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Buildings">Buildings</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Utility Networks">Utility Networks</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Industrial &amp; Energy">Industrial &amp; Energy</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Roadworks">Roadworks</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Urban Redevelopment">Urban Redevelopment</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Ports &amp; Marine">Ports &amp; Marine</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Railways">Railways</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Dams">Dams</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="typology" data-filter="Tunnels">Tunnels</button>
           </div>
         </div>
         <div class="proj-filters-col">
           <span class="proj-filters-label">Location</span>
           <div class="proj-filters-list">
-            <button class="proj-filter-btn" data-category="region" data-filter="Attica">Attica</button>
-            <button class="proj-filter-btn" data-category="region" data-filter="Peloponnese">Peloponnese</button>
-            <button class="proj-filter-btn" data-category="region" data-filter="Central Greece">Central Greece</button>
-            <button class="proj-filter-btn" data-category="region" data-filter="Thessaly">Thessaly</button>
-            <button class="proj-filter-btn" data-category="region" data-filter="Northern Greece">Northern Greece</button>
-            <button class="proj-filter-btn" data-category="region" data-filter="Crete">Crete</button>
-            <button class="proj-filter-btn" data-category="region" data-filter="Islands">Islands</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Attica">Attica</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Peloponnese">Peloponnese</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Central Greece">Central Greece</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Thessaly">Thessaly</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Northern Greece">Northern Greece</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Crete">Crete</button>
+            <button class="proj-filter-btn" aria-pressed="false" data-category="region" data-filter="Islands">Islands</button>
           </div>
         </div>
         <div class="proj-filters-actions">
           <button class="proj-apply-btn" id="projApply">Apply</button>
-          <button class="proj-clear-btn" id="projClearAll">&mdash; Clear all</button>
+          <button class="proj-clear-btn" id="projClearAll"><span aria-hidden="true">&mdash;</span> Clear all</button>
         </div>
       </div>
     </div>
@@ -83,10 +83,10 @@ scripts:
     <!-- ===== LIST VIEW ===== -->
     <div class="proj-table" id="projListView" style="display:none">
       <div class="proj-row proj-row-header">
-        <button class="proj-col proj-col-name proj-sort-btn" data-sort="name">Project</button>
-        <button class="proj-col proj-col-type proj-sort-btn" data-sort="typology">Typology</button>
-        <button class="proj-col proj-col-loc proj-sort-btn" data-sort="location">Location</button>
-        <button class="proj-col proj-col-year proj-sort-btn" data-sort="year">Year</button>
+        <button class="proj-col proj-col-name proj-sort-btn" aria-pressed="false" data-sort="name">Project</button>
+        <button class="proj-col proj-col-type proj-sort-btn" aria-pressed="false" data-sort="typology">Typology</button>
+        <button class="proj-col proj-col-loc proj-sort-btn" aria-pressed="false" data-sort="location">Location</button>
+        <button class="proj-col proj-col-year proj-sort-btn" aria-pressed="false" data-sort="year">Year</button>
       </div>
     </div>
 

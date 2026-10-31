@@ -95,7 +95,7 @@
   padding-bottom: 4px;
 }
 
-.footer-col h4 {
+.footer-col-title {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
@@ -106,19 +106,25 @@
 }
 
 .footer-col p,
-.footer-col a {
+.footer-col a,
+.footer-col .email-trigger,
+.footer-col .phone-trigger {
   font-size: 14px;
   font-weight: 400;
   line-height: 1.8;
   color: var(--white);
 }
 
-.footer-col a {
+.footer-col a,
+.footer-col .email-trigger,
+.footer-col .phone-trigger {
   display: block;
   transition: opacity 0.2s;
 }
 
-.footer-col a:hover {
+.footer-col a:hover,
+.footer-col .email-trigger:hover,
+.footer-col .phone-trigger:hover {
   opacity: 0.6;
 }
 
@@ -129,8 +135,21 @@
   display: block;
 }
 
+/* Disclosure triggers are <button>s (were <a href="#">); reset the UA button
+   box so they render exactly like the former block links. */
 .email-trigger,
 .phone-trigger {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
   cursor: pointer;
 }
 
@@ -207,24 +226,40 @@
   align-items: center;
 }
 
-.footer-bottom { flex-wrap: wrap; }
-.footer-policies {
-  flex-basis: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 20px;
-  margin-top: 10px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.4);
-}
-.footer-policies a {
-  color: rgba(255, 255, 255, 0.55);
-  transition: color 0.3s;
-}
-.footer-policies a:hover { color: var(--accent); }
 .footer-bottom p {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.04em;
+}
+
+/* Same small type as the copyright, as a plain text link */
+.footer-policies-link {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+.footer-policies-link:hover {
+  color: var(--accent);
+}
+
+/* Footer padding is narrower than the fixed back-to-top button's reach below
+   1024px: keep the row clear of it at the end of the page. */
+@media (max-width: 1024px) {
+  .footer-bottom {
+    padding-right: 64px;
+  }
+}
+
+/* Phones: stacked, left-aligned, still clear of the button */
+@media (max-width: 600px) {
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-right: 56px;
+  }
+
 }

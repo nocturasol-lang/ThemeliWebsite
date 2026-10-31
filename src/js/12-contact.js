@@ -1,67 +1,89 @@
 /* THEMELI — Email & phone popups */
 
-// ========== EMAIL POPUP ==========
-document.querySelectorAll('.email-trigger').forEach(trigger => {
+// ========== EMAIL / PHONE POPUPS (disclosure buttons) ==========
+// Trigger <button aria-expanded aria-controls> + .email-popup inside a
+// .email-wrapper/.phone-wrapper. One popup open at a time; Escape closes.
+const POPUP_WRAPPER_SEL = '.email-wrapper, .phone-wrapper';
+const POPUP_TRIGGER_SEL = '.email-trigger, .phone-trigger';
+
+function setPopupOpen(wrapper, open) {
+  wrapper.classList.toggle('active', open);
+  const trigger = wrapper.querySelector(POPUP_TRIGGER_SEL);
+  if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function closeAllPopups(except) {
+  document.querySelectorAll('.email-wrapper.active, .phone-wrapper.active').forEach(w => {
+    if (w !== except) setPopupOpen(w, false);
+  });
+}
+
+document.querySelectorAll(POPUP_TRIGGER_SEL).forEach(trigger => {
   trigger.addEventListener('click', (e) => {
     e.preventDefault();
-    const wrapper = trigger.closest('.email-wrapper');
-    // Close any other open popups
-    document.querySelectorAll('.email-wrapper.active, .phone-wrapper.active').forEach(w => {
-      if (w !== wrapper) w.classList.remove('active');
-    });
-    wrapper.classList.toggle('active');
+    const wrapper = trigger.closest(POPUP_WRAPPER_SEL);
+    if (!wrapper) return;
+    closeAllPopups(wrapper);
+    setPopupOpen(wrapper, !wrapper.classList.contains('active'));
   });
 });
 
-document.querySelectorAll('.email-copy').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const email = btn.dataset.email;
-    navigator.clipboard.writeText(email).then(() => {
-      btn.textContent = T.copied;
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = T.copyAddress;
-        btn.classList.remove('copied');
-        btn.closest('.email-wrapper').classList.remove('active');
-      }, 1500);
-    });
-  });
-});
+// Visually hidden live region so "Copied!" is announced (the button text
+// change alone is not reliably read out).
+let copyStatusEl = null;
+function announceCopy(text) {
+  if (!copyStatusEl) {
+    copyStatusEl = document.createElement('div');
+    copyStatusEl.setAttribute('role', 'status');
+    copyStatusEl.setAttribute('aria-live', 'polite');
+    copyStatusEl.style.cssText = 'position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0';
+    document.body.appendChild(copyStatusEl);
+  }
+  copyStatusEl.textContent = '';
+  // Set on the next tick so repeated copies are announced again
+  setTimeout(() => { copyStatusEl.textContent = text; }, 50);
+}
 
-// ========== PHONE POPUP ==========
-document.querySelectorAll('.phone-trigger').forEach(trigger => {
-  trigger.addEventListener('click', (e) => {
-    e.preventDefault();
-    const wrapper = trigger.closest('.phone-wrapper');
-    document.querySelectorAll('.phone-wrapper.active, .email-wrapper.active').forEach(w => {
-      if (w !== wrapper) w.classList.remove('active');
-    });
-    wrapper.classList.toggle('active');
-  });
-});
-
-document.querySelectorAll('.phone-copy').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const phone = btn.dataset.phone;
-    navigator.clipboard.writeText(phone).then(() => {
-      btn.textContent = T.copied;
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = T.copyNumber;
-        btn.classList.remove('copied');
-        btn.closest('.phone-wrapper').classList.remove('active');
-      }, 1500);
+function bindCopy(selector, dataKey, restoreLabel) {
+  document.querySelectorAll(selector).forEach(btn => {
+    btn.addEventListener('click', () => {
+      const value = btn.dataset[dataKey];
+      navigator.clipboard.writeText(value).then(() => {
+        btn.textContent = T.copied;
+        btn.classList.add('copied');
+        announceCopy(T.copied);
+        setTimeout(() => {
+          btn.textContent = restoreLabel();
+          btn.classList.remove('copied');
+          const wrapper = btn.closest(POPUP_WRAPPER_SEL);
+          if (wrapper) {
+            // The copy button is about to become hidden; do not lose focus with it.
+            const hadFocus = wrapper.contains(document.activeElement);
+            setPopupOpen(wrapper, false);
+            const trigger = wrapper.querySelector(POPUP_TRIGGER_SEL);
+            if (hadFocus && trigger) trigger.focus({ preventScroll: true });
+          }
+        }, 1500);
+      });
     });
   });
-});
+}
+bindCopy('.email-copy', 'email', () => T.copyAddress);
+bindCopy('.phone-copy', 'phone', () => T.copyNumber);
 
 // Close popups when clicking outside
 document.addEventListener('click', (e) => {
-  if (!e.target.closest('.email-wrapper') && !e.target.closest('.phone-wrapper')) {
-    document.querySelectorAll('.email-wrapper.active, .phone-wrapper.active').forEach(w => {
-      w.classList.remove('active');
-    });
-  }
+  if (!e.target.closest(POPUP_WRAPPER_SEL)) closeAllPopups();
+});
+
+// Escape closes an open popup and returns focus to its trigger
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  const open = document.querySelector('.email-wrapper.active, .phone-wrapper.active');
+  if (!open) return;
+  setPopupOpen(open, false);
+  const trigger = open.querySelector(POPUP_TRIGGER_SEL);
+  if (trigger) trigger.focus();
 });
 
 // ========== CONTACT FORM (submits to /api/inquiries.php) ==========
@@ -76,21 +98,35 @@ document.addEventListener('click', (e) => {
   var newMsgBtn  = document.getElementById('cfNewMsg');
   var originalLabel = submit.textContent;
 
-  function showError(msg) {
+  // `field` (optional) is the control the message is about: it is marked
+  // invalid and described by the error box so screen readers hear why.
+  function showError(msg, field) {
     errorBox.textContent = msg;
     errorBox.classList.add('is-shown');
+    if (field) {
+      field.setAttribute('aria-invalid', 'true');
+      field.setAttribute('aria-describedby', 'cfError');
+    }
   }
   function clearError() {
     errorBox.textContent = '';
     errorBox.classList.remove('is-shown');
+    form.querySelectorAll('[aria-invalid]').forEach(function(el) {
+      el.removeAttribute('aria-invalid');
+      el.removeAttribute('aria-describedby');
+    });
   }
   function showSuccess() {
     formView.classList.add('hidden');
     successView.classList.remove('hidden');
     // Scroll the success message into view on small screens so the user sees it.
     if (window.innerWidth < 1024) {
-      successView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      successView.scrollIntoView({ behavior: themeliScrollBehavior(), block: 'start' });
     }
+    // The submit button is now display:none; move focus to the success title
+    // (tabindex="-1") so the confirmation is announced and Tab continues from it.
+    var title = successView.querySelector('.cf-success-title');
+    if (title) title.focus({ preventScroll: true });
   }
   function resetToForm() {
     form.reset();
@@ -127,9 +163,9 @@ document.addEventListener('click', (e) => {
       website:      form.website.value.trim()  // honeypot — should be empty
     };
 
-    if (!data.name) { showError(T.formValidName); form.name.focus(); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { showError(T.formValidEmail); form.email.focus(); return; }
-    if (data.message.length < 10) { showError(T.formValidMessage); form.message.focus(); return; }
+    if (!data.name) { showError(T.formValidName, form.name); form.name.focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { showError(T.formValidEmail, form.email); form.email.focus(); return; }
+    if (data.message.length < 10) { showError(T.formValidMessage, form.message); form.message.focus(); return; }
 
     submit.disabled = true;
     submit.textContent = T.formSending;

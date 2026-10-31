@@ -26,6 +26,15 @@
   cursor: pointer;
   position: relative;
   transition: transform 0.5s var(--ease-out);
+  /* <button> (keyboard-operable): reset the UA box so it renders like the former <div> */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .subs-grid .sub-logo::after {
@@ -311,6 +320,11 @@
 /* Cards with an image are <button>s (keyboard-operable lightbox triggers);
    reset the UA button box so they render exactly like the former <div>. */
 button.sub-featured-card {
+  /* A block <button> centres its content vertically when a grid row is taller
+     than the card (longer name next door); flex keeps it top-aligned. */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   width: 100%;
   padding: 0;
   margin: 0;

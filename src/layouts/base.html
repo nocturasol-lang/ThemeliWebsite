@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#252526">
   <meta name="description" content="{{description}}">
   <meta name="robots" content="{{robots}}">
-  <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
+{{docTitleMeta}}  <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
   <link rel="canonical" href="https://themeli.gr/{{langCode}}/{{pageName}}">
   <link rel="alternate" hreflang="en" href="https://themeli.gr/en/{{pageName}}">
   <link rel="alternate" hreflang="el" href="https://themeli.gr/el/{{pageName}}">
@@ -30,13 +30,13 @@
   <a href="#main-content" class="skip-link">{{skipLink}}</a>
 {{nav}}
 
-  <header class="menu" role="banner">
+  <header class="menu">
     <a href="{{homeLink}}" class="menu-logo">
-      <img src="../assets/themeli-icon.svg" alt="Themeli" width="75" height="50">
+      <img src="../assets/themeli-icon.svg" alt="{{logoAlt}}" width="75" height="50">
     </a>
     <div class="menu-right">
       <a class="lang-switch" href="{{langSwitchHref}}" hreflang="{{langSwitchTarget}}" lang="{{langSwitchTarget}}" aria-label="{{langSwitchLabel}}" data-lang-switch>{{langSwitch}}</a>
-      <button class="hamburger" id="hamburger" aria-label="{{menuToggle}}" aria-expanded="false">
+      <button class="hamburger" id="hamburger" aria-label="{{menuToggle}}" aria-expanded="false" aria-controls="navOverlay">
         <span></span>
         <span></span>
         <span></span>
@@ -52,25 +52,25 @@
     <div class="footer-gradient"></div>
     <div class="footer-inner">
       <div class="footer-logo">
-        <a href="{{homeLink}}"><img src="../assets/themeli-footer-logo.svg" alt="Themeli" width="140" height="150"></a>
+        <a href="{{homeLink}}"><img src="../assets/themeli-footer-logo.svg" alt="{{logoAlt}}" width="140" height="150"></a>
       </div>
       <div class="footer-columns">
         <div class="footer-col">
-          <h4>{{footerAddressLabel}}</h4>
+          <h2 class="footer-col-title">{{footerAddressLabel}}</h2>
           <a href="https://www.google.com/maps?q=38.03279391343416,23.774540665648086" target="_blank" rel="noopener">{{footerAddressBody}}</a>
         </div>
         <div class="footer-col">
-          <h4>{{footerInfoLabel}}</h4>
+          <h2 class="footer-col-title">{{footerInfoLabel}}</h2>
           <div class="email-wrapper">
-            <a href="#" class="email-trigger" data-email="sendinfo@themeli.gr">sendinfo@themeli.gr</a>
-            <div class="email-popup">
+            <button type="button" class="email-trigger" data-email="sendinfo@themeli.gr" aria-expanded="false" aria-controls="footerEmailPopup">sendinfo@themeli.gr</button>
+            <div class="email-popup" id="footerEmailPopup">
               <a href="mailto:sendinfo@themeli.gr" class="email-popup-option">{{footerSendEmail}}</a>
               <button class="email-popup-option email-copy" data-email="sendinfo@themeli.gr">{{footerCopyAddress}}</button>
             </div>
           </div>
           <div class="phone-wrapper">
-            <a href="#" class="phone-trigger">T: +30 2102717720</a>
-            <div class="email-popup">
+            <button type="button" class="phone-trigger" aria-expanded="false" aria-controls="footerPhonePopup">T: +30 2102717720</button>
+            <div class="email-popup" id="footerPhonePopup">
               <a href="tel:+302102717720" class="email-popup-option">{{footerCall}}</a>
               <button class="email-popup-option phone-copy" data-phone="+30 2102717720">{{footerCopyNumber}}</button>
             </div>
@@ -81,7 +81,7 @@
     </div>
     <div class="footer-bottom">
       <p>{{footerCopyright}}</p>
-      {{footerPolicies}}
+      <a class="footer-policies-link" href="policies">{{footerPoliciesLabel}}</a>
     </div>
   </footer>
 
