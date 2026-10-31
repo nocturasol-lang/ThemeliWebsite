@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#252526">
   <meta name="description" content="{{description}}">
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="{{robots}}">
   <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
   <link rel="canonical" href="https://themeli.gr/{{langCode}}/{{pageName}}">
   <link rel="alternate" hreflang="en" href="https://themeli.gr/en/{{pageName}}">
@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to content</a>
+  <a href="#main-content" class="skip-link">{{skipLink}}</a>
 {{nav}}
 
   <header class="menu" role="banner">
@@ -35,8 +35,8 @@
       <img src="../assets/themeli-icon.svg" alt="Themeli" width="75" height="50">
     </a>
     <div class="menu-right">
-      <a class="lang-switch" href="{{langSwitchHref}}" data-lang-switch>{{langSwitch}}</a>
-      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <a class="lang-switch" href="{{langSwitchHref}}" hreflang="{{langSwitchTarget}}" lang="{{langSwitchTarget}}" aria-label="{{langSwitchLabel}}" data-lang-switch>{{langSwitch}}</a>
+      <button class="hamburger" id="hamburger" aria-label="{{menuToggle}}" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
@@ -90,7 +90,7 @@
     </div>
   </footer>
 
-  <button class="scroll-top" id="scrollTop" aria-label="Back to top">
+  <button class="scroll-top" id="scrollTop" aria-label="{{backToTop}}">
     <svg viewBox="0 0 16 16"><polyline points="3 10 8 5 13 10"/></svg>
   </button>
 
@@ -102,8 +102,9 @@
   {
     "@context": "https://schema.org",
     "@type": "ConstructionCompany",
+    "@id": "https://themeli.gr/#org",
     "name": "THEMELI S.A.",
-    "alternateName": "ΘΕΜΕΛΗ Α.Ε.",
+    "alternateName": "ΘΕΜΕΛΙ Α.Ε.",
     "url": "https://themeli.gr",
     "logo": "https://themeli.gr/assets/themeli-logo.svg",
     "image": "https://themeli.gr/assets/images/wind-park-2000.jpg",
@@ -129,7 +130,7 @@
       "contactType": "Customer Service",
       "areaServed": "GR",
       "availableLanguage": ["en", "el"]
-    },
+    }
   }
   </script>
 </body>

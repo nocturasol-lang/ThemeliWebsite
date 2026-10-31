@@ -4,6 +4,11 @@
     "langCode": "en",
     "ogLocale": "en_US",
     "langSwitch": "EL",
+    "langSwitchTarget": "el",
+    "langSwitchLabel": "Ελληνικά",
+    "skipLink": "Skip to content",
+    "menuToggle": "Toggle menu",
+    "backToTop": "Back to top",
     "footerAddressLabel": "Address",
     "footerAddressBody": "ATHENS<br>104 Kapodistriou str.,<br>142 35 Nea Ionia",
     "footerInfoLabel": "General Information",
@@ -12,7 +17,7 @@
     "footerCall": "Call",
     "footerCopyNumber": "Copy Number",
     "footerSocialsLabel": "Socials",
-    "footerCopyright": "&copy; 2025 THEMELI S.A. All rights reserved.",
+    "footerCopyright": "&copy; {{year}} THEMELI S.A. All rights reserved.",
 
     "ui": {
       "projects": "Projects",
@@ -39,7 +44,9 @@
       "formValidEmail": "Please enter a valid email address.",
       "formValidMessage": "Please enter a message (at least 10 characters).",
       "projectsEmpty": "No projects to show right now.",
-      "projectNotFound": "Project not found."
+      "projectNotFound": "Project not found.",
+      "prevPage": "Previous page",
+      "nextPage": "Next page"
     },
 
     "typology": {},
@@ -85,6 +92,11 @@
     "langCode": "el",
     "ogLocale": "el_GR",
     "langSwitch": "EN",
+    "langSwitchTarget": "en",
+    "langSwitchLabel": "English",
+    "skipLink": "Μετάβαση στο περιεχόμενο",
+    "menuToggle": "Εναλλαγή μενού",
+    "backToTop": "Επιστροφή στην κορυφή",
     "footerAddressLabel": "Διεύθυνση",
     "footerAddressBody": "ΑΘΗΝΑ<br>Καποδιστρίου 104,<br>142 35 Νέα Ιωνία",
     "footerInfoLabel": "Γενικές Πληροφορίες",
@@ -93,7 +105,7 @@
     "footerCall": "Κλήση",
     "footerCopyNumber": "Αντιγραφή Αριθμού",
     "footerSocialsLabel": "Κοινωνικά",
-    "footerCopyright": "&copy; 2025 THEMELI Α.Ε. Με επιφύλαξη παντός δικαιώματος.",
+    "footerCopyright": "&copy; {{year}} THEMELI Α.Ε. Με επιφύλαξη παντός δικαιώματος.",
 
     "ui": {
       "projects": "Έργα",
@@ -120,7 +132,9 @@
       "formValidEmail": "Παρακαλώ εισάγετε έγκυρο email.",
       "formValidMessage": "Παρακαλώ εισάγετε μήνυμα (τουλάχιστον 10 χαρακτήρες).",
       "projectsEmpty": "Δεν υπάρχουν έργα προς εμφάνιση αυτή τη στιγμή.",
-      "projectNotFound": "Το έργο δεν βρέθηκε."
+      "projectNotFound": "Το έργο δεν βρέθηκε.",
+      "prevPage": "Προηγούμενη σελίδα",
+      "nextPage": "Επόμενη σελίδα"
     },
 
     "typology": {

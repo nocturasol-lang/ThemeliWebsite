@@ -28,5 +28,9 @@ if (is_file($html)) {
     return true;
 }
 
-// Fallback — let the built-in server emit a 404.
+// Fallback — mimic the .htaccess ErrorDocument rules: Greek 404 under /el/,
+// English otherwise, with a real 404 status.
+http_response_code(404);
+$notFound = $root . (preg_match("#^/el(/|$)#", $path) ? "/el/404.html" : "/en/404.html");
+if (is_file($notFound)) { readfile($notFound); return true; }
 return false;

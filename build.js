@@ -11,6 +11,8 @@ const SRC  = path.join(__dirname, 'src');
 const PUB  = path.join(__dirname, 'public');
 const DIST = path.join(__dirname, 'dist');
 const SITE_URL = 'https://themeli.gr';
+const BUILD_YEAR = String(new Date().getFullYear());
+const DEFAULT_ROBOTS = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
 
 /* ── Navigation items per language ────────────────────────────── */
 const NAV_ITEMS = {
@@ -90,9 +92,10 @@ function buildNav(lang, activeFile) {
 }
 
 function buildMainAttrs(meta) {
+  // <main> always carries id="main-content" (skip-link target) in the layout;
+  // a frontmatter mainId would emit a duplicate id attribute, so it is ignored.
   let attrs = '';
   if (meta.mainClass) attrs += ` class="${meta.mainClass}"`;
-  if (meta.mainId) attrs += ` id="${meta.mainId}"`;
   return attrs;
 }
 
@@ -254,6 +257,12 @@ function build() {
         .replace(/\{\{langCode\}\}/g, s.langCode || s.lang)
         .replace('{{ogLocale}}', s.ogLocale || 'en_US')
         .replace('{{langSwitch}}', s.langSwitch)
+        .replace(/\{\{langSwitchTarget\}\}/g, s.langSwitchTarget)
+        .replace('{{langSwitchLabel}}', s.langSwitchLabel)
+        .replace('{{skipLink}}', s.skipLink)
+        .replace('{{menuToggle}}', s.menuToggle)
+        .replace('{{backToTop}}', s.backToTop)
+        .replace('{{robots}}', meta.robots || DEFAULT_ROBOTS)
         .replace('{{langSwitchHref}}', (() => {
           const otherLang = lang === 'en' ? 'el' : 'en';
           const slug = pageName === 'index.html' ? '' : pageName.replace(/\.html$/, '');
@@ -268,7 +277,7 @@ function build() {
         .replace('{{footerCall}}', s.footerCall)
         .replace('{{footerCopyNumber}}', s.footerCopyNumber)
         .replace('{{footerSocialsLabel}}', s.footerSocialsLabel)
-        .replace('{{footerCopyright}}', s.footerCopyright)
+        .replace('{{footerCopyright}}', s.footerCopyright.replace('{{year}}', BUILD_YEAR))
         .replace(/\{\{title\}\}/g, meta.title || '')
         .replace(/\{\{description\}\}/g, meta.description || '')
         .replace(/\{\{pageName\}\}/g, pageName === 'index.html' ? '' : pageName.replace(/\.html$/, ''))
@@ -295,16 +304,20 @@ function build() {
 
   for (const page of REDIRECT_PAGES) {
     const target = page === 'index' ? 'en/' : `en/${page}`;
-    const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${target}"><script>window.location.replace('${target}'+window.location.search)</script></head></html>\n`;
+    const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>THEMELI S.A.</title><meta name="robots" content="noindex"><link rel="canonical" href="${SITE_URL}/${target}"><meta http-equiv="refresh" content="0;url=${target}"><script>window.location.replace('${target}'+window.location.search)</script></head><body></body></html>\n`;
     fs.writeFileSync(path.join(DIST, `${page}.html`), html);
     count++;
   }
 
   /* ── Root .htaccess for 301 redirects (Apache/Hostinger) ──── */
   const htaccessRules = [
-    '# Custom error pages (default to English; localized via JS on the page)',
+    '# Custom error pages (English by default, Greek under /el/)',
     'ErrorDocument 404 /en/404.html',
     'ErrorDocument 403 /en/404.html',
+    '<If "%{REQUEST_URI} =~ m#^/el(/|$)#">',
+    '    ErrorDocument 404 /el/404.html',
+    '    ErrorDocument 403 /el/404.html',
+    '</If>',
     '',
     '# Security headers (frame-ancestors / X-Frame-Options block clickjacking of the admin)',
     '<IfModule mod_headers.c>',
@@ -327,6 +340,14 @@ function build() {
     '</If>',
     '',
     'RewriteEngine On',
+    '',
+    '# Canonical host: www. -> apex (301)',
+    'RewriteCond %{HTTP_HOST} ^www\\.(.+)$ [NC]',
+    'RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]',
+    '',
+    '# /en/index(.html) and /el/index(.html) duplicate the language home (301 in one hop)',
+    'RewriteCond %{THE_REQUEST} \\s/+(en|el)/index(\\.html)?[\\s?] [NC]',
+    'RewriteRule ^ /%1/ [R=301,L]',
     '',
     '# Strip .html from extensionless friendly URLs (301) — only on the original request',
     '# (THE_REQUEST is not modified by internal rewrites, so this won\'t loop)',
@@ -359,7 +380,7 @@ function build() {
   sitemap += '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n';
 
   for (const pageName of PAGES) {
-    if (pageName === 'project.html') continue;
+    if (pageName === 'project.html' || pageName === '404.html') continue;
     const slug = pageName === 'index.html' ? '' : pageName.replace(/\.html$/, '');
     for (const lang of LANGUAGES) {
       sitemap += '  <url>\n';
@@ -370,6 +391,7 @@ function build() {
       for (const altLang of LANGUAGES) {
         sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/${slug}"/>\n`;
       }
+      sitemap += `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/${slug}"/>\n`;
       sitemap += '  </url>\n';
     }
   }
@@ -389,6 +411,7 @@ function build() {
         for (const altLang of LANGUAGES) {
           sitemap += `    <xhtml:link rel="alternate" hreflang="${altLang}" href="${SITE_URL}/${altLang}/project?id=${id}"/>\n`;
         }
+        sitemap += `    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE_URL}/en/project?id=${id}"/>\n`;
         sitemap += '  </url>\n';
       }
     }

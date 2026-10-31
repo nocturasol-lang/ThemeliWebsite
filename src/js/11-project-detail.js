@@ -1,7 +1,8 @@
 /* THEMELI — Project detail page */
 
 // ========== PROJECT DETAIL PAGE ==========
-const pdetDetail = document.getElementById('projectDetail');
+// <main class="pdet"> keeps id="main-content" (skip-link target); select by class.
+const pdetDetail = document.querySelector('main.pdet');
 
 if (pdetDetail) {
   // Support both ?id=X (direct) and #X (legacy fallback)
@@ -51,6 +52,15 @@ if (pdetDetail) {
     if (ogUrl) ogUrl.content = canonicalUrl;
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.href = canonicalUrl;
+    // hreflang alternates must carry the same ?id= as the canonical, otherwise
+    // the self-referencing alternate does not match and the set is ignored.
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => {
+      try {
+        const u = new URL(link.getAttribute('href'), window.location.href);
+        u.search = '?id=' + project.id;
+        link.setAttribute('href', u.toString());
+      } catch (_) { /* ignore malformed href */ }
+    });
     if (project.image) {
       const ogImg = document.querySelector('meta[property="og:image"]');
       if (ogImg) {
@@ -80,7 +90,7 @@ if (pdetDetail) {
         const img = document.createElement('img');
         img.src = url;
         img.className = 'pdet-gallery-img';
-        img.alt = project.name + ' — ' + (i + 1);
+        img.alt = pName + ' — ' + (i + 1);
         img.loading = 'lazy';
         img.addEventListener('click', () => openGalleryLightbox(galleryImgs, i));
         galleryEl.appendChild(img);
@@ -159,6 +169,9 @@ if (pdetDetail) {
     });
   } else {
     // Project not found — surface a brief message, then redirect back to the list.
+    // Soft 404: keep crawlers from indexing /project?id=<unknown> as a page.
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots) robots.content = 'noindex';
     const msg = (T && T.projectNotFound) || 'Project not found.';
     pdetDetail.innerHTML = `<div class="pdet-missing"><p>${msg}</p></div>`;
     pdetDetail.classList.add('is-loaded');

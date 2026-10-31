@@ -54,9 +54,11 @@ npm run build:prod    # writes hashed dist/styles.<hash>.css etc.
 npm run deploy        # SFTP-syncs dist/ → $FTP_REMOTE_DIR via lftp
 ```
 
-The deploy script **excludes** `uploads/` and `api/data/` from the sync — so
-admin-uploaded images and the SQLite database on the server are never
-overwritten by a redeploy.
+The deploy script **excludes** `uploads/`, `api/data/` and `projects-data.js`
+from the sync — so admin-uploaded images, the SQLite database and the
+admin-published `projects-data.js` on the server are never overwritten by a
+redeploy (the file in `dist/` is only the stale seed; on a brand-new host
+publish it from the admin, or upload it once by hand).
 
 After the very first deploy:
 

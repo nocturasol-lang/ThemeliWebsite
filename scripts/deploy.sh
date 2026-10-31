@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Deploy dist/ to the production host using credentials from .env.deploy.
 #
-# Preserves remote uploads/ and api/data/ — those are runtime-managed by PHP
+# Preserves remote uploads/, api/data/ and projects-data.js — those are
+# runtime-managed by PHP (admin uploads, SQLite db, admin "publish" output)
 # and must NEVER be wiped by a deploy.
 #
 # Requires: lftp (brew install lftp)
@@ -54,7 +55,7 @@ case "$FTP_PROTOCOL" in
 esac
 
 echo "Deploying $LOCAL_DIR → ${FTP_PROTOCOL}://${FTP_USER}@${FTP_HOST}:${FTP_PORT}${FTP_REMOTE_DIR}"
-echo "  (preserving remote uploads/ and api/data/)"
+echo "  (preserving remote uploads/, api/data/ and projects-data.js)"
 
 # `mirror -R` = reverse mirror (local → remote)
 # `--only-newer` skips unchanged files (timestamp-based)
@@ -74,6 +75,7 @@ mirror --reverse \
        --exclude-glob 'uploads/projects' \
        --exclude-glob 'api/data/*' \
        --exclude-glob 'api/data' \
+       --exclude-glob 'projects-data.js' \
        --exclude-glob '.DS_Store' \
        "$LOCAL_DIR" "$FTP_REMOTE_DIR"
 bye

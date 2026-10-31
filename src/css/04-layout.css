@@ -21,7 +21,8 @@
   opacity: 0;
 }
 
-.page-header h1 {
+.page-header h1,
+.page-header .page-header-title {
   font-family: var(--font-display);
   font-size: clamp(14px, 1.2vw, 18px);
   font-weight: 500;
