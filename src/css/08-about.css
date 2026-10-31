@@ -130,6 +130,12 @@
   margin-bottom: 80px;
 }
 
+.about-inner > p,
+.about-inner > div > p,
+.about-inner > ul {
+  max-width: 1200px; /* comfortable line length */
+}
+
 .about-inner > ul {
   margin: 20px 0 80px 24px;
   list-style: none;

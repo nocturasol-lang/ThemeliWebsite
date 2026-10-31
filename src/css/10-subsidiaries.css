@@ -134,8 +134,8 @@
 }
 
 .sub-back {
-  /* line up with the centred 1400px .sub-detail-inner on very wide screens */
-  margin-left: max(0px, calc((100% - 1400px) / 2));
+  /* line up with the centred .sub-detail-inner on wide screens */
+  margin-left: max(0px, calc((100% - 1100px) / 2));
   background: none;
   border: none;
   color: var(--gray-03);
@@ -173,7 +173,7 @@
 
 .sub-detail-inner {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1100px; /* comfortable line length */
   margin: 0 auto;
 }
 

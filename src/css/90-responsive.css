@@ -755,3 +755,39 @@
     padding: 5px 11px;
   }
 }
+
+/* ── Edges: header and footer follow the page inset ─────────── */
+@media (min-width: 1921px) {
+  .menu { padding-left: var(--pad-x); padding-right: var(--pad-x); }
+  .footer { padding-left: var(--pad-x); padding-right: var(--pad-x); }
+}
+@media (max-width: 1024px) {
+  .menu { padding-left: var(--pad-x); padding-right: var(--pad-x); }
+  .footer { padding-left: var(--pad-x); padding-right: var(--pad-x); }
+}
+
+/* ── Small phones: page title clears the language button ────── */
+@media (max-width: 400px) {
+  .page-header h1,
+  .page-header .page-header-title { font-size: 11px; letter-spacing: 0.06em; }
+}
+
+/* ── Very short viewports (landscape phones, high zoom) ──────── */
+@media (max-height: 420px) {
+  .nav-overlay { overflow-y: auto; }
+  .nav-overlay ul { margin: auto; gap: 2px; padding: 8px 0; }
+  .nav-overlay a { font-size: clamp(20px, 9vh, 36px); }
+
+  .portal-content-inner { top: auto; bottom: 10px; }
+  .portal-headline { font-size: clamp(26px, 11vh, 44px); }
+  .portal-sub { margin-top: 4px; font-size: 12px; }
+  .portal-cta-row { margin-top: 8px; flex-wrap: nowrap; }
+  .portal-cta-row .btn { padding: 8px 18px; font-size: 11px; }
+}
+@media (max-height: 280px) {
+  .portal-sub { display: none; }
+}
+@media (max-width: 640px) and (max-height: 520px) {
+  .proj-map-card { height: 85dvh; max-height: 85dvh; }
+  .proj-map-card-photo { display: none; }
+}
