@@ -34,3 +34,6 @@ presentations/
 
 # Client source archive (PDFs live in public/assets/policies)
 /ΠΟΛΙΤΙΚΕΣ*/
+
+# Client change requests, handled later
+/changes/
