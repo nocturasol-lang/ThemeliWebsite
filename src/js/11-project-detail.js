@@ -40,7 +40,7 @@ if (pdetDetail) {
     const pDesc = LANG === 'el' ? (project.description || '') : (project.description_en || project.description || '');
 
     // Set page title and update meta tags for SEO
-    document.title = `THEMELI — ${pName}`;
+    document.title = `${LANG === 'el' ? 'ΘΕΜΕΛΗ' : 'THEMELI'} — ${pName}`;
     const canonicalUrl = window.location.origin + window.location.pathname + '?id=' + project.id;
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.content = pDesc;

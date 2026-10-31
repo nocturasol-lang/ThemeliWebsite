@@ -72,7 +72,7 @@
       "Κως": "Kos", "Κόρινθος": "Corinth", "Λάρισα": "Larissa", "Πάτρα": "Patras",
       "Ελευσίνα": "Elefsina", "Χαλανδρί": "Chalandri", "Φιλοθέη": "Filothei",
       "Αργυρούπολη": "Argyroupoli", "Βούλα": "Voula", "Παπάγου": "Papagou",
-      "Πεύκη": "Peyki", "Νέα Ιωνία": "Nea Ionia", "Λαύριο": "Lavrio",
+      "Πεύκη": "Pefki", "Νέα Ιωνία": "Nea Ionia", "Λαύριο": "Lavrio",
       "Παλαιό Φάληρο": "Palaio Faliro", "Ελληνικό": "Elliniko", "Σαλαμίνα": "Salamina",
       "Μαραθώνας": "Marathon", "Ίλιον": "Ilion",
       "Κέα": "Kea", "Χίος": "Chios", "Λέσβος": "Lesvos", "Εύβοια": "Evia",
@@ -113,7 +113,7 @@
     "footerCall": "Κλήση",
     "footerCopyNumber": "Αντιγραφή Αριθμού",
     "footerSocialsLabel": "Κοινωνικά",
-    "footerCopyright": "&copy; {{year}} THEMELI Α.Ε. Με επιφύλαξη παντός δικαιώματος.",
+    "footerCopyright": "&copy; {{year}} ΘΕΜΕΛΗ Α.Ε. Με επιφύλαξη παντός δικαιώματος.",
     "footerPoliciesLabel": "Πολιτικές Εταιρείας",
 
     "ui": {
