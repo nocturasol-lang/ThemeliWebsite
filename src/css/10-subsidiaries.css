@@ -70,6 +70,12 @@
   transform: translateX(-50%) translateY(0);
 }
 
+/* Keyboard equivalent of the hover label (focus-visible only; no pointer change) */
+.subs-grid .sub-logo:focus-visible .sub-name {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .subs-grid .sub-logo img {
   width: 100%;
   height: 100%;
@@ -119,6 +125,8 @@
 }
 
 .sub-back {
+  /* line up with the centred 1400px .sub-detail-inner on very wide screens */
+  margin-left: max(0px, calc((100% - 1400px) / 2));
   background: none;
   border: none;
   color: var(--gray-03);
@@ -298,6 +306,18 @@
 .sub-featured-card:hover {
   border-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
+}
+
+/* Cards with an image are <button>s (keyboard-operable lightbox triggers);
+   reset the UA button box so they render exactly like the former <div>. */
+button.sub-featured-card {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .sub-featured-img {
