@@ -75,6 +75,23 @@
 }
 .portal-content-inner.is-ready .portal-cta-row { pointer-events: auto; }
 
+/* Without scripting nothing can reveal the copy: show it in its final place,
+   with the CTAs usable. (Browsers that run the script are unaffected.) */
+@media (scripting: none) {
+  .portal-content-inner { opacity: 1; --portal-shift: 0px; }
+  .portal-cta-row { pointer-events: auto; }
+}
+
+/* Same result if the script is enabled but never takes over (blocked, failed to
+   load, threw): well after the intro would have ended, show the copy anyway.
+   13-terminal-bg.js adds .is-scripted as soon as it is in charge. */
+.portal-content-inner { animation: portal-copy-failsafe 0s linear 8s forwards; }
+.portal-cta-row { animation: portal-cta-failsafe 0s linear 8s forwards; }
+.portal-stage.is-scripted .portal-content-inner,
+.portal-stage.is-scripted .portal-cta-row { animation: none; }
+@keyframes portal-copy-failsafe { to { opacity: 1; --portal-shift: 0px; } }
+@keyframes portal-cta-failsafe { to { pointer-events: auto; } }
+
 .portal-headline {
   font-family: var(--font-display);
   font-weight: 700;
@@ -98,6 +115,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .portal-chev { animation: none; }
+  .portal-content-inner,
+  .portal-cta-row { animation-delay: 0s; }
 }
 
 /* ── Mobile tuning ──────────────────────────────────────────── */

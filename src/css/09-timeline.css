@@ -39,6 +39,12 @@
   visibility: hidden;
 }
 
+/* The visually hidden copy of the text stays available to assistive tech
+   while the animated copy is still hidden. */
+.timeline-opener.typewriter .sr-only {
+  visibility: visible;
+}
+
 .timeline-opener.typewriter.typing {
   visibility: visible;
 }
@@ -176,6 +182,9 @@
   margin-bottom: 120px;
   padding-left: 100px;
 }
+
+/* Focus lands here from the year nav, as a reading position only. */
+.timeline-era[tabindex="-1"]:focus { outline: none; }
 
 .timeline-era::before {
   content: '';

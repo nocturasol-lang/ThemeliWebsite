@@ -1,7 +1,13 @@
 /* THEMELI — Typewriter effect */
 
 // ========== TYPEWRITER EFFECT ==========
+// The opener is typed out character by character. The original text is kept
+// in a visually hidden copy so assistive tech reads whole words (the animated
+// per-character copy is aria-hidden). Under prefers-reduced-motion the text is
+// left untouched and shows at once.
 document.querySelectorAll('.timeline-opener').forEach(el => {
+  if (THEMELI_REDUCED_MOTION.matches) return;
+
   const origHTML = el.innerHTML;
   el.classList.add('typewriter');
 
@@ -9,27 +15,44 @@ document.querySelectorAll('.timeline-opener').forEach(el => {
   const temp = document.createElement('div');
   temp.innerHTML = origHTML;
 
-  const walkAndWrap = (node) => {
+  const wrapChars = (text, into) => {
+    text.split('').forEach(ch => {
+      const span = document.createElement('span');
+      span.className = 'tw-char';
+      span.textContent = ch;
+      into.appendChild(span);
+    });
+  };
+
+  // Top-level text runs and elements get aria-hidden; nested content inherits it.
+  const walkAndWrap = (node, topLevel) => {
     const frag = document.createDocumentFragment();
     node.childNodes.forEach(child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        child.textContent.split('').forEach(ch => {
-          const span = document.createElement('span');
-          span.className = 'tw-char';
-          span.textContent = ch;
-          frag.appendChild(span);
-        });
+        let into = frag;
+        if (topLevel) {
+          into = document.createElement('span');
+          into.setAttribute('aria-hidden', 'true');
+          frag.appendChild(into);
+        }
+        wrapChars(child.textContent, into);
       } else if (child.nodeType === Node.ELEMENT_NODE) {
         const clone = child.cloneNode(false);
-        clone.appendChild(walkAndWrap(child));
+        if (topLevel) clone.setAttribute('aria-hidden', 'true');
+        clone.appendChild(walkAndWrap(child, false));
         frag.appendChild(clone);
       }
     });
     return frag;
   };
 
+  const srCopy = document.createElement('span');
+  srCopy.className = 'sr-only';
+  srCopy.innerHTML = origHTML;
+
   el.innerHTML = '';
-  el.appendChild(walkAndWrap(temp));
+  el.appendChild(srCopy);
+  el.appendChild(walkAndWrap(temp, true));
 
   // Gather all tw-char spans in order
   const chars = el.querySelectorAll('.tw-char');

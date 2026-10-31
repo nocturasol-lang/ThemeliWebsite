@@ -7,16 +7,45 @@
                            logo drift + subtle breathing scale ramp in
      progress 0.55 – 0.85  logo lifts upward to clear room for copy
      progress 0.62 – 0.94  headline + CTAs fade in
+
+   The loop pauses while the stage is scrolled out of view or the tab is
+   hidden (paused time is subtracted so the timeline above is unaffected).
+   Under prefers-reduced-motion the logo is drawn once in its final, lifted
+   position, the copy is shown immediately and no loop runs at all.
 */
 
 (function initHomePortal() {
   const canvas = document.getElementById('terminal-bg');
   const stage = document.querySelector('.portal-stage');
   const contentInner = document.querySelector('.portal-content-inner');
-  const hintEl = document.querySelector('.portal-hint');
   if (!canvas || !stage || !contentInner) return;
 
+  const ctaRow = contentInner.querySelector('.portal-cta-row');
+
+  /* 07-hero.css reveals the copy on its own after a delay in case this script
+     never gets going (blocked, failed, threw). Called once the script has taken
+     charge of the copy, so that the safety net cannot override the intro. */
+  function takeOverContent() {
+    stage.classList.add('is-scripted');
+  }
+
+  /* Final state of the copy (visible, un-shifted, CTAs reachable). Also the
+     fallback whenever the particle logo cannot be built. */
+  function revealContent() {
+    takeOverContent();
+    contentInner.style.opacity = '1';
+    contentInner.style.setProperty('--portal-shift', '0px');
+    contentInner.classList.add('is-ready');
+    if (ctaRow) ctaRow.inert = false;
+  }
+
   const ctx = canvas.getContext('2d');
+  if (!ctx) { revealContent(); return; }
+
+  const REDUCED = THEMELI_REDUCED_MOTION.matches;
+
+  // Nothing to wait for: the copy is there from the first paint.
+  if (REDUCED) revealContent();
 
   const SVG_LOGO =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 94">' +
@@ -36,11 +65,33 @@
   const BREATHE_AMT = 0.015;
   const BREATHE_FREQ = 0.22;
   const ANIM_DURATION = 4000;  // ms from spawn to fully-formed + copy in
+  const LIFT_RATIO = 0.08;     // logo lift, as a fraction of the stage height
+
+  /* Particle colours depend only on the particle's speed (0..1). Quantise the
+     speed to 64 steps and reuse the strings instead of building one per
+     particle per frame; each channel stays within one 8-bit level of the
+     unquantised value. */
+  const STATIC_HUE_STYLE = 'rgba(255, 220, 180, 0.81)';
+  const STATIC_BASE_STYLE = 'rgba(255, 115, 30, 0.87)';
+  const COLOR_STEPS = 64;
+  const HUE_STYLES = [];
+  const BASE_STYLES = [];
+  for (let s = 0; s < COLOR_STEPS; s++) {
+    const v = s / (COLOR_STEPS - 1);
+    HUE_STYLES.push('rgba(255, 220, 180, ' + (0.6 + v * 0.4) + ')');
+    BASE_STYLES.push('rgba(255, ' + Math.floor(115 + v * 60) + ', ' +
+      Math.floor(30 + v * 40) + ', ' + (0.7 + v * 0.3) + ')');
+  }
 
   let W, H, dpr;
   let particles = [];
   let logoCx = 0, logoCy = 0;
-  let startT = 0;
+  let startT = 0;          // spawn time, shifted forward by any paused time
+  let running = false;     // the rAF loop is active
+  let pausedAt = 0;        // when the loop was paused (0 while running)
+  let rafId = 0;
+  let inView = true;
+  let contentDone = false; // copy has reached its final state; stop writing styles
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -54,7 +105,7 @@
   }
   resize();
 
-  window.addEventListener('resize', function () {
+  function onResize() {
     const prevCx = logoCx, prevCy = logoCy;
     resize();
     const ddx = logoCx - prevCx, ddy = logoCy - prevCy;
@@ -62,6 +113,21 @@
       particles[i].tx += ddx;
       particles[i].ty += ddy;
     }
+    if (REDUCED) drawStatic();
+  }
+
+  // Coalesce bursts of resize events into one canvas reset per frame. Resetting
+  // clears the canvas, so the loop applies it at the top of draw(), never after
+  // that frame's particles were painted. A paused loop applies it on resume.
+  let resizePending = false;
+  let resizeRaf = 0;
+  window.addEventListener('resize', function () {
+    if (!REDUCED) { resizePending = true; return; }
+    if (resizeRaf) return;
+    resizeRaf = requestAnimationFrame(function () {
+      resizeRaf = 0;
+      onResize();
+    });
   });
 
   function flow(x, y, t) {
@@ -126,17 +192,48 @@
         }
       }
 
+      if (REDUCED) {
+        drawStatic();
+        return;
+      }
+      // The CTAs are invisible until the copy fades in: keep them out of the
+      // Tab order until then (no-op in browsers without `inert`).
+      if (ctaRow) ctaRow.inert = true;
+      takeOverContent();
       startT = performance.now();
     };
+    img.onerror = revealContent;
     img.src = 'data:image/svg+xml;base64,' + btoa(SVG_LOGO);
   }
 
+  /* Reduced motion: the fully formed, lifted logo at rest, drawn once. The
+     alphas are where a settled particle ends up in the animated version, which
+     repaints it over its own 0.35 veil every frame (0.7 → 0.87, 0.6 → 0.81). */
+  function drawStatic() {
+    ctx.fillStyle = 'rgb(64, 64, 65)';
+    ctx.fillRect(0, 0, W, H);
+    const liftY = -H * LIFT_RATIO;
+    for (let i = 0; i < particles.length; i++) {
+      const pt = particles[i];
+      ctx.fillStyle = pt.hue ? STATIC_HUE_STYLE : STATIC_BASE_STYLE;
+      ctx.fillRect(pt.tx, pt.ty + liftY, 2, 2);
+    }
+  }
+
   function draw() {
+    rafId = 0;
+    if (!running) return;
+
+    if (resizePending) {
+      resizePending = false;
+      onResize();
+    }
+
     ctx.fillStyle = 'rgba(64, 64, 65, 0.35)';
     ctx.fillRect(0, 0, W, H);
 
     if (!particles.length) {
-      requestAnimationFrame(draw);
+      schedule();
       return;
     }
 
@@ -149,12 +246,11 @@
     const driftSc   = smoothstep((p - 0.45) / 0.3);
     const shiftSc   = smoothstep((p - 0.55) / 0.30);
     const contentSc = smoothstep((p - 0.62) / 0.32);
-    const hintSc    = 1 - smoothstep((p - 0.10) / 0.20);
 
     const driftX   = Math.sin(t * DRIFT_FREQ_X) * DRIFT_X * driftSc;
     const driftY   = Math.cos(t * DRIFT_FREQ_Y) * DRIFT_Y * driftSc;
     const breathe  = 1 + Math.sin(t * BREATHE_FREQ) * BREATHE_AMT * driftSc;
-    const LOGO_LIFT = H * 0.08;
+    const LOGO_LIFT = H * LIFT_RATIO;
     const liftY    = -LOGO_LIFT * shiftSc;
 
     for (let i = 0; i < particles.length; i++) {
@@ -189,25 +285,66 @@
       pt.y += pt.vy;
 
       const v = Math.min(Math.sqrt(pt.vx * pt.vx + pt.vy * pt.vy) / 5, 1);
-      if (pt.hue) {
-        ctx.fillStyle = 'rgba(255, 220, 180, ' + (0.6 + v * 0.4) + ')';
-      } else {
-        const g = Math.floor(115 + v * 60);
-        const b = Math.floor(30 + v * 40);
-        ctx.fillStyle = 'rgba(255, ' + g + ', ' + b + ', ' + (0.7 + v * 0.3) + ')';
-      }
+      const step = (v * (COLOR_STEPS - 1) + 0.5) | 0;
+      ctx.fillStyle = pt.hue ? HUE_STYLES[step] : BASE_STYLES[step];
       ctx.fillRect(pt.x, pt.y, 2, 2);
     }
 
-    if (hintEl) hintEl.style.opacity = hintSc.toFixed(3);
-    contentInner.style.opacity = contentSc.toFixed(3);
-    contentInner.style.setProperty('--portal-shift', (28 - 28 * contentSc).toFixed(1) + 'px');
-    if (contentSc > 0.7) contentInner.classList.add('is-ready');
-    else contentInner.classList.remove('is-ready');
+    // The copy's opacity / shift are final once progress hits 1; stop touching
+    // the DOM every frame after that.
+    if (!contentDone) {
+      contentInner.style.opacity = contentSc.toFixed(3);
+      contentInner.style.setProperty('--portal-shift', (28 - 28 * contentSc).toFixed(1) + 'px');
+      if (contentSc > 0.7) {
+        contentInner.classList.add('is-ready');
+        if (ctaRow) ctaRow.inert = false;
+      } else {
+        contentInner.classList.remove('is-ready');
+      }
+      if (p >= 1) contentDone = true;
+    }
 
-    requestAnimationFrame(draw);
+    schedule();
+  }
+
+  function schedule() {
+    if (running && !rafId) rafId = requestAnimationFrame(draw);
+  }
+
+  /* Pause while nothing can be seen; on resume push startT forward by the
+     paused duration so progress and the ambient clock continue seamlessly.
+     (If spawn finished during a pause, startT is simply moved to now.) */
+  function setRunning(on) {
+    if (on === running) return;
+    const now = performance.now();
+    if (on) {
+      if (startT && pausedAt) startT += now - Math.max(pausedAt, startT);
+      pausedAt = 0;
+      running = true;
+      schedule();
+    } else {
+      running = false;
+      pausedAt = now;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+    }
+  }
+
+  function updateRunning() {
+    setRunning(inView && document.visibilityState !== 'hidden');
   }
 
   spawn();
+  if (REDUCED) return;
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      inView = entries[entries.length - 1].isIntersecting;
+      updateRunning();
+    }, { threshold: 0 }).observe(stage);
+  }
+  document.addEventListener('visibilitychange', updateRunning);
+
+  running = true;
   draw();
+  updateRunning(); // a tab opened in the background starts out paused
 })();
