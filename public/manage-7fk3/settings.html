@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Ρυθμίσεις — Themeli Admin</title>
+  <style>
+    :root {
+      --bg: #1a1a1c;
+      --surface: #252526;
+      --border: #3a3a3c;
+      --text: #e5e5e7;
+      --muted: #8e8e93;
+      --accent: #ff731e;
+      --ok: #34c759;
+      --err: #ff453a;
+      --warn: #ff9f0a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; }
+    header { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
+    header .back-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 0.35rem 0.6rem; border-radius: 4px; }
+    header .back-link:hover { background: var(--border); color: var(--text); }
+    header h1 { margin: 0; font-size: 1rem; font-weight: 500; }
+    header .spacer { flex: 1; }
+    button { background: var(--border); color: var(--text); border: 0; padding: 0.45rem 0.9rem; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 13px; }
+    button:hover { background: #4a4a4c; }
+    button.primary { background: var(--accent); color: #fff; }
+    button.primary:hover { background: #e66614; }
+    button.sm { padding: 0.3rem 0.6rem; font-size: 12px; }
+
+    #login.hidden, #list.hidden { display: none; }
+    #login { max-width: 400px; margin: 6rem auto; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+    #login input { width: 100%; padding: 0.5rem 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-family: inherit; font-size: 14px; margin-bottom: 1rem; }
+    #login button { width: 100%; padding: 0.7rem; }
+
+
+    #settings.hidden { display: none; }
+    .settings-wrap { max-width: 760px; margin: 2rem auto; padding: 0 1.5rem; }
+    .notify { padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+    .notify.hidden { display: none; }
+    .notify h2 { margin: 0 0 0.25rem; font-size: 14px; font-weight: 500; }
+    .notify p { margin: 0 0 0.75rem; font-size: 13px; color: var(--muted); }
+    .notify textarea { display: block; width: 100%; max-width: 480px; min-height: 96px; padding: 0.5rem 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font: inherit; resize: vertical; }
+    .notify-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.75rem; }
+    .notify-status { font-size: 13px; color: var(--muted); }
+    .notify-status.is-ok { color: var(--ok); }
+    .notify-status.is-err { color: var(--err); }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./" class="back-link">← Πίνακας Διαχείρισης</a>
+    <h1>Ρυθμίσεις</h1>
+    <span class="spacer"></span>
+    <a href="inquiries" class="back-link">Αιτήματα</a>
+    <button id="logoutBtn">Αποσύνδεση</button>
+  </header>
+
+  <div id="login">
+    <h2 style="margin:0 0 1rem 0;">Σύνδεση</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required autocomplete="username">
+      <input type="password" id="password" placeholder="Κωδικός" required autocomplete="current-password">
+      <button type="submit" class="primary">Σύνδεση</button>
+      <div id="loginErr" style="color:var(--err);margin-top:0.75rem;font-size:13px;display:none;"></div>
+    </form>
+  </div>
+
+  <div id="settings" class="hidden">
+    <div class="settings-wrap">
+    <section class="notify" id="notifyPanel" aria-labelledby="notifyTitle">
+      <h2 id="notifyTitle">Ειδοποιήσεις νέων αιτημάτων</h2>
+      <p>Κάθε νέο αίτημα από τη φόρμα επικοινωνίας στέλνεται σε αυτές τις διευθύνσεις. Μία διεύθυνση ανά γραμμή, έως 20. Αν η λίστα είναι κενή, δεν στέλνεται email.</p>
+      <label for="notifyEmails" style="position:absolute;left:-9999px;">Διευθύνσεις email</label>
+      <textarea id="notifyEmails" spellcheck="false" autocomplete="off" placeholder="onoma@themeli.gr"></textarea>
+      <div class="notify-actions">
+        <button id="notifySave" class="primary">Αποθήκευση</button>
+        <button id="notifyTest">Αποστολή δοκιμής</button>
+        <span class="notify-status" id="notifyStatus" role="status"></span>
+      </div>
+    </section>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api';
+    async function api(path, opts = {}) {
+      const init = Object.assign({ credentials: 'same-origin' }, opts);
+      if (init.body && typeof init.body !== 'string') {
+        init.headers = Object.assign({ 'Content-Type': 'application/json' }, init.headers || {});
+        init.body = JSON.stringify(init.body);
+      }
+      const res = await fetch(API + path, init);
+      let json = null; try { json = await res.json(); } catch (_) {}
+      if (!res.ok || !json || json.ok === false) {
+        if (res.status === 401) show('login');
+        throw new Error((json && json.error) || ('HTTP ' + res.status));
+      }
+      return json.data;
+    }
+
+    const loginEl = document.getElementById('login');
+    const settingsEl = document.getElementById('settings');
+    const loginForm = document.getElementById('loginForm');
+    const loginErr = document.getElementById('loginErr');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const notifyEmails = document.getElementById('notifyEmails');
+    const notifyStatus = document.getElementById('notifyStatus');
+    const notifySave = document.getElementById('notifySave');
+    const notifyTest = document.getElementById('notifyTest');
+
+    function show(view) {
+      if (view === 'login') {
+        notifyEmails.value = '';
+        loginEl.classList.remove('hidden'); settingsEl.classList.add('hidden'); stopIdleCheck();
+      } else {
+        loginEl.classList.add('hidden'); settingsEl.classList.remove('hidden'); loadSettings(); startIdleCheck();
+      }
+    }
+
+    let idleTimer = null;
+    function startIdleCheck() {
+      stopIdleCheck();
+      idleTimer = setInterval(async () => {
+        try {
+          const status = await api('/auth.php');
+          if (!status.authenticated) {
+            if (status.reason === 'displaced') {
+              try { alert('Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή. Η συνεδρία σας τερματίστηκε.'); } catch (_) {}
+              loginErr.textContent = 'Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή.';
+              loginErr.style.display = 'block';
+            }
+            show('login');
+          }
+        } catch (_) { /* api() handles 401 */ }
+      }, 15000);
+    }
+    function stopIdleCheck() { if (idleTimer) { clearInterval(idleTimer); idleTimer = null; } }
+
+    (async () => {
+      try {
+        const status = await api('/auth.php');
+        show(status.authenticated ? 'dash' : 'login');
+      } catch (_) { show('login'); }
+    })();
+
+    loginForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      loginErr.style.display = 'none';
+      try {
+        await api('/auth.php', { method: 'POST', body: {
+          email:    document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+        }});
+        show('dash');
+      } catch (err) {
+        loginErr.textContent = err.message || 'Σφάλμα';
+        loginErr.style.display = 'block';
+      }
+    });
+    logoutBtn.addEventListener('click', async () => {
+      try { await api('/auth.php?action=logout', { method: 'POST' }); } catch (_) {}
+      show('login');
+    });
+
+    async function loadSettings() {
+      setNotifyStatus('Φόρτωση...');
+      try {
+        const data = await api('/notifications.php');
+        notifyEmails.value = data.emails.join('\n');
+        setNotifyStatus('');
+      } catch (err) { setNotifyStatus('Σφάλμα: ' + err.message, 'err'); }
+    }
+
+    function setNotifyStatus(msg, kind) {
+      notifyStatus.textContent = msg;
+      notifyStatus.className = 'notify-status' + (kind ? ' is-' + kind : '');
+    }
+    function notifyList() {
+      return notifyEmails.value.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
+    }
+    async function saveNotifyList() {
+      const data = await api('/notifications.php', { method: 'PUT', body: { emails: notifyList() } });
+      notifyEmails.value = data.emails.join('\n');
+      return data.emails;
+    }
+    notifySave.addEventListener('click', async () => {
+      setNotifyStatus('Αποθήκευση...');
+      try {
+        const emails = await saveNotifyList();
+        setNotifyStatus(emails.length ? 'Αποθηκεύτηκε: ' + emails.length + ' διευθύνσεις.' : 'Αποθηκεύτηκε. Οι ειδοποιήσεις είναι ανενεργές.', 'ok');
+      } catch (err) { setNotifyStatus(err.message, 'err'); }
+    });
+    notifyTest.addEventListener('click', async () => {
+      setNotifyStatus('Αποστολή...');
+      try {
+        await saveNotifyList();
+        const data = await api('/notifications.php?action=test', { method: 'POST' });
+        const failed = Object.keys(data.results).filter(k => !data.results[k]);
+        if (failed.length) setNotifyStatus('Ο διακομιστής δεν δέχτηκε: ' + failed.join(', '), 'err');
+        else setNotifyStatus('Στάλθηκε. Ελέγξτε τα εισερχόμενα και τα ανεπιθύμητα.', 'ok');
+      } catch (err) { setNotifyStatus(err.message, 'err'); }
+    });
+
+  </script>
+</body>
+</html>

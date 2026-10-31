@@ -60,15 +60,6 @@
     .inq-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .inq-empty { text-align: center; padding: 3rem; color: var(--muted); }
 
-    .notify { padding: 1rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
-    .notify.hidden { display: none; }
-    .notify h2 { margin: 0 0 0.25rem; font-size: 14px; font-weight: 500; }
-    .notify p { margin: 0 0 0.75rem; font-size: 13px; color: var(--muted); }
-    .notify textarea { display: block; width: 100%; max-width: 480px; min-height: 96px; padding: 0.5rem 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font: inherit; resize: vertical; }
-    .notify-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.75rem; }
-    .notify-status { font-size: 13px; color: var(--muted); }
-    .notify-status.is-ok { color: var(--ok); }
-    .notify-status.is-err { color: var(--err); }
   </style>
 </head>
 <body>
@@ -76,7 +67,7 @@
     <a href="./" class="back-link">← Πίνακας Διαχείρισης</a>
     <h1>Αιτήματα Επικοινωνίας</h1>
     <span class="spacer"></span>
-    <button id="notifyToggle" aria-expanded="false" aria-controls="notifyPanel">Ειδοποιήσεις Email</button>
+    <a href="settings" class="back-link">Ρυθμίσεις</a>
     <button id="refreshBtn">Ανανέωση</button>
     <button id="logoutBtn">Αποσύνδεση</button>
   </header>
@@ -92,17 +83,6 @@
   </div>
 
   <div id="list" class="hidden">
-    <section class="notify hidden" id="notifyPanel" aria-labelledby="notifyTitle">
-      <h2 id="notifyTitle">Ειδοποιήσεις νέων αιτημάτων</h2>
-      <p>Κάθε νέο αίτημα από τη φόρμα επικοινωνίας στέλνεται σε αυτές τις διευθύνσεις. Μία διεύθυνση ανά γραμμή, έως 20. Αν η λίστα είναι κενή, δεν στέλνεται email.</p>
-      <label for="notifyEmails" style="position:absolute;left:-9999px;">Διευθύνσεις email</label>
-      <textarea id="notifyEmails" spellcheck="false" autocomplete="off" placeholder="onoma@themeli.gr"></textarea>
-      <div class="notify-actions">
-        <button id="notifySave" class="primary">Αποθήκευση</button>
-        <button id="notifyTest">Αποστολή δοκιμής</button>
-        <span class="notify-status" id="notifyStatus" role="status"></span>
-      </div>
-    </section>
     <div class="toolbar">
       <button class="tab is-active" data-filter="pending">Εκκρεμή</button>
       <button class="tab" data-filter="handled">Απαντημένα</button>
@@ -210,55 +190,6 @@
       show('login');
     });
     refreshBtn.addEventListener('click', load);
-
-    // ---------- Email notification list ----------
-    const notifyToggle = document.getElementById('notifyToggle');
-    const notifyPanel = document.getElementById('notifyPanel');
-    const notifyEmails = document.getElementById('notifyEmails');
-    const notifyStatus = document.getElementById('notifyStatus');
-    const notifySave = document.getElementById('notifySave');
-    const notifyTest = document.getElementById('notifyTest');
-
-    function setNotifyStatus(msg, kind) {
-      notifyStatus.textContent = msg;
-      notifyStatus.className = 'notify-status' + (kind ? ' is-' + kind : '');
-    }
-    function notifyList() {
-      return notifyEmails.value.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
-    }
-    async function saveNotifyList() {
-      const data = await api('/notifications.php', { method: 'PUT', body: { emails: notifyList() } });
-      notifyEmails.value = data.emails.join('\n');
-      return data.emails;
-    }
-    notifyToggle.addEventListener('click', async () => {
-      const open = notifyPanel.classList.toggle('hidden') === false;
-      notifyToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if (!open) return;
-      setNotifyStatus('Φόρτωση...');
-      try {
-        const data = await api('/notifications.php');
-        notifyEmails.value = data.emails.join('\n');
-        setNotifyStatus('');
-      } catch (err) { setNotifyStatus('Σφάλμα: ' + err.message, 'err'); }
-    });
-    notifySave.addEventListener('click', async () => {
-      setNotifyStatus('Αποθήκευση...');
-      try {
-        const emails = await saveNotifyList();
-        setNotifyStatus(emails.length ? 'Αποθηκεύτηκε: ' + emails.length + ' διευθύνσεις.' : 'Αποθηκεύτηκε. Οι ειδοποιήσεις είναι ανενεργές.', 'ok');
-      } catch (err) { setNotifyStatus(err.message, 'err'); }
-    });
-    notifyTest.addEventListener('click', async () => {
-      setNotifyStatus('Αποστολή...');
-      try {
-        await saveNotifyList();
-        const data = await api('/notifications.php?action=test', { method: 'POST' });
-        const failed = Object.keys(data.results).filter(k => !data.results[k]);
-        if (failed.length) setNotifyStatus('Ο διακομιστής δεν δέχτηκε: ' + failed.join(', '), 'err');
-        else setNotifyStatus('Στάλθηκε. Ελέγξτε τα εισερχόμενα και τα ανεπιθύμητα.', 'ok');
-      } catch (err) { setNotifyStatus(err.message, 'err'); }
-    });
 
     tabs.forEach(t => t.addEventListener('click', () => {
       tabs.forEach(x => x.classList.remove('is-active'));
