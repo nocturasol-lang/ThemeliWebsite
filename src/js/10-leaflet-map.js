@@ -235,7 +235,21 @@
         m.on('click', ev => openProject(e, ev));
         return m;
       });
+      e.shown = true;
     }
+
+    // Show only the pins that match the projects filters.
+    function applyFilters() {
+      const matches = window._projMatchesFilters || (() => true);
+      for (const e of entries) {
+        const show = matches(e.p);
+        if (show === e.shown) continue;
+        e.shown = show;
+        e.markers.forEach(m => { if (show) m.addTo(pinLayer); else pinLayer.removeLayer(m); });
+      }
+      if (activeEntry && !activeEntry.shown) closeProject(false);
+    }
+    window._applyMapFilters = applyFilters;
 
     function setActive(entry) {
       if (activeEntry) {
@@ -393,6 +407,8 @@
     }
     window.addEventListener('resize', onResize);
     window.addEventListener('orientationchange', onResize);
+
+    applyFilters(); // filters may have been chosen before the map loaded
 
     // First fit: the container is sized when the map view is on screen,
     // otherwise it is done by reset() the moment the view is shown.

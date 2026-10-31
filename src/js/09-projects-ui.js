@@ -18,22 +18,9 @@ if (projViewToggles && projGridView) {
       });
       if (window._resetMapZoom) window._resetMapZoom();
 
-      // Hide filters/chips/pagination on map view
-      const filterToggle = document.getElementById('projFilterToggle');
-      const chips = document.getElementById('projChips');
-      const filters = document.getElementById('projFilters');
+      // The map shows the same filters as the grid and list; only pagination is hidden.
       const pagination = document.getElementById('projPagination');
       const isMap = target === 'map';
-      const projCount = document.getElementById('projCount');
-      if (filterToggle) filterToggle.style.display = isMap ? 'none' : '';
-      if (projCount) projCount.style.display = isMap ? 'none' : '';
-      if (chips) chips.style.display = isMap ? 'none' : '';
-      if (filters && isMap) {
-        filters.classList.remove('is-open');
-        filters.style.display = 'none';
-        if (filterToggle) filterToggle.setAttribute('aria-expanded', 'false');
-      }
-      if (filters && !isMap) filters.style.display = '';
       if (pagination) pagination.style.display = isMap ? 'none' : '';
     });
   });
@@ -217,6 +204,12 @@ if (projFilterToggle && projFilters) {
   });
 
   // Apply filters
+  // Same rules as matchesFilters below, on a project record (used by the map).
+  window._projMatchesFilters = p =>
+    (!activeFilters.status.size || activeFilters.status.has(p.status || '')) &&
+    (!activeFilters.typology.size || activeFilters.typology.has(p.typology)) &&
+    (!activeFilters.region.size || activeFilters.region.has(p.region || ''));
+
   function applyFilters() {
     // Read active buttons into filter sets
     activeFilters.status.clear();
@@ -268,6 +261,8 @@ if (projFilterToggle && projFilters) {
     // Reset to page 1 and re-paginate
     currentPage = 1;
     applyPagination();
+
+    if (window._applyMapFilters) window._applyMapFilters();
   }
 
   // Render chips
