@@ -14,12 +14,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 100px;
+  gap: clamp(100px, 5.2vw, 180px);
 }
 
 .subs-grid .sub-logo {
-  width: 220px;
-  height: 220px;
+  width: clamp(220px, 11.46vw, 400px);
+  height: clamp(220px, 11.46vw, 400px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,7 +93,9 @@
 /* Subsidiary detail view */
 .sub-detail {
   display: none;
-  padding: 0 var(--pad-x) 80px;
+  /* .subsidiaries-page already applies --pad-x, which grows on wide screens;
+     cap this inner inset so the two do not squeeze the column. */
+  padding: 0 min(var(--pad-x), 82px) 80px;
   align-self: stretch;
   min-height: calc(100vh - var(--menu-height) - 280px);
   flex-direction: column;
