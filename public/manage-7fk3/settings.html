@@ -4,85 +4,147 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#252526">
+  <link rel="icon" type="image/svg+xml" href="../assets/themeli-icon.svg">
   <title>Ρυθμίσεις — Themeli Admin</title>
   <style>
+    @font-face { font-family: 'CF Mod Grotesk'; src: url('../assets/fonts/CFModGrotesk-RegularExpanded.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+    @font-face { font-family: 'CF Mod Grotesk'; src: url('../assets/fonts/CFModGrotesk-MedExtExp.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+    @font-face { font-family: 'CF Mod Grotesk'; src: url('../assets/fonts/CFModGrotesk-BoldExtExpanded.woff2') format('woff2'); font-weight: 700; font-display: swap; }
     :root {
-      --bg: #1a1a1c;
-      --surface: #252526;
-      --border: #3a3a3c;
-      --text: #e5e5e7;
-      --muted: #8e8e93;
-      --accent: #ff731e;
-      --ok: #34c759;
-      --err: #ff453a;
-      --warn: #ff9f0a;
+      --bg: #404041; --panel: #353536; --field: #2c2c2d; --line: rgba(255,255,255,0.12);
+      --text: #fff; --soft: rgba(255,255,255,0.72); --muted: rgba(255,255,255,0.68);
+      --accent: #ff731e; --ok: #6ee7a0; --err: #ff9c94; --pad: clamp(20px, 5.7vw, 82px);
     }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; }
-    header { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
-    header .back-link { color: var(--muted); text-decoration: none; font-size: 13px; padding: 0.35rem 0.6rem; border-radius: 4px; }
-    header .back-link:hover { background: var(--border); color: var(--text); }
-    header h1 { margin: 0; font-size: 1rem; font-weight: 500; }
-    header .spacer { flex: 1; }
-    button { background: var(--border); color: var(--text); border: 0; padding: 0.45rem 0.9rem; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 13px; }
-    button:hover { background: #4a4a4c; }
-    button.primary { background: var(--accent); color: #fff; }
-    button.primary:hover { background: #e66614; }
-    button.sm { padding: 0.3rem 0.6rem; font-size: 12px; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'CF Mod Grotesk', 'Helvetica Neue', sans-serif; font-size: 15px; line-height: 1.5; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    a { color: inherit; text-decoration: none; }
 
-    #login.hidden, #list.hidden { display: none; }
-    #login { max-width: 400px; margin: 6rem auto; padding: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
-    #login input { width: 100%; padding: 0.5rem 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font-family: inherit; font-size: 14px; margin-bottom: 1rem; }
-    #login button { width: 100%; padding: 0.7rem; }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px var(--pad); }
+    .bar-logo { display: block; width: 56px; flex-shrink: 0; }
+    .bar-logo img { display: block; width: 100%; height: auto; }
+    .bar-links { display: flex; align-items: center; gap: 8px; justify-content: flex-end; margin-right: -12px; }
+    .bar-link { padding: 9px 12px; background: none; border: 0; color: var(--soft); font: inherit; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
+    .bar-link:hover { color: var(--accent); }
 
+    .page { width: 100%; max-width: 1040px; margin: 0 auto; padding: 56px var(--pad) 96px; }
+    .page-title { margin: 0 0 56px; font-size: clamp(30px, 4vw, 44px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; }
 
-    #settings.hidden { display: none; }
-    .settings-wrap { max-width: 760px; margin: 2rem auto; padding: 0 1.5rem; }
-    .notify { padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
-    .notify.hidden { display: none; }
-    .notify h2 { margin: 0 0 0.25rem; font-size: 14px; font-weight: 500; }
-    .notify p { margin: 0 0 0.75rem; font-size: 13px; color: var(--muted); }
-    .notify textarea { display: block; width: 100%; max-width: 480px; min-height: 96px; padding: 0.5rem 0.75rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; font: inherit; resize: vertical; }
-    .notify-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-top: 0.75rem; }
-    .notify-status { font-size: 13px; color: var(--muted); }
-    .notify-status.is-ok { color: var(--ok); }
-    .notify-status.is-err { color: var(--err); }
+    .section { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; padding-top: 32px; border-top: 1px solid var(--line); }
+    .section-title { margin: 0 0 12px; font-size: 20px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em; }
+    .section-text { margin: 0; color: var(--soft); font-size: 14px; line-height: 1.65; }
+    .state { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 12px; letter-spacing: 0.04em; color: var(--muted); }
+    .state::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+    .state.is-on { color: var(--text); }
+    .state.is-on::before { background: var(--accent); }
+
+    .field-label { display: block; margin-bottom: 10px; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); }
+    .add-row { display: flex; gap: 8px; }
+    .add-input { flex: 1; min-width: 0; height: 48px; padding: 0 16px; background: var(--field); border: 1px solid var(--line); border-radius: 4px; color: var(--text); font: inherit; transition: border-color 0.2s; }
+    .add-input::placeholder { color: var(--muted); }
+    .add-input:focus { border-color: var(--accent); outline: none; }
+    .add-input[aria-invalid="true"] { border-color: var(--err); }
+    .btn { height: 48px; padding: 0 22px; border-radius: 4px; border: 1px solid transparent; font: inherit; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s; }
+    .btn:disabled { opacity: 0.5; cursor: default; }
+    .btn-primary { background: var(--accent); color: #1a1a1c; }
+    .btn-primary:hover:not(:disabled) { background: #ff8a42; }
+    .btn-ghost { background: transparent; border-color: rgba(255,255,255,0.35); color: var(--text); }
+    .btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+
+    .msg { min-height: 21px; margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+    .msg.is-ok { color: var(--ok); }
+    .msg.is-err { color: var(--err); }
+
+    .list-head { display: flex; justify-content: space-between; align-items: baseline; margin: 24px 0 0; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+    .list-count { font-size: 12px; color: var(--muted); }
+    .list { list-style: none; margin: 0; padding: 0; }
+    .list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 52px; border-bottom: 1px solid var(--line); }
+    .addr { min-width: 0; overflow-wrap: anywhere; font-size: 15px; }
+    .remove { flex-shrink: 0; padding: 8px 0 8px 8px; background: none; border: 0; color: var(--soft); font: inherit; font-size: 12px; cursor: pointer; transition: color 0.2s; }
+    .remove:hover { color: var(--err); }
+    .empty { margin: 0; padding: 20px 0; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    .test { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+    .test .msg { flex: 1 1 200px; margin: 0; min-height: 0; }
+
+    .login { max-width: 400px; margin: 0 auto; padding: 72px var(--pad) 96px; box-sizing: content-box; }
+    .login h1 { margin: 0 0 32px; font-size: 32px; font-weight: 500; letter-spacing: -0.02em; }
+    .login .add-input { display: block; width: 100%; margin-bottom: 20px; }
+    .login .btn { width: 100%; }
+
+    @media (max-width: 760px) {
+      .page { padding-top: 32px; }
+      .page-title { margin-bottom: 36px; }
+      .section { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    }
+    @media (max-width: 460px) {
+      .bar-links { gap: 0; margin-right: -8px; }
+      .bar-link { padding: 9px 8px; font-size: 10px; letter-spacing: 0.04em; }
+      .add-row { flex-direction: column; }
+      .add-input { flex: none; width: 100%; }
+      .btn { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   </style>
 </head>
 <body>
-  <header>
-    <a href="./" class="back-link">← Πίνακας Διαχείρισης</a>
-    <h1>Ρυθμίσεις</h1>
-    <span class="spacer"></span>
-    <a href="inquiries" class="back-link">Αιτήματα</a>
-    <button id="logoutBtn">Αποσύνδεση</button>
+  <header class="bar">
+    <a href="./" class="bar-logo" aria-label="Πίνακας Διαχείρισης"><img src="../assets/themeli-icon.svg" alt="" width="75" height="50"></a>
+    <nav class="bar-links" id="barLinks" aria-label="Διαχείριση" hidden>
+      <a href="./" class="bar-link">Έργα</a>
+      <a href="inquiries" class="bar-link">Αιτήματα</a>
+      <button type="button" id="logoutBtn" class="bar-link">Αποσύνδεση</button>
+    </nav>
   </header>
 
-  <div id="login">
-    <h2 style="margin:0 0 1rem 0;">Σύνδεση</h2>
+  <main class="login" id="login" hidden>
+    <h1>Σύνδεση</h1>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required autocomplete="username">
-      <input type="password" id="password" placeholder="Κωδικός" required autocomplete="current-password">
-      <button type="submit" class="primary">Σύνδεση</button>
-      <div id="loginErr" style="color:var(--err);margin-top:0.75rem;font-size:13px;display:none;"></div>
+      <label class="field-label" for="email">Email</label>
+      <input class="add-input" type="email" id="email" required autocomplete="username">
+      <label class="field-label" for="password">Κωδικός</label>
+      <input class="add-input" type="password" id="password" required autocomplete="current-password">
+      <button type="submit" class="btn btn-primary">Σύνδεση</button>
+      <p class="msg is-err" id="loginErr" role="alert"></p>
     </form>
-  </div>
+  </main>
 
-  <div id="settings" class="hidden">
-    <div class="settings-wrap">
-    <section class="notify" id="notifyPanel" aria-labelledby="notifyTitle">
-      <h2 id="notifyTitle">Ειδοποιήσεις νέων αιτημάτων</h2>
-      <p>Κάθε νέο αίτημα από τη φόρμα επικοινωνίας στέλνεται σε αυτές τις διευθύνσεις. Μία διεύθυνση ανά γραμμή, έως 20. Αν η λίστα είναι κενή, δεν στέλνεται email.</p>
-      <label for="notifyEmails" style="position:absolute;left:-9999px;">Διευθύνσεις email</label>
-      <textarea id="notifyEmails" spellcheck="false" autocomplete="off" placeholder="onoma@themeli.gr"></textarea>
-      <div class="notify-actions">
-        <button id="notifySave" class="primary">Αποθήκευση</button>
-        <button id="notifyTest">Αποστολή δοκιμής</button>
-        <span class="notify-status" id="notifyStatus" role="status"></span>
+  <main class="page" id="settings" hidden>
+    <h1 class="page-title">Ρυθμίσεις</h1>
+
+    <section class="section" aria-labelledby="notifyTitle">
+      <div>
+        <h2 class="section-title" id="notifyTitle">Ειδοποιήσεις αιτημάτων</h2>
+        <p class="section-text">Όταν κάποιος στέλνει μήνυμα από τη φόρμα επικοινωνίας, οι παραλήπτες λαμβάνουν το μήνυμα με email. Με «Απάντηση» απαντούν απευθείας στον αποστολέα.</p>
+        <span class="state" id="notifyState" role="status"></span>
+      </div>
+
+      <div>
+        <form id="addForm" novalidate>
+          <label class="field-label" for="addEmail">Νέος παραλήπτης</label>
+          <div class="add-row">
+            <input class="add-input" type="email" id="addEmail" placeholder="onoma@themeli.gr" autocomplete="off" spellcheck="false" aria-describedby="addMsg">
+            <button type="submit" class="btn btn-primary" id="addBtn">Προσθήκη</button>
+          </div>
+          <p class="msg" id="addMsg" role="status"></p>
+        </form>
+
+        <div class="list-head">
+          <span class="field-label" style="margin:0;">Παραλήπτες</span>
+          <span class="list-count" id="listCount"></span>
+        </div>
+        <ul class="list" id="list"></ul>
+        <p class="empty" id="empty" hidden>Δεν υπάρχουν παραλήπτες. Δεν στέλνονται ειδοποιήσεις.</p>
+
+        <div class="test">
+          <button type="button" class="btn btn-ghost" id="testBtn">Αποστολή δοκιμής</button>
+          <p class="msg" id="testMsg" role="status"></p>
+        </div>
       </div>
     </section>
-    </div>
-  </div>
+  </main>
 
   <script>
     const API = '/api';
@@ -101,23 +163,135 @@
       return json.data;
     }
 
-    const loginEl = document.getElementById('login');
-    const settingsEl = document.getElementById('settings');
-    const loginForm = document.getElementById('loginForm');
-    const loginErr = document.getElementById('loginErr');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const notifyEmails = document.getElementById('notifyEmails');
-    const notifyStatus = document.getElementById('notifyStatus');
-    const notifySave = document.getElementById('notifySave');
-    const notifyTest = document.getElementById('notifyTest');
+    const $ = id => document.getElementById(id);
+    const MAX = 20;
+    let emails = [];
+    let busy = false;
+
+    function setMsg(el, text, kind) {
+      el.textContent = text;
+      el.className = 'msg' + (kind ? ' is-' + kind : '');
+    }
+    function plural(n) { return n === 1 ? '1 παραλήπτης' : n + ' παραλήπτες'; }
+
+    function render() {
+      const list = $('list');
+      list.textContent = '';
+      emails.forEach(addr => {
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.className = 'addr';
+        span.textContent = addr;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'remove';
+        btn.textContent = 'Αφαίρεση';
+        btn.setAttribute('aria-label', 'Αφαίρεση ' + addr);
+        btn.addEventListener('click', () => removeEmail(addr));
+        li.append(span, btn);
+        list.append(li);
+      });
+      list.hidden = !emails.length;
+      $('empty').hidden = !!emails.length;
+      $('listCount').textContent = emails.length + ' / ' + MAX;
+      $('testBtn').disabled = !emails.length;
+      $('notifyState').textContent = emails.length ? 'Ενεργές · ' + plural(emails.length) : 'Ανενεργές';
+      $('notifyState').classList.toggle('is-on', !!emails.length);
+    }
+
+    function setBusy(on) {
+      busy = on;
+      $('addBtn').disabled = on;
+      document.querySelectorAll('.remove').forEach(b => { b.disabled = on; });
+    }
+
+    async function saveList(next) {
+      const data = await api('/notifications.php', { method: 'PUT', body: { emails: next } });
+      emails = data.emails;
+      render();
+    }
+
+    $('addForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (busy) return;
+      const input = $('addEmail');
+      const addr = input.value.trim().toLowerCase();
+      input.removeAttribute('aria-invalid');
+      setMsg($('testMsg'), '');
+      if (!addr || !input.checkValidity() || !addr.includes('.')) {
+        input.setAttribute('aria-invalid', 'true');
+        setMsg($('addMsg'), 'Συμπληρώστε ένα έγκυρο email.', 'err');
+        input.focus();
+        return;
+      }
+      if (emails.includes(addr)) {
+        setMsg($('addMsg'), 'Αυτή η διεύθυνση υπάρχει ήδη.', 'err');
+        input.focus();
+        return;
+      }
+      if (emails.length >= MAX) {
+        setMsg($('addMsg'), 'Το μέγιστο είναι ' + MAX + ' παραλήπτες.', 'err');
+        return;
+      }
+      setBusy(true);
+      try {
+        await saveList(emails.concat(addr));
+        input.value = '';
+        setMsg($('addMsg'), 'Προστέθηκε: ' + addr, 'ok');
+      } catch (err) {
+        setMsg($('addMsg'), err.message, 'err');
+      } finally {
+        setBusy(false);
+        input.focus();
+      }
+    });
+
+    async function removeEmail(addr) {
+      if (busy) return;
+      setBusy(true);
+      setMsg($('testMsg'), '');
+      try {
+        await saveList(emails.filter(x => x !== addr));
+        setMsg($('addMsg'), 'Αφαιρέθηκε: ' + addr, 'ok');
+      } catch (err) {
+        setMsg($('addMsg'), err.message, 'err');
+      } finally {
+        setBusy(false);
+        $('addEmail').focus();
+      }
+    }
+
+    $('testBtn').addEventListener('click', async () => {
+      const btn = $('testBtn');
+      btn.disabled = true;
+      setMsg($('testMsg'), 'Αποστολή...');
+      try {
+        const data = await api('/notifications.php?action=test', { method: 'POST' });
+        const failed = Object.keys(data.results).filter(k => !data.results[k]);
+        if (failed.length) setMsg($('testMsg'), 'Ο διακομιστής δεν δέχτηκε: ' + failed.join(', '), 'err');
+        else setMsg($('testMsg'), 'Στάλθηκε. Ελέγξτε τα εισερχόμενα και τα ανεπιθύμητα.', 'ok');
+      } catch (err) {
+        setMsg($('testMsg'), err.message, 'err');
+      } finally {
+        btn.disabled = !emails.length;
+      }
+    });
 
     function show(view) {
-      if (view === 'login') {
-        notifyEmails.value = '';
-        loginEl.classList.remove('hidden'); settingsEl.classList.add('hidden'); stopIdleCheck();
-      } else {
-        loginEl.classList.add('hidden'); settingsEl.classList.remove('hidden'); loadSettings(); startIdleCheck();
-      }
+      const dash = view !== 'login';
+      $('login').hidden = dash;
+      $('settings').hidden = !dash;
+      $('barLinks').hidden = !dash;
+      if (dash) { loadSettings(); startIdleCheck(); }
+      else { emails = []; stopIdleCheck(); }
+    }
+
+    async function loadSettings() {
+      try {
+        const data = await api('/notifications.php');
+        emails = data.emails;
+        render();
+      } catch (err) { setMsg($('addMsg'), 'Σφάλμα: ' + err.message, 'err'); }
     }
 
     let idleTimer = null;
@@ -129,8 +303,7 @@
           if (!status.authenticated) {
             if (status.reason === 'displaced') {
               try { alert('Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή. Η συνεδρία σας τερματίστηκε.'); } catch (_) {}
-              loginErr.textContent = 'Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή.';
-              loginErr.style.display = 'block';
+              setMsg($('loginErr'), 'Συνδέθηκε άλλος χρήστης από διαφορετική συσκευή.', 'err');
             }
             show('login');
           }
@@ -146,64 +319,24 @@
       } catch (_) { show('login'); }
     })();
 
-    loginForm.addEventListener('submit', async e => {
+    $('loginForm').addEventListener('submit', async e => {
       e.preventDefault();
-      loginErr.style.display = 'none';
+      setMsg($('loginErr'), '', 'err');
       try {
         await api('/auth.php', { method: 'POST', body: {
-          email:    document.getElementById('email').value.trim(),
-          password: document.getElementById('password').value,
+          email:    $('email').value.trim(),
+          password: $('password').value,
         }});
+        $('password').value = '';
         show('dash');
       } catch (err) {
-        loginErr.textContent = err.message || 'Σφάλμα';
-        loginErr.style.display = 'block';
+        setMsg($('loginErr'), err.message === 'Invalid credentials' ? 'Λάθος email ή κωδικός.' : (err.message || 'Σφάλμα'), 'err');
       }
     });
-    logoutBtn.addEventListener('click', async () => {
+    $('logoutBtn').addEventListener('click', async () => {
       try { await api('/auth.php?action=logout', { method: 'POST' }); } catch (_) {}
       show('login');
     });
-
-    async function loadSettings() {
-      setNotifyStatus('Φόρτωση...');
-      try {
-        const data = await api('/notifications.php');
-        notifyEmails.value = data.emails.join('\n');
-        setNotifyStatus('');
-      } catch (err) { setNotifyStatus('Σφάλμα: ' + err.message, 'err'); }
-    }
-
-    function setNotifyStatus(msg, kind) {
-      notifyStatus.textContent = msg;
-      notifyStatus.className = 'notify-status' + (kind ? ' is-' + kind : '');
-    }
-    function notifyList() {
-      return notifyEmails.value.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
-    }
-    async function saveNotifyList() {
-      const data = await api('/notifications.php', { method: 'PUT', body: { emails: notifyList() } });
-      notifyEmails.value = data.emails.join('\n');
-      return data.emails;
-    }
-    notifySave.addEventListener('click', async () => {
-      setNotifyStatus('Αποθήκευση...');
-      try {
-        const emails = await saveNotifyList();
-        setNotifyStatus(emails.length ? 'Αποθηκεύτηκε: ' + emails.length + ' διευθύνσεις.' : 'Αποθηκεύτηκε. Οι ειδοποιήσεις είναι ανενεργές.', 'ok');
-      } catch (err) { setNotifyStatus(err.message, 'err'); }
-    });
-    notifyTest.addEventListener('click', async () => {
-      setNotifyStatus('Αποστολή...');
-      try {
-        await saveNotifyList();
-        const data = await api('/notifications.php?action=test', { method: 'POST' });
-        const failed = Object.keys(data.results).filter(k => !data.results[k]);
-        if (failed.length) setNotifyStatus('Ο διακομιστής δεν δέχτηκε: ' + failed.join(', '), 'err');
-        else setNotifyStatus('Στάλθηκε. Ελέγξτε τα εισερχόμενα και τα ανεπιθύμητα.', 'ok');
-      } catch (err) { setNotifyStatus(err.message, 'err'); }
-    });
-
   </script>
 </body>
 </html>
