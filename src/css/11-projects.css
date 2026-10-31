@@ -443,6 +443,11 @@
   filter: grayscale(40%);
 }
 
+.proj-card-info > :first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
 .proj-card-info {
   display: flex;
   align-items: baseline;

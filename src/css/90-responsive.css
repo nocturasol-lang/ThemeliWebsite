@@ -148,6 +148,10 @@
     gap: 20px;
   }
 
+  .proj-filters.is-open {
+    max-height: 800px;
+  }
+
   .proj-filters-inner {
     grid-template-columns: 1fr 1fr;
     gap: 24px;

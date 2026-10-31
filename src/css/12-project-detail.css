@@ -81,7 +81,8 @@
 .pdet-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px var(--pad-x) 0;
+  /* The page already applies --pad-x; a growing inset here collapsed the column on wide screens. */
+  padding: 48px min(var(--pad-x), 82px) 0;
 }
 
 /* Typology pill */

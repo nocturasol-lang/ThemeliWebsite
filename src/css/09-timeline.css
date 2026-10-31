@@ -289,6 +289,9 @@
 }
 
 /* ── Timeline Frame (brochure page card) ────────────────── */
+@media (max-width: 374px) {
+  .timeline-frame-header { flex-wrap: wrap; }
+}
 .timeline-frame {
   grid-column: 1 / -1;
   border: 1px solid rgba(255, 255, 255, 0.12);

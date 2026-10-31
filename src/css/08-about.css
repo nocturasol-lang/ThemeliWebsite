@@ -254,6 +254,7 @@
 .equip-icon {
   height: 68px;
   width: auto;
+  object-fit: contain;
 }
 
 .equip-row--icons .equip-cat {
