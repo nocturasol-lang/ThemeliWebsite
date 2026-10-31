@@ -219,11 +219,14 @@
 .footer-bottom {
   position: relative;
   z-index: 1;
-  margin-top: 60px;
+  /* Policies link sits directly under the footer logo, copyright below it
+     (same copyright position as before: 12 + 20 + link 18 + gap 30 = 80px). */
+  margin-top: 12px;
   padding-top: 20px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
 }
 
 .footer-bottom p {
@@ -234,6 +237,7 @@
 
 /* Same small type as the copyright, as a plain text link */
 .footer-policies-link {
+  order: -1;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.04em;
@@ -253,13 +257,3 @@
   }
 }
 
-/* Phones: stacked, left-aligned, still clear of the button */
-@media (max-width: 600px) {
-  .footer-bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-    padding-right: 56px;
-  }
-
-}
