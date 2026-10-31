@@ -256,6 +256,66 @@ function read_json_body(): array {
     return $data;
 }
 
+// ─── Email ───────────────────────────────────────────────────────────
+const MAIL_FROM_ADDRESS  = 'noreply@themeli.gr';
+const INQUIRY_NOTIFY_MAX = 20;
+const INQUIRY_ADMIN_URL  = 'https://themeli.gr/manage-7fk3/inquiries.html';
+
+// Returns whether the mail server accepted the message, not whether it arrived.
+// $replyTo must already be validated; everything else is safe for visitor text.
+function send_utf8_mail(string $to, string $subject, string $body, string $replyTo = ''): bool {
+    $subject = trim(preg_replace('/[\x00-\x1F\x7F]+/u', ' ', $subject) ?? '');
+    $encoded = function_exists('mb_encode_mimeheader')
+        ? mb_encode_mimeheader($subject, 'UTF-8', 'B', "\r\n")
+        : '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    $fromName = '=?UTF-8?B?' . base64_encode('Ιστοσελίδα ΘΕΜΕΛΗ') . '?=';
+
+    $headers = [
+        'From: ' . $fromName . ' <' . MAIL_FROM_ADDRESS . '>',
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: base64',
+    ];
+    if ($replyTo !== '' && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+        $headers[] = 'Reply-To: ' . $replyTo;
+    }
+    $ok = @mail($to, $encoded, chunk_split(base64_encode($body)), implode("\r\n", $headers), '-f' . MAIL_FROM_ADDRESS);
+    if (!$ok) error_log('[themeli] mail() failed for a notification');
+    return $ok;
+}
+
+function inquiry_notify_emails(): array {
+    $st = db()->prepare("SELECT value FROM settings WHERE key = 'inquiry_notify_emails'");
+    $st->execute();
+    $row = $st->fetch();
+    $list = json_decode_safe($row['value'] ?? null, []);
+    return array_values(array_filter($list, static fn($e) => is_string($e) && filter_var($e, FILTER_VALIDATE_EMAIL)));
+}
+
+// Never throws: a mail problem must not fail the visitor's submission,
+// which is already saved and visible in the admin.
+function notify_new_inquiry(int $id, array $q): void {
+    try {
+        $labels = ['project' => 'Νέο Έργο', 'partnership' => 'Συνεργασία', 'press' => 'Δημοσιογραφία', 'career' => 'Καριέρα', 'other' => 'Άλλο'];
+        $type = $labels[$q['type']] ?? $labels['other'];
+        $name = function_exists('mb_substr') ? mb_substr($q['name'], 0, 80) : substr($q['name'], 0, 80);
+        $subject = 'Νέο αίτημα επικοινωνίας: ' . $type . ' – ' . $name;
+        $body = "Νέο αίτημα από τη φόρμα επικοινωνίας του themeli.gr.\n\n"
+            . "Τύπος: {$type}\n"
+            . "Όνομα: {$q['name']}\n"
+            . "Email: {$q['email']}\n"
+            . ($q['phone']   !== '' ? "Τηλέφωνο: {$q['phone']}\n" : '')
+            . ($q['subject'] !== '' ? "Θέμα: {$q['subject']}\n"   : '')
+            . "\nΜήνυμα:\n{$q['message']}\n\n"
+            . "Αίτημα #{$id}. Δείτε το στο διαχειριστικό:\n" . INQUIRY_ADMIN_URL . "\n";
+        foreach (inquiry_notify_emails() as $to) {
+            send_utf8_mail($to, $subject, $body, $q['email']);
+        }
+    } catch (Throwable $e) {
+        error_log('[themeli] inquiry notification failed: ' . $e->getMessage());
+    }
+}
+
 // ─── Misc ────────────────────────────────────────────────────────────
 function method(): string { return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET'); }
 

@@ -47,6 +47,11 @@ if ($method === 'POST' && !isset($_GET['action'])) {
     $newId = (int)db()->lastInsertId();
     rate_hit('inquiry');
 
+    notify_new_inquiry($newId, [
+        'name' => $name, 'email' => $email, 'phone' => $phone,
+        'subject' => $subject, 'message' => $message, 'type' => $type,
+    ]);
+
     json_ok(['id' => $newId], 201);
 }
 
