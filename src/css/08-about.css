@@ -112,7 +112,8 @@
 }
 
 .about-inner > p,
-.about-inner > div > p {
+.about-inner > div > p,
+.about-text > div > p {
   font-size: 20px;
   font-weight: 300;
   line-height: 1.75;
@@ -132,16 +133,19 @@
 
 .about-inner > p,
 .about-inner > div > p,
-.about-inner > ul {
+.about-inner > ul,
+.about-text > ul {
   max-width: 1200px; /* comfortable line length */
 }
 
-.about-inner > ul {
+.about-inner > ul,
+.about-text > ul {
   margin: 20px 0 80px 24px;
   list-style: none;
 }
 
-.about-inner > ul li {
+.about-inner > ul li,
+.about-text > ul li {
   font-size: 20px;
   font-weight: 300;
   line-height: 1.75;
@@ -151,7 +155,8 @@
   position: relative;
 }
 
-.about-inner > ul li::before {
+.about-inner > ul li::before,
+.about-text > ul li::before {
   content: '';
   position: absolute;
   left: 0;
@@ -161,15 +166,39 @@
   background: var(--accent);
 }
 
-.about-inner > ul ul {
+.about-inner > ul ul,
+.about-text > ul ul {
   margin: 8px 0 8px 0;
   list-style: none;
 }
 
-.about-inner > ul ul li::before {
+.about-inner > ul ul li::before,
+.about-text > ul ul li::before {
   width: 4px;
   height: 4px;
   background: var(--gray-04);
+}
+
+/* Company text after the infographic: one narrower, tighter column. */
+.about-text {
+  max-width: 900px;
+  margin-top: 8px;
+}
+
+/* The company's one-line summary opens the text instead of the page. */
+.about-text .about-lead {
+  font-size: clamp(22px, 2.4vw, 28px);
+  margin-bottom: 32px;
+}
+
+.about-text > div > p,
+.about-text > ul li {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.about-text > ul {
+  margin: 8px 0 40px 24px;
 }
 
 .about-equipment-section {

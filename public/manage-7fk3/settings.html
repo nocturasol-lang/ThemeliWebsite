@@ -100,6 +100,7 @@
     <nav class="side" aria-labelledby="sideTitle">
       <p class="side-title" id="sideTitle">Μενού ρυθμίσεων</p>
       <button type="button" class="side-item" data-section="notifications">Ειδοποιήσεις</button>
+      <button type="button" class="side-item" data-section="export">Εξαγωγή έργων</button>
     </nav>
 
     <main class="content">
@@ -127,9 +128,19 @@
           <p class="msg" id="testMsg" role="status"></p>
         </div>
       </section>
+
+      <section class="card" id="export" aria-labelledby="exportTitle" hidden>
+        <h2 id="exportTitle">Εξαγωγή έργων</h2>
+        <p class="card-text">Κατεβάζει όλα τα έργα του διαχειριστικού, δημοσιευμένα και κρυφά, σε αρχείο Excel (.xlsx) με μία γραμμή ανά έργο.</p>
+        <div class="test">
+          <button type="button" class="primary" id="exportBtn">Λήψη Excel</button>
+          <p class="msg" id="exportMsg" role="status"></p>
+        </div>
+      </section>
     </main>
   </div>
 
+  <script src="xlsx.js"></script>
   <script>
     const API = '/api';
     async function api(path, opts = {}) {
@@ -265,6 +276,7 @@
       });
       $('placeholder').hidden = !!id;
       $('notifications').hidden = id !== 'notifications';
+      $('export').hidden = id !== 'export';
       if (id === 'notifications') loadSettings();
     }
     document.querySelectorAll('.side-item').forEach(b => {
@@ -281,7 +293,8 @@
       $('logoutBtn').hidden = !dash;
       $('inquiriesLink').hidden = !dash;
       if (dash) {
-        openSection(location.hash === '#notifications' ? 'notifications' : '');
+        const section = location.hash.slice(1);
+        openSection(['notifications', 'export'].includes(section) ? section : '');
         startIdleCheck();
       } else {
         emails = [];
@@ -290,6 +303,60 @@
         stopIdleCheck();
       }
     }
+
+    // Columns of the Excel export, in order. Titles are what the office sees.
+    const EXPORT_COLUMNS = [
+      { title: 'Α/Α', key: 'legacy_id', width: 7 },
+      { title: 'Όνομα', key: 'name', width: 44 },
+      { title: 'Όνομα (EN)', key: 'name_en', width: 44 },
+      { title: 'Έτος', key: 'year', width: 8 },
+      { title: 'Έτος έναρξης', key: 'year_start', width: 12 },
+      { title: 'Κατάσταση', key: 'status', width: 14 },
+      { title: 'Κατηγορία', key: 'typology', width: 20 },
+      { title: 'Τοποθεσία', key: 'location', width: 18 },
+      { title: 'Περιφέρεια', key: 'region', width: 18 },
+      { title: 'Εργοδότης', key: 'client', width: 30 },
+      { title: 'Ανάδοχος', key: 'contractor', width: 40 },
+      { title: 'Συμμετοχή', key: 'participation', width: 11 },
+      { title: 'Προϋπολογισμός (€)', key: 'budget', width: 18, money: true },
+      { title: 'Ημ/νία ολοκλήρωσης', key: 'date_completed', width: 16 },
+      { title: 'Μέγεθος', key: 'size', width: 14 },
+      { title: 'Αρχιτέκτονας', key: 'architect', width: 18 },
+      { title: 'Ορατότητα', key: 'visibility', width: 11 },
+      { title: 'Περιγραφή', key: 'description', width: 60 },
+      { title: 'Περιγραφή (EN)', key: 'description_en', width: 60 },
+      { title: 'Γεωγρ. πλάτος', key: 'lat', width: 12 },
+      { title: 'Γεωγρ. μήκος', key: 'lng', width: 12 },
+      { title: 'Φωτογραφίες', key: 'photos', width: 12 },
+    ];
+
+    $('exportBtn').addEventListener('click', async () => {
+      const btn = $('exportBtn');
+      btn.disabled = true;
+      setMsg($('exportMsg'), 'Ετοιμάζεται...');
+      try {
+        const projects = await api('/projects.php');
+        const rows = projects.map(p => EXPORT_COLUMNS.map(c => {
+          if (c.key === 'photos') return (p.hero_image ? 1 : 0) + (Array.isArray(p.gallery) ? p.gallery.length : 0);
+          return p[c.key];
+        }));
+        const bytes = ThemeliXlsx.build('Έργα', EXPORT_COLUMNS, rows);
+        const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `themeli-erga-${new Date().toISOString().slice(0, 10)}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setMsg($('exportMsg'), `Έτοιμο: ${projects.length} έργα.`, 'ok');
+      } catch (err) {
+        setMsg($('exportMsg'), 'Σφάλμα: ' + err.message, 'err');
+      } finally {
+        btn.disabled = false;
+      }
+    });
 
     async function loadSettings() {
       try {

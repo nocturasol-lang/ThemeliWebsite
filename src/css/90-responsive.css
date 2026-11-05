@@ -696,7 +696,9 @@
 
   /* About page */
   .about-inner > p,
-  .about-inner > div > p {
+  .about-inner > div > p,
+  .about-text > div > p,
+  .about-text > ul li {
     font-size: 17px;
   }
 

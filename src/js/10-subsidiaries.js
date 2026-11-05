@@ -24,14 +24,14 @@ if (subsGrid && subDetail) {
     themos: [
       { before: 0, size: 'm', side: 'right', photo: 0 },
       { before: 3, size: 'wide', photo: 1 },
-      { before: 6, size: 's', side: 'left', photo: 2 },
+      { before: 6, size: 'm', side: 'left', photo: 2 },
       { before: 10, size: 'm', side: 'right', photo: 3 },
     ],
     thermis: [
       { column: 0, before: 1, size: 'wide', photo: 0 },
       { column: 0, before: 2, size: 's', side: 'right', photo: 1 },
-      { column: 1, before: 1, size: 's', side: 'left', photo: 2 },
-      { column: 1, before: 2, size: 'wide', photo: 3 },
+      { column: 1, before: 1, size: 'wide', photo: 2 },
+      { column: 1, before: 2, size: 's', side: 'right', photo: 3 },
     ],
     tetrapolis: [
       { before: 0, size: 'm', side: 'right', photo: 0 },

@@ -306,7 +306,7 @@
 /* Photos set inside the subsidiary text, in the manner of the Timeline:
    plain rectangles in varied sizes, with small grey captions. */
 .sub-photo {
-  margin: 8px 0 28px;
+  margin: 6px 0 28px;
 }
 
 .sub-photo-open {
@@ -315,6 +315,8 @@
   padding: 0;
   background: var(--gray-02);
   border: 0;
+  border-radius: 20px;
+  overflow: hidden;
   cursor: pointer;
 }
 
@@ -327,6 +329,7 @@
 
 .sub-photo-caption {
   margin-top: 10px;
+  padding-left: 4px;
   font-size: 13px;
   line-height: 1.5;
   color: var(--gray-04);
